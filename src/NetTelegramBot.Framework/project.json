@@ -1,0 +1,27 @@
+{
+  "version": "0.1.0-alpha.1743",
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "NETStandard.Library": "1.6.0",
+    "NetTelegramBotApi": "3.9.0-beta1",
+    "RecurrentTasks": "3.1.0",
+    "WindowsAzure.Storage": "7.2.1",
+    "StyleCop.Analyzers": {
+      "version": "1.0.0",
+      "type": "build"
+    }
+  },
+
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:../../ruleset.ruleset" ]
+  },
+
+  "frameworks": {
+    "net461": {},
+    "netstandard1.3": {
+      "imports": [ "portable-net45+win8" ]
+    }
+  }
+}

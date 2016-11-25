@@ -10,26 +10,13 @@
         private char[] allDelimiters;
 
         public CommandParser()
-            : this(false, null)
-        {
-            // Nothing
-        }
-
-        public CommandParser(bool convertCommandToUppercase)
-            : this(convertCommandToUppercase, null)
+            : this(null)
         {
             // Nothing
         }
 
         public CommandParser(params char[] additionalDelimiters)
-            : this(false, additionalDelimiters)
         {
-            // Nothing
-        }
-
-        public CommandParser(bool convertCommandToLowercase, params char[] additionalDelimiters)
-        {
-            ConvertCommandToUppercase = convertCommandToLowercase;
             MainDelimiter = ' ';
             AdditionalDelimiters = additionalDelimiters;
         }
@@ -70,9 +57,7 @@
             }
         }
 
-        public bool ConvertCommandToUppercase { get; set; }
-
-        public BotCommand TryParse(string message)
+        public ICommand TryParse(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -84,37 +69,37 @@
                 return null;
             }
 
-            var command = new BotCommand();
+            var command = new Command();
 
             var argsText = (string)null;
 
             var firstSpace = message.IndexOf(MainDelimiter);
             if (firstSpace == -1)
             {
-                command.Command = message.Substring(1);
+                command.Name = message.Substring(1);
             }
             else
             {
-                command.Command = message.Substring(1, firstSpace - 1); // -1 is for CommandPrefix compensation
+                command.Name = message.Substring(1, firstSpace - 1); // -1 is for CommandPrefix compensation
                 argsText = message.Substring(firstSpace + 1);
             }
 
-            if (string.IsNullOrEmpty(command.Command) || command.Command[0] == BotNameDelimiter)
+            if (string.IsNullOrEmpty(command.Name) || command.Name[0] == BotNameDelimiter)
             {
                 return null;
             }
 
-            var botNameDelimiterIndex = command.Command.IndexOf(BotNameDelimiter);
+            var botNameDelimiterIndex = command.Name.IndexOf(BotNameDelimiter);
             if (botNameDelimiterIndex != -1)
             {
-                command.Bot = command.Command.Substring(botNameDelimiterIndex + 1);
-                command.Command = command.Command.Substring(0, botNameDelimiterIndex);
+                command.BotName = command.Name.Substring(botNameDelimiterIndex + 1);
+                command.Name = command.Name.Substring(0, botNameDelimiterIndex);
             }
 
             if (additionalDelimiters != null && additionalDelimiters.Length != 0)
             {
-                var array = command.Command.Split(additionalDelimiters, StringSplitOptions.RemoveEmptyEntries);
-                command.Command = array[0];
+                var array = command.Name.Split(additionalDelimiters, StringSplitOptions.RemoveEmptyEntries);
+                command.Name = array[0];
                 command.Args = array.Skip(1).ToArray();
             }
 
@@ -129,11 +114,6 @@
             if (command.Args != null && command.Args.Length == 0)
             {
                 command.Args = null;
-            }
-
-            if (ConvertCommandToUppercase)
-            {
-                command.Command = command.Command.ToUpperInvariant();
             }
 
             return command;

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using CommandHandlers;
     using Framework.Storage;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -11,64 +12,38 @@
 
     public class SampleBot : BotBase
     {
-        private ILogger logger;
+        private readonly SampleBotOptions options;
 
-        private SampleBotOptions options;
+        private readonly IStorageService storageService;
 
-        public SampleBot(ILogger<SampleBot> logger, IStorageService storageService, ICommandParser commandParser, IOptions<SampleBotOptions> options)
+        public SampleBot(
+            ILogger<SampleBot> logger,
+            IStorageService storageService,
+            ICommandParser commandParser,
+            IOptions<SampleBotOptions> options)
             : base(logger, storageService, commandParser, options.Value.Token)
         {
             this.options = options.Value;
+            this.storageService = storageService;
+
+            this.CommandHandlers.Add("sendall", new SendAll(storageService));
         }
 
-        public override async Task OnCommand(Message message, BotCommand command)
+        public override Task OnUnknownCommand(Message message, ICommand command)
         {
-            if (command.Command == "SENDALL")
+            return SendAsync(new SendMessage(message.Chat.Id, "Unknown command :(")
             {
-                if ((message.From.Username?.Length ?? 0) < 5) // some "security" :)
-                {
-                    await SendAsync(new SendMessage(message.Chat.Id, "Forbidden. Sorry.")
-                    {
-                        ReplyToMessageId = message.MessageId
-                    });
-
-                    return;
-                }
-
-                await SendAsync(new SendMessage(message.Chat.Id, "Accepted")
-                {
-                    ReplyToMessageId = message.MessageId
-                });
-
-                // join all parts back (alternatively, re-parse message.Text)
-                var textToSend = string.Join(" ", command.Args);
-
-                var list = await LoadAllContextsAsync<SampleUserContext>(null);
-                while (list.Item1.Count != 0)
-                {
-                    var tasks = new Task[list.Item1.Count];
-                    for (var i = 0; i < list.Item1.Count; i++)
-                    {
-                        tasks[i] = SendAsync(new SendMessage(list.Item1[i].ChatId, textToSend));
-                    }
-
-                    await Task.WhenAll(tasks);
-
-                    if (list.Item2 == null)
-                    {
-                        break;
-                    }
-
-                    list = await LoadAllContextsAsync<SampleUserContext>(list.Item2);
-                }
-
-            }
+                ReplyToMessageId = message.MessageId
+            });
         }
 
         public override async Task OnMessage(Message message)
         {
-            // We want to store all ChatId and send them message later
-            var chatContext = await LoadContextAsync<SampleUserContext>(message.Chat.Id);
+            // This is "regular" chat message
+            // Do nothing with message itself, but save ChatId to be able to /sendall here later
+            var chatContext = await storageService.LoadContextAsync<SampleUserContext>(Id, message.Chat.Id);
+
+            // It's our first message in this chat. Create context and save
             if (chatContext == null)
             {
                 chatContext = new SampleUserContext
@@ -77,10 +52,10 @@
                     ChatId = message.Chat.Id,
                     IsChat = message.Chat.GetChatType() != ChatType.Private
                 };
-                await SaveContextAsync(message.Chat, chatContext);
+                await storageService.SaveContextAsync(Id, message.Chat, chatContext);
             }
 
-            // Do something :)
+            // Do something with message :)
             var from = message.From;
             var text = message.Text;
             var photos = message.Photo;

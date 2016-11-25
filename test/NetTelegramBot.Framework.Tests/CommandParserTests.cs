@@ -31,8 +31,8 @@
             var command = parser.TryParse(value);
 
             Assert.NotNull(command);
-            Assert.Equal("cmd", command.Command);
-            Assert.Null(command.Bot);
+            Assert.Equal("cmd", command.Name);
+            Assert.Null(command.BotName);
             Assert.Equal(new[] { "arg1", "arg2" }, command.Args);
         }
 
@@ -45,8 +45,8 @@
             var command = parser.TryParse(value);
 
             Assert.NotNull(command);
-            Assert.Equal("cmd", command.Command);
-            Assert.Equal("bot1", command.Bot);
+            Assert.Equal("cmd", command.Name);
+            Assert.Equal("bot1", command.BotName);
             Assert.Equal(null, command.Args);
         }
 
@@ -58,23 +58,9 @@
             var command = parser.TryParse(value);
 
             Assert.NotNull(command);
-            Assert.Equal("cmd", command.Command);
-            Assert.Equal("bot1", command.Bot);
+            Assert.Equal("cmd", command.Name);
+            Assert.Equal("bot1", command.BotName);
             Assert.Equal(new[] { "arg1", "arg2" }, command.Args);
-        }
-
-        [Theory]
-        [InlineData("/cMD")]
-        [InlineData("/cMd@bot1")]
-        [InlineData("/Cmd arg1 arg2")]
-        [InlineData("/cMd@bot1 arg1 arg2")]
-        public void CommandInUppercase(string value)
-        {
-            var parser = new CommandParser(true);
-            var command = parser.TryParse(value);
-
-            Assert.NotNull(command);
-            Assert.Equal("CMD", command.Command);
         }
 
         [Theory]
@@ -87,7 +73,7 @@
             var command = parser.TryParse(value);
 
             Assert.NotNull(command);
-            Assert.Equal("cmd", command.Command);
+            Assert.Equal("cmd", command.Name);
             Assert.Equal(new[] { "arg1", "arg2", "arg3" }, command.Args);
         }
     }

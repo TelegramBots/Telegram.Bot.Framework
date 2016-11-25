@@ -4,6 +4,6 @@
 
     public interface ICommandParser
     {
-        BotCommand TryParse(string message);
+        ICommand TryParse(string message);
     }
 }

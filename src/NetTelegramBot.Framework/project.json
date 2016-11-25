@@ -1,11 +1,26 @@
 {
-  "version": "0.1.0-alpha.1743",
+  "version": "1.0.0-alpha1",
+  "title": "NetTelegramBot.Framework",
+  "description": "Simple framework for building Telegram bots.",
+
+  "packOptions": {
+    "summary": "Telegram Bot API framework",
+    "owners": [ "Dmitry Popov" ],
+    "tags": [ "telegram", "bot", "api" ],
+    "projectUrl": "https://github.com/justdmitry/NetTelegramBot.Framework",
+    "copyright": "Copyright © Dmitry Popov, 2016",
+    "releaseNotes": "It works",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/justdmitry/NetTelegramBot.Framework.git"
+    }
+  },
 
   "dependencies": {
     "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
     "Microsoft.Extensions.Options": "1.0.0",
     "NETStandard.Library": "1.6.0",
-    "NetTelegramBotApi": "3.9.0-beta1",
+    "NetTelegramBotApi": "4.0.0",
     "RecurrentTasks": "3.1.0",
     "WindowsAzure.Storage": "7.2.1",
     "StyleCop.Analyzers": {

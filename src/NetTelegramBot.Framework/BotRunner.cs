@@ -16,11 +16,6 @@
 
         public void Run(ITask currentTask)
         {
-            if (bot.LastOffset == 0)
-            {
-                bot.RefreshSelf().Wait();
-            }
-
             while (true)
             {
                 var updates = bot.SendAsync(new GetUpdates { Offset = bot.LastOffset + 1 }).Result;

@@ -302,7 +302,7 @@
           "System.Xml.XDocument": "4.0.11"
         }
       },
-      "NetTelegramBotApi/3.9.0-beta1": {
+      "NetTelegramBotApi/4.0.0": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "9.0.1"
@@ -1320,7 +1320,7 @@
           "System.Xml.XDocument": "4.0.11"
         }
       },
-      "NetTelegramBotApi/3.9.0-beta1": {
+      "NetTelegramBotApi/4.0.0": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "9.0.1",
@@ -2751,12 +2751,12 @@
         "dotnet_library_license.txt"
       ]
     },
-    "NetTelegramBotApi/3.9.0-beta1": {
-      "sha512": "gDGn/Twkh7xGQsbV0plvENRD0FrZRykz0egLjnSSsCj2u7vPrfNYfNPuSJCWxYpec9bKWa3goeFIQ28MuTWplA==",
+    "NetTelegramBotApi/4.0.0": {
+      "sha512": "tKcd5/jINFkYQpwauogriebCpui10AUZPInbpN4a74U3WQgftIXMe/jtlPIHt+aaRPrw1ezdWat5JnQRhBrhIA==",
       "type": "package",
-      "path": "NetTelegramBotApi/3.9.0-beta1",
+      "path": "NetTelegramBotApi/4.0.0",
       "files": [
-        "NetTelegramBotApi.3.9.0-beta1.nupkg.sha512",
+        "NetTelegramBotApi.4.0.0.nupkg.sha512",
         "NetTelegramBotApi.nuspec",
         "lib/net45/NetTelegramBotApi.dll",
         "lib/net45/NetTelegramBotApi.xml",
@@ -5991,7 +5991,7 @@
       "Microsoft.AspNetCore.Http.Abstractions >= 1.0.0",
       "Microsoft.Extensions.Options >= 1.0.0",
       "NETStandard.Library >= 1.6.0",
-      "NetTelegramBotApi >= 3.9.0-beta1",
+      "NetTelegramBotApi >= 4.0.0",
       "RecurrentTasks >= 3.1.0",
       "StyleCop.Analyzers >= 1.0.0",
       "WindowsAzure.Storage >= 7.2.1"

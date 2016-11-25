@@ -27,7 +27,8 @@
             this.commandParser = commandParser;
             this.botApi = new TelegramBot(token);
 
-            RefreshSelf().Wait();
+            CommandHandlers = new Dictionary<string, ICommandHandler>(StringComparer.OrdinalIgnoreCase);
+
             OnStart();
         }
 
@@ -43,52 +44,40 @@
 
         public long LastOffset { get; private set; }
 
-        public async Task RefreshSelf()
+        public Dictionary<string, ICommandHandler> CommandHandlers { get; private set; }
+
+        public virtual async Task ProcessAsync(Update update)
         {
-            var me = await SendAsync(new GetMe());
-            if (me == null)
+            try
             {
-                throw new Exception("Can't get bot user info. Check API Token");
+                var msg = update.Message;
+                if (msg != null)
+                {
+                    await storageService.SaveMessageAsync(msg);
+
+                    var command = commandParser.TryParse(msg.Text);
+                    if (command != null)
+                    {
+                        await OnCommand(msg, command);
+                    }
+                    else
+                    {
+                        await OnMessage(msg);
+                    }
+                }
             }
-
-            Id = me.Id;
-            Username = me.Username;
-
-            logger.LogInformation($"Bot info refreshed: {Username} (id = {Id})");
-        }
-
-        public virtual void OnStart()
-        {
-            // Nothing
-        }
-
-        public abstract Task OnCommand(Message message, BotCommand command);
-
-        public abstract Task OnMessage(Message message);
-
-        public async Task ProcessAsync(Update update)
-        {
-            var msg = update.Message;
-            if (msg != null)
+            catch (BotRequestException ex)
             {
-                var saveMessageTask = storageService.SaveMessageAsync(msg);
-
-                var command = commandParser.TryParse(msg.Text);
-                if (command != null)
-                {
-                    await OnCommand(msg, command);
-                }
-                else
-                {
-                    await OnMessage(msg);
-                }
-
-                await Task.WhenAll(saveMessageTask);
+                // Catch BotRequestException and ignore it.
+                // Otherwise, incoming mesage will be processed again and again...
+                // To avoid - just catch exception yourself (inside OnCommand/OnMessage),
+                //     put inside other (AggregateException for example) and re-throw
+                logger.LogError(0, ex, "SendAsync-related error during message processing. Ignored.");
             }
             LastOffset = update.UpdateId;
         }
 
-        public Task<T> SendAsync<T>(RequestBase<T> message)
+        public virtual Task<T> SendAsync<T>(RequestBase<T> message)
         {
             if (logger.IsEnabled(LogLevel.Debug))
             {
@@ -98,7 +87,7 @@
             return botApi.MakeRequestAsync(message);
         }
 
-        public async Task ProcessIncomingWebhookAsync(Stream stream)
+        public virtual async Task ProcessIncomingWebhookAsync(Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {
@@ -108,36 +97,38 @@
             }
         }
 
-        public Task SaveContextAsync<TContext>(User user, TContext value)
-            where TContext : class, new()
+        public virtual Task OnCommand(Message message, ICommand command)
         {
-            return storageService.SaveContextAsync(Id, user, value);
+            ICommandHandler handler;
+            if (CommandHandlers.TryGetValue(command.Name, out handler))
+            {
+                return handler.Execute(command, this, message);
+            }
+            else
+            {
+                return OnUnknownCommand(message, command);
+            }
         }
 
-        public Task SaveContextAsync<TContext>(Chat chat, TContext value)
-            where TContext : class, new()
-        {
-            return storageService.SaveContextAsync(Id, chat, value);
-        }
+        public abstract Task OnUnknownCommand(Message message, ICommand command);
 
-        public Task<TContext> LoadContextAsync<TContext>(long userOrChatId)
-            where TContext : class, new()
-        {
-            return storageService.LoadContextAsync<TContext>(Id, userOrChatId);
-        }
+        public abstract Task OnMessage(Message message);
 
-        public Task<Tuple<List<TContext>, ISegmentedQueryContinuationToken>>
-            LoadAllContextsAsync<TContext>(ISegmentedQueryContinuationToken token = null)
-            where TContext : class, new()
+        /// <summary>
+        /// Sends 'getMe' request, fills <see cref="Id"/> and <see cref="Username"/> from response
+        /// </summary>
+        protected virtual void OnStart()
         {
-            return storageService.LoadAllContextsAsync<TContext>(Id, token);
-        }
+            var me = SendAsync(new GetMe()).Result;
+            if (me == null)
+            {
+                throw new Exception("Can't get bot user info. Check API Token");
+            }
 
-        public Task<Tuple<List<TContext>, ISegmentedQueryContinuationToken>>
-            LoadAllContextsAsync<TContext>(ChatType chatType, ISegmentedQueryContinuationToken token = null)
-            where TContext : class, new()
-        {
-            return storageService.LoadAllContextsAsync<TContext>(Id, chatType, token);
+            Id = me.Id;
+            Username = me.Username;
+
+            logger.LogInformation($"Bot info refreshed: {Username} (id = {Id})");
         }
     }
 }

@@ -4,6 +4,11 @@ using NetTelegramBotApi.Types;
 
 namespace SampleEchoBot.Services
 {
+    public interface IEchoBot : IBot
+    {
+
+    }
+
     public class EchoBot : BotBase<EchoBot>, IEchoBot
     {
         public EchoBot(IBotOptions<EchoBot> botOptions, IMessageParser<EchoBot> messageParser)

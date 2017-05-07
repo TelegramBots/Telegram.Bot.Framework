@@ -7,13 +7,14 @@ using RecurrentTasks;
 
 namespace NetTelegramBot.Framework
 {
-    public class BotUpdateManager : IBotUpdateManager<IBot>
+    public class BotUpdateManager<TBot> : IBotUpdateManager<TBot>
+        where TBot : IBot
     {
-        private readonly IBot _bot;
+        private readonly TBot _bot;
 
         private long? _offset;
 
-        public BotUpdateManager(IBot bot)
+        public BotUpdateManager(TBot bot)
         {
             _bot = bot;
         }
@@ -35,7 +36,10 @@ namespace NetTelegramBot.Framework
                     HandleUpdateAsync(update).Wait();
                 }
 
-                _offset = updates.Last().UpdateId + 1;
+                if (updates.Any())
+                {
+                    _offset = updates.Last()?.UpdateId + 1;
+                }
             } while (updates.Any());
         }
     }

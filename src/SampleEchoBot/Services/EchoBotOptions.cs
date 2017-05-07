@@ -6,6 +6,8 @@ namespace SampleEchoBot.Services
     {
         public string ApiToken { get; set; }
 
+        public string BotName { get; set; }
+
         public bool? UseWebhook { get; set; }
 
         public string WebhookUrl { get; set; }

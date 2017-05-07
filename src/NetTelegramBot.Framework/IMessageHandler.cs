@@ -6,10 +6,10 @@ namespace NetTelegramBot.Framework
     public interface IMessageHandler<TBot>
         where TBot : IBot
     {
-        MessageType MessageType { get; }
+        IBot Bot { get; set; }
 
-        TBot Bot { get; set; }
+        bool CanHandle(Update update);
 
-        Task HandleMessageAsync(Message message);
+        Task HandleMessageAsync(Update update);
     }
 }

@@ -6,8 +6,6 @@ namespace NetTelegramBot.Framework
     public interface IMessageParser<TBot>
         where TBot : IBot
     {
-        MessageType FindMessageType(Message message);
-
-        IEnumerable<IMessageHandler<TBot>> FindMessageHandlers(Message message);
+        IEnumerable<IMessageHandler<TBot>> FindMessageHandlers(Update update);
     }
 }

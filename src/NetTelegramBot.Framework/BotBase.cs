@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NetTelegramBot.Framework.Storage;
 using NetTelegramBotApi;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
@@ -17,7 +15,9 @@ namespace NetTelegramBot.Framework
 
         //private IStorageService storageService;
 
-        private readonly TelegramBot _bot;
+        protected readonly TelegramBot Bot;
+
+        protected readonly IMessageParser<TBot> MessageParser;
 
         protected BotBase(IBotOptions<TBot> botOptions,
             IMessageParser<TBot> messageParser
@@ -25,7 +25,8 @@ namespace NetTelegramBot.Framework
             //,IStorageService storageService
             )
         {
-            _bot = new TelegramBot(botOptions.ApiToken);
+            Bot = new TelegramBot(botOptions.ApiToken);
+            MessageParser = messageParser;
             //_logger = logger;
             //this.storageService = storageService;
             //this.commandParser = commandParser;
@@ -147,13 +148,28 @@ namespace NetTelegramBot.Framework
 
         public async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
         {
-            return await _bot.MakeRequestAsync(request)
+            return await Bot.MakeRequestAsync(request)
                 .ConfigureAwait(false);
         }
 
-        public Task ProcessUpdateAsync(Update update)
+        public virtual async Task ProcessUpdateAsync(Update update)
         {
-            throw new NotImplementedException();
+            //if (update?.Message != null)
+            {
+                var handlers = MessageParser.FindMessageHandlers(update).ToArray();
+                if (handlers.Any())
+                {
+                    foreach (var handler in handlers)
+                    {
+                        handler.Bot = this;
+                        await handler.HandleMessageAsync(update);
+                    }
+                }
+                else
+                {
+                    await HandleUnknownMessageAsync(update.Message);
+                }
+            }
         }
     }
 }

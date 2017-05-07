@@ -6,21 +6,24 @@ using SampleEchoBot.Services;
 
 namespace SampleEchoBot.Commands
 {
-    public interface IMessageForwarder : IMessageHandler<EchoBot>
+    public interface ITextMessageEchoer : IMessageHandler<EchoBot>
     {
 
     }
 
-    public class MessageForwarder : MessageHandlerBase<EchoBot>, IMessageForwarder
+    public class TextMessageEchoer : MessageHandlerBase<EchoBot>, ITextMessageEchoer
     {
         public override bool CanHandle(Update update)
         {
-            return update.Message.Chat != null;
+            return !string.IsNullOrEmpty(update.Message?.Text);
         }
 
         public override async Task HandleMessageAsync(Update update)
         {
-            var req = new ForwardMessage(update.Message.Chat.Id, update.Message.Chat.Id, update.Message.MessageId);
+            var req = new SendMessage(update.Message.Chat.Id, update.Message.Text)
+            {
+                ReplyToMessageId = update.Message.MessageId,
+            };
             await Bot.MakeRequestAsync(req);
         }
     }

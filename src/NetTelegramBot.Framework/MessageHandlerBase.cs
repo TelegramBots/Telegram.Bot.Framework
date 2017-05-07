@@ -6,10 +6,10 @@ namespace NetTelegramBot.Framework
     public abstract class MessageHandlerBase<TBot> : IMessageHandler<TBot>
         where TBot : BotBase<TBot>
     {
-        public abstract MessageType MessageType { get; }
+        public IBot Bot { get; set; }
 
-        public TBot Bot { get; set; }
+        public abstract bool CanHandle(Update update);
 
-        public abstract Task HandleMessageAsync(Message message);
+        public abstract Task HandleMessageAsync(Update update);
     }
 }

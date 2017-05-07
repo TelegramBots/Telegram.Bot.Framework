@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NetTelegramBotApi.Types;
 
-namespace NetTelegramBot.Framework
+namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IMessageHandler<TBot>
         where TBot : IBot

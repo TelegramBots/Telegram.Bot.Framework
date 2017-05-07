@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using NetTelegramBot.Framework;
+using NetTelegramBot.Framework.Abstractions;
 
 namespace SampleEchoBot.Services
 {
-    public class EchoBotMessageHandlerAccessor : IMessageHandlersAccessor<EchoBot>
+    public class EchoBotMessageHandlerAccessor : IMessageHandlersAccessor<IEchoBot>
     {
-        public IEnumerable<IMessageHandler<EchoBot>> MessageHandlers { get; }
+        public IEnumerable<IMessageHandler<IEchoBot>> MessageHandlers { get; }
 
-        public EchoBotMessageHandlerAccessor(IMessageHandler<EchoBot>[] handlers)
+        public EchoBotMessageHandlerAccessor(IMessageHandler<IEchoBot>[] handlers)
         {
             MessageHandlers = handlers;
         }

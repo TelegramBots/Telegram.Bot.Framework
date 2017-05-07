@@ -1,4 +1,4 @@
-﻿namespace NetTelegramBot.Framework
+﻿namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IBotOptions<TBot>
         where TBot : IBot

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
@@ -9,7 +10,7 @@ using NetTelegramBotApi.Types;
 namespace NetTelegramBot.Framework
 {
     public abstract class BotBase<TBot> : IBot
-        where TBot : BotBase<TBot>
+        where TBot : IBot
     {
         //private readonly ILogger _logger;
 

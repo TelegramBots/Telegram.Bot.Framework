@@ -2,7 +2,7 @@
 using NetTelegramBotApi.Types;
 using RecurrentTasks;
 
-namespace NetTelegramBot.Framework
+namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IBotUpdateManager<TBot> : IRunnable
         where TBot : IBot

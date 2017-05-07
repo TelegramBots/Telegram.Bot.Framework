@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
 using NetTelegramBot.Framework;
+using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 using SampleEchoBot.Services;
 
 namespace SampleEchoBot.Commands
 {
-    public interface ITextMessageEchoer : IMessageHandler<EchoBot>
+    public interface ITextMessageEchoer : IMessageHandler<IEchoBot>
     {
 
     }
 
-    public class TextMessageEchoer : MessageHandlerBase<EchoBot>, ITextMessageEchoer
+    public class TextMessageEchoer : MessageHandlerBase<IEchoBot>, ITextMessageEchoer
     {
         public override bool CanHandle(Update update)
         {

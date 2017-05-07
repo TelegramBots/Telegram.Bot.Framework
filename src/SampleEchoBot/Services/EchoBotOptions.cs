@@ -1,8 +1,8 @@
-﻿using NetTelegramBot.Framework;
+﻿using NetTelegramBot.Framework.Abstractions;
 
 namespace SampleEchoBot.Services
 {
-    public class EchoBotOptions : IBotOptions<EchoBot>
+    public class EchoBotOptions : IBotOptions<IEchoBot>
     {
         public string ApiToken { get; set; }
 

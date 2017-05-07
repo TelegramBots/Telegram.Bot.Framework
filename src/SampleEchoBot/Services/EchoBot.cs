@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NetTelegramBot.Framework;
+using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
 
 namespace SampleEchoBot.Services
@@ -9,9 +10,9 @@ namespace SampleEchoBot.Services
 
     }
 
-    public class EchoBot : BotBase<EchoBot>, IEchoBot
+    public class EchoBot : BotBase<IEchoBot>, IEchoBot
     {
-        public EchoBot(IBotOptions<EchoBot> botOptions, IMessageParser<EchoBot> messageParser)
+        public EchoBot(IBotOptions<IEchoBot> botOptions, IMessageParser<IEchoBot> messageParser)
             : base(botOptions, messageParser)
         {
 

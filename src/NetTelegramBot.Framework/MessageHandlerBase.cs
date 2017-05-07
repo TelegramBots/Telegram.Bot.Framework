@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework
 {
     public abstract class MessageHandlerBase<TBot> : IMessageHandler<TBot>
-        where TBot : BotBase<TBot>
+        where TBot : IBot
     {
         public IBot Bot { get; set; }
 

@@ -41,8 +41,9 @@ namespace SampleEchoBot
             services.AddTelegramBot<IEchoBot, EchoBot>()
                 .AddBotOptions(botOptions)
                 .AddDefaultMessageParser()
-                .AddMessageHandler<IMessageForwarder, MessageForwarder>()
+                .AddMessageHandler<IPhotoForwarder, PhotoForwarder>()
                 .AddMessageHandler<ITextMessageEchoer, TextMessageEchoer>()
+                .AddMessageHandler<IStartCommand, StartCommand>()
                 .AddDefaultUpdateManager();
         }
 

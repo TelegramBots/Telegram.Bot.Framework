@@ -3,8 +3,8 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework.Abstractions
 {
-    public interface IMessageHandler<TBot>
-        where TBot : IBot
+    public interface IMessageHandler<TIBot>
+        where TIBot : IBot
     {
         IBot Bot { get; set; }
 

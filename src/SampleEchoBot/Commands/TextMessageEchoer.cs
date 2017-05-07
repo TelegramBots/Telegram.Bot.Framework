@@ -21,9 +21,10 @@ namespace SampleEchoBot.Commands
 
         public override async Task HandleMessageAsync(Update update)
         {
-            var req = new SendMessage(update.Message.Chat.Id, update.Message.Text)
+            var req = new SendMessage(update.Message.Chat.Id, $"You said:\n`{update.Message.Text.Replace("\n", "`\n`")}`")
             {
                 ReplyToMessageId = update.Message.MessageId,
+                ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
             await Bot.MakeRequestAsync(req);
         }

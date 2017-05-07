@@ -7,16 +7,16 @@ using SampleEchoBot.Services;
 
 namespace SampleEchoBot.Commands
 {
-    public interface IMessageForwarder : IMessageHandler<IEchoBot>
+    public interface IPhotoForwarder : IMessageHandler<IEchoBot>
     {
 
     }
 
-    public class MessageForwarder : MessageHandlerBase<IEchoBot>, IMessageForwarder
+    public class PhotoForwarder : MessageHandlerBase<IEchoBot>, IPhotoForwarder
     {
         public override bool CanHandle(Update update)
         {
-            return update.Message.Chat != null;
+            return update.Message.Photo != null;
         }
 
         public override async Task HandleMessageAsync(Update update)

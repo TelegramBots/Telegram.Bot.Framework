@@ -12,9 +12,20 @@ namespace NetTelegramBot.Framework
 
         private readonly IMessageHandlersAccessor<TBot> _handlersAccessor;
 
+        private IBot _bot;
+
         public MessageParser(IMessageHandlersAccessor<TBot> handlersAccessor)
         {
             _handlersAccessor = handlersAccessor;
+        }
+
+        public void SetBot(IBot bot)
+        {
+            _bot = bot;
+            foreach (var handler in MessageHandlers)
+            {
+                handler.Bot = bot;
+            }
         }
 
         public virtual IEnumerable<IMessageHandler<TBot>> FindMessageHandlers(Update update)

@@ -16,9 +16,24 @@ namespace NetTelegramBot.Framework
 
         //private IStorageService storageService;
 
+        public User BotUserInfo
+        {
+            get
+            {
+                if (_botUserInfo == null)
+                {
+                    _botUserInfo = Bot.MakeRequestAsync(new GetMe()).Result;
+                }
+                return _botUserInfo;
+            }
+            protected set => _botUserInfo = value;
+        }
+
         protected readonly TelegramBot Bot;
 
         protected readonly IMessageParser<TBot> MessageParser;
+
+        private User _botUserInfo;
 
         protected BotBase(IBotOptions<TBot> botOptions,
             IMessageParser<TBot> messageParser
@@ -32,20 +47,8 @@ namespace NetTelegramBot.Framework
             //this.storageService = storageService;
             //this.commandParser = commandParser;
 
-            //OnStart();
+            MessageParser.SetBot(this);
         }
-
-        /// <summary>
-        /// Telegram Id for this Bot
-        /// </summary>
-        public long Id { get; private set; }
-
-        /// <summary>
-        /// Telegram Username for this Bot
-        /// </summary>
-        public string Username { get; private set; }
-
-        public long LastOffset { get; private set; }
 
         public virtual Task ProcessAsync(Update update)
         {
@@ -107,22 +110,6 @@ namespace NetTelegramBot.Framework
             */
         }
 
-        public virtual Task OnCommand(Message message, ICommand command)
-        {
-            throw new NotImplementedException();
-            /*
-            ICommandHandler handler;
-            if (CommandHandlers.TryGetValue(command.Name, out handler))
-            {
-                return handler.Execute(command, this, message);
-            }
-            else
-            {
-                return OnUnknownCommand(message, command);
-            }
-            */
-        }
-
         public abstract Task HandleUnknownMessageAsync(Message message);
 
         /// <summary>
@@ -145,7 +132,6 @@ namespace NetTelegramBot.Framework
             */
         }
 
-        public User BotUserInfo { get; }
 
         public async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
         {

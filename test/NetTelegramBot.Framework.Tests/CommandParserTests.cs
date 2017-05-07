@@ -1,11 +1,7 @@
-﻿namespace NetTelegramBot.Framework.Tests
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Xunit;
+﻿using Xunit;
 
+namespace NetTelegramBot.Framework.Tests
+{
     public class CommandParserTests
     {
         [Theory]

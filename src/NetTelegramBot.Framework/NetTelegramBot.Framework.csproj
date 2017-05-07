@@ -2,34 +2,28 @@
 
   <PropertyGroup>
     <Description>Simple framework for building Telegram bots.</Description>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
     <AssemblyTitle>NetTelegramBot.Framework</AssemblyTitle>
     <VersionPrefix>1.0.0-alpha1</VersionPrefix>
-    <TargetFrameworks>net461;netstandard1.3</TargetFrameworks>
     <AssemblyName>NetTelegramBot.Framework</AssemblyName>
     <PackageId>NetTelegramBot.Framework</PackageId>
     <PackageTags>telegram;bot;api</PackageTags>
     <PackageReleaseNotes>It works</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/justdmitry/NetTelegramBot.Framework</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/pouladpld/NetTelegramBot.Framework</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/justdmitry/NetTelegramBot.Framework.git</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
+    <RepositoryUrl>https://github.com/pouladpld/NetTelegramBot.Framework.git</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="1.0.2" />
-    <PackageReference Include="NetTelegramBotApi" Version="4.0.0" />
-    <PackageReference Include="RecurrentTasks" Version="3.1.0" />
-    <PackageReference Include="WindowsAzure.Storage" Version="7.2.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
+    <PackageReference Include="NetTelegramBotApi" Version="4.1.0" />
+    <PackageReference Include="RecurrentTasks" Version="3.2.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="8.1.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>

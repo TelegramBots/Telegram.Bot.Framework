@@ -1,35 +1,36 @@
-﻿namespace NetTelegramBot.Framework
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using NetTelegramBot.Framework.Storage;
+using NetTelegramBotApi;
+using NetTelegramBotApi.Requests;
+using NetTelegramBotApi.Types;
+
+namespace NetTelegramBot.Framework
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-    using Microsoft.Extensions.Logging;
-    using NetTelegramBotApi;
-    using NetTelegramBotApi.Requests;
-    using NetTelegramBotApi.Types;
-    using Storage;
-
-    public abstract class BotBase
+    public abstract class BotBase<TBot> : IBot
+        where TBot : BotBase<TBot>
     {
-        private ILogger logger;
+        //private readonly ILogger _logger;
 
-        private IStorageService storageService;
+        //private IStorageService storageService;
 
-        private ICommandParser commandParser;
+        private readonly TelegramBot _bot;
 
-        private TelegramBot botApi;
-
-        public BotBase(ILogger logger, IStorageService storageService, ICommandParser commandParser, string token)
+        protected BotBase(IBotOptions<TBot> botOptions,
+            IMessageParser<TBot> messageParser
+            //,ILogger logger
+            //,IStorageService storageService
+            )
         {
-            this.logger = logger;
-            this.storageService = storageService;
-            this.commandParser = commandParser;
-            this.botApi = new TelegramBot(token);
+            _bot = new TelegramBot(botOptions.ApiToken);
+            //_logger = logger;
+            //this.storageService = storageService;
+            //this.commandParser = commandParser;
 
-            CommandHandlers = new Dictionary<string, ICommandHandler>(StringComparer.OrdinalIgnoreCase);
-
-            OnStart();
+            //OnStart();
         }
 
         /// <summary>
@@ -44,10 +45,10 @@
 
         public long LastOffset { get; private set; }
 
-        public Dictionary<string, ICommandHandler> CommandHandlers { get; private set; }
-
-        public virtual async Task ProcessAsync(Update update)
+        public virtual Task ProcessAsync(Update update)
         {
+            throw new NotImplementedException();
+            /*
             try
             {
                 var msg = update.Message;
@@ -72,33 +73,42 @@
                 // Otherwise, incoming mesage will be processed again and again...
                 // To avoid - just catch exception yourself (inside OnCommand/OnMessage),
                 //     put inside other (AggregateException for example) and re-throw
-                logger.LogError(0, ex, "SendAsync-related error during message processing. Ignored.");
+                _logger.LogError(0, ex, "SendAsync-related error during message processing. Ignored.");
             }
             LastOffset = update.UpdateId;
+            */
         }
 
         public virtual Task<T> SendAsync<T>(RequestBase<T> message)
         {
-            if (logger.IsEnabled(LogLevel.Debug))
+            throw new NotImplementedException();
+            /*
+            if (_logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug($"Sending {message.GetType().Name}...");
+                _logger.LogDebug($"Sending {message.GetType().Name}...");
             }
 
-            return botApi.MakeRequestAsync(message);
+            return _bot.MakeRequestAsync(message);
+            */
         }
 
-        public virtual async Task ProcessIncomingWebhookAsync(Stream stream)
+        public virtual Task ProcessIncomingWebhookAsync(Stream stream)
         {
+            throw new NotImplementedException();
+            /*
             using (var reader = new StreamReader(stream))
             {
                 var text = await reader.ReadToEndAsync();
-                var update = botApi.DeserializeUpdate(text);
+                var update = _bot.DeserializeUpdate(text);
                 await ProcessAsync(update);
             }
+            */
         }
 
         public virtual Task OnCommand(Message message, ICommand command)
         {
+            throw new NotImplementedException();
+            /*
             ICommandHandler handler;
             if (CommandHandlers.TryGetValue(command.Name, out handler))
             {
@@ -108,17 +118,18 @@
             {
                 return OnUnknownCommand(message, command);
             }
+            */
         }
 
-        public abstract Task OnUnknownCommand(Message message, ICommand command);
-
-        public abstract Task OnMessage(Message message);
+        public abstract Task HandleUnknownMessageAsync(Message message);
 
         /// <summary>
         /// Sends 'getMe' request, fills <see cref="Id"/> and <see cref="Username"/> from response
         /// </summary>
         protected virtual void OnStart()
         {
+            throw new NotImplementedException();
+            /*
             var me = SendAsync(new GetMe()).Result;
             if (me == null)
             {
@@ -128,7 +139,21 @@
             Id = me.Id;
             Username = me.Username;
 
-            logger.LogInformation($"Bot info refreshed: {Username} (id = {Id})");
+            _logger.LogInformation($"Bot info refreshed: {Username} (id = {Id})");
+            */
+        }
+
+        public User BotUserInfo { get; }
+
+        public async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
+        {
+            return await _bot.MakeRequestAsync(request)
+                .ConfigureAwait(false);
+        }
+
+        public Task ProcessUpdateAsync(Update update)
+        {
+            throw new NotImplementedException();
         }
     }
 }

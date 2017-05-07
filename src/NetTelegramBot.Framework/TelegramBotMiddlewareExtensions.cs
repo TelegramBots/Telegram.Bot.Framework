@@ -7,7 +7,7 @@
     public static class TelegramBotMiddlewareExtensions
     {
         public static IApplicationBuilder UseTelegramBot<TBot>(this IApplicationBuilder app, PathString requestPath)
-            where TBot : BotBase
+            //where TBot : BotBase
         {
             return UseMiddlewareExtensions.UseMiddleware<TelegramBotMiddleware<TBot>>(
                 app,

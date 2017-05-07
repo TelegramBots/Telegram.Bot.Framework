@@ -1,7 +1,5 @@
 ﻿namespace NetTelegramBot.Framework
 {
-    using System;
-
     public interface ICommand
     {
         /// <summary>
@@ -12,7 +10,7 @@
         /// <summary>
         /// Bot name (after @), if any
         /// </summary>
-        string BotName { get; }
+        string BotUserName { get; }
 
         /// <summary>
         /// Command args

@@ -92,7 +92,7 @@
             var botNameDelimiterIndex = command.Name.IndexOf(BotNameDelimiter);
             if (botNameDelimiterIndex != -1)
             {
-                command.BotName = command.Name.Substring(botNameDelimiterIndex + 1);
+                command.BotUserName = command.Name.Substring(botNameDelimiterIndex + 1);
                 command.Name = command.Name.Substring(0, botNameDelimiterIndex);
             }
 

@@ -28,7 +28,7 @@ namespace NetTelegramBot.Framework.Tests
 
             Assert.NotNull(command);
             Assert.Equal("cmd", command.Name);
-            Assert.Null(command.BotName);
+            Assert.Null(command.BotUserName);
             Assert.Equal(new[] { "arg1", "arg2" }, command.Args);
         }
 
@@ -42,7 +42,7 @@ namespace NetTelegramBot.Framework.Tests
 
             Assert.NotNull(command);
             Assert.Equal("cmd", command.Name);
-            Assert.Equal("bot1", command.BotName);
+            Assert.Equal("bot1", command.BotUserName);
             Assert.Equal(null, command.Args);
         }
 
@@ -55,7 +55,7 @@ namespace NetTelegramBot.Framework.Tests
 
             Assert.NotNull(command);
             Assert.Equal("cmd", command.Name);
-            Assert.Equal("bot1", command.BotName);
+            Assert.Equal("bot1", command.BotUserName);
             Assert.Equal(new[] { "arg1", "arg2" }, command.Args);
         }
 

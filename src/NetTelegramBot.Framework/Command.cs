@@ -12,7 +12,7 @@
         /// <summary>
         /// Bot name (after @), if any
         /// </summary>
-        public string BotName { get; set; }
+        public string BotUserName { get; set; }
 
         /// <summary>
         /// Command args

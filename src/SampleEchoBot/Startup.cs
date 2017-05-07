@@ -30,35 +30,20 @@ namespace SampleEchoBot
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var botOptions = new EchoBotOptions
+            var botOptions = new BotOptions<IEchoBot>
             {
                 ApiToken = _configuration["EchoBot:ApiToken"],
                 BotName = _configuration["EchoBot:BotName"],
                 UseWebhook = _configuration.GetValue<bool?>("EchoBot:UseWebhook"),
                 WebhookUrl = _configuration["EchoBot:WebhookUrl"],
             };
-            services.AddTransient<IBotOptions<IEchoBot>, EchoBotOptions>(_ => botOptions);
-            services.AddTransient<IMessageParser<IEchoBot>, MessageParser<IEchoBot>>();
-            services.AddTransient<IMessageForwarder, MessageForwarder>();
-            services.AddTransient<ITextMessageEchoer, TextMessageEchoer>();
-            services.AddTransient<IMessageHandlersAccessor<IEchoBot>>(factory => new EchoBotMessageHandlerAccessor(
-                new IMessageHandler<IEchoBot>[]
-                {
-                    factory.GetRequiredService<IMessageForwarder>(),
-                    factory.GetRequiredService<ITextMessageEchoer>(),
-                }
-            ));
-            services.AddScoped<IEchoBot, EchoBot>();
-            services.AddScoped<IBotUpdateManager<IEchoBot>, BotUpdateManager<IEchoBot>>();
 
-            //services.AddTelegramBotFramework<EchoBot>(botOptions)
-            //    .AddMessageHandlers(factory => new IMessageHandler<EchoBot>[]
-            //    {
-            //        factory.GetRequiredService<IMessageForwarder>(),
-            //        factory.GetRequiredService<ITextMessageEchoer>(),
-            //    })
-            //    .
-            //    ;
+            services.AddTelegramBot<IEchoBot, EchoBot>()
+                .AddBotOptions(botOptions)
+                .AddDefaultMessageParser()
+                .AddMessageHandler<IMessageForwarder, MessageForwarder>()
+                .AddMessageHandler<ITextMessageEchoer, TextMessageEchoer>()
+                .AddDefaultUpdateManager();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

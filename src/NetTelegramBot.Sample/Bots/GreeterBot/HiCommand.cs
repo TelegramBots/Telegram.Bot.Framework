@@ -5,21 +5,16 @@ using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace SampleEchoBot.Bots.GreeterBot
+namespace NetTelegramBot.Sample.Bots.GreeterBot
 {
-    public interface IHiCommand : IBotCommand<IGreeterBot>
-    {
-
-    }
-
-    public class HiCommandArgs : IBotCommandArgs<IGreeterBot>
+    public class HiCommandArgs : ICommandArgs
     {
         public string RawInput { get; set; }
 
         public string PersonName { get; set; }
     }
 
-    public class HiCommand : BotCommandBase<IGreeterBot, HiCommandArgs>, IHiCommand
+    public class HiCommand : CommandBase<HiCommandArgs>
     {
         private const string CommandName = "hi";
 

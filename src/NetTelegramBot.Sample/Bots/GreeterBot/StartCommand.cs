@@ -4,19 +4,14 @@ using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace SampleEchoBot.Bots.GreeterBot
+namespace NetTelegramBot.Sample.Bots.GreeterBot
 {
-    public interface IStartCommand : IBotCommand<IGreeterBot>
-    {
-
-    }
-
-    public class StartCommandArgs : IBotCommandArgs<IGreeterBot>
+    public class StartCommandArgs : ICommandArgs
     {
         public string RawInput { get; set; }
     }
 
-    public class StartCommand : BotCommandBase<IGreeterBot, StartCommandArgs>, IStartCommand
+    public class StartCommand : CommandBase<StartCommandArgs>
     {
         private const string CommandName = "start";
 

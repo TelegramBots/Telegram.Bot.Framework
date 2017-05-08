@@ -1,24 +1,18 @@
 ﻿using System.Threading.Tasks;
 using NetTelegramBot.Framework;
-using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace SampleEchoBot.Bots.EchoBot
+namespace NetTelegramBot.Sample.Bots.EchoBot
 {
-    public interface ITextMessageEchoer : IMessageHandler<IEchoBot>
-    {
-
-    }
-
-    public class TextMessageEchoer : MessageHandlerBase<IEchoBot>, ITextMessageEchoer
+    public class TextMessageEchoer : UpdateHandlerBase
     {
         public override bool CanHandle(Update update)
         {
             return !string.IsNullOrEmpty(update.Message?.Text);
         }
 
-        public override async Task HandleMessageAsync(Update update)
+        public override async Task HandleUpdateAsync(Update update)
         {
             var req = new SendMessage(update.Message.Chat.Id, $"You said:\n`{update.Message.Text.Replace("\n", "`\n`")}`")
             {

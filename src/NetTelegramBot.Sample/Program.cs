@@ -2,13 +2,13 @@
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace SampleEchoBot
+namespace NetTelegramBot.Sample
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Console.Title = "Sample Echo Bot";
+            Console.Title = ".NET Telegram Bot Framework - Samples";
 
             var host = new WebHostBuilder()
                 .UseKestrel()

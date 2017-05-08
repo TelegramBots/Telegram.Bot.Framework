@@ -9,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetTelegramBot.Framework;
 using NetTelegramBot.Framework.Abstractions;
-using SampleEchoBot.Bots.EchoBot;
-using SampleEchoBot.Bots.GreeterBot;
+using NetTelegramBot.Sample.Bots.EchoBot;
+using NetTelegramBot.Sample.Bots.GreeterBot;
 
-namespace SampleEchoBot
+namespace NetTelegramBot.Sample
 {
     public class Startup
     {
@@ -30,23 +30,21 @@ namespace SampleEchoBot
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var echoBotOptions = new BotOptions<IEchoBot>();
+            var echoBotOptions = new BotOptions<EchoBot>();
             _configuration.GetSection("EchoBot").Bind(echoBotOptions);
-            services.AddTelegramBot<IEchoBot, EchoBot>()
-                .AddBotOptions(echoBotOptions)
-                .AddDefaultMessageParser()
-                .AddMessageHandler<ITextMessageEchoer, TextMessageEchoer>()
-                .AddDefaultUpdateManager();
 
-            var greeterBotOptions = new BotOptions<IGreeterBot>();
+            services.AddTelegramBot(echoBotOptions)
+                .AddUpdateHandler<TextMessageEchoer>()
+                .Configure();
+
+            var greeterBotOptions = new BotOptions<GreeterBot>();
             _configuration.GetSection("GreeterBot").Bind(greeterBotOptions);
-            services.AddTelegramBot<IGreeterBot, GreeterBot>()
-                .AddBotOptions(greeterBotOptions)
-                .AddDefaultMessageParser()
-                .AddMessageHandler<IHiCommand, HiCommand>()
-                .AddMessageHandler<IPhotoForwarder, PhotoForwarder>()
-                .AddMessageHandler<IStartCommand, StartCommand>()
-                .AddDefaultUpdateManager();
+
+            services.AddTelegramBot(greeterBotOptions)
+                .AddUpdateHandler<HiCommand>()
+                .AddUpdateHandler<PhotoForwarder>()
+                .AddUpdateHandler<StartCommand>()
+                .Configure();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -76,7 +74,7 @@ namespace SampleEchoBot
                            //var bot = scope.ServiceProvider.GetRequiredService<IEchoBot>();
 
                            //var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<IEchoBot>>();
-                           var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<IGreeterBot>>();
+                           var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<GreeterBot>>();
                            mgr.Run(null);
                        }
                        await Task.Delay(2000);

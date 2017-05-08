@@ -4,17 +4,12 @@ using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace SampleEchoBot.Bots.GreeterBot
+namespace NetTelegramBot.Sample.Bots.GreeterBot
 {
-    public interface IGreeterBot : IBot
+    public class GreeterBot : BotBase<GreeterBot>
     {
-
-    }
-
-    public class GreeterBot : BotBase<IGreeterBot>, IGreeterBot
-    {
-        public GreeterBot(IBotOptions<IGreeterBot> botOptions, IMessageParser<IGreeterBot> messageParser)
-            : base(botOptions, messageParser)
+        public GreeterBot(IBotOptions<GreeterBot> botOptions, IUpdateParser<GreeterBot> updateParser)
+            : base(botOptions, updateParser)
         {
 
         }

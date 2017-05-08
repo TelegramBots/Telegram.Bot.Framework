@@ -1,7 +1,7 @@
 ﻿namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IBotOptions<TBot>
-        where TBot : IBot
+        where TBot : class, IBot
     {
         string ApiToken { get; set; }
 

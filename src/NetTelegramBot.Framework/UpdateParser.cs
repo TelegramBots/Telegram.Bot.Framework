@@ -5,14 +5,14 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework
 {
-    public class MessageParser<TBot> : IMessageParser<TBot>
-        where TBot : IBot
+    public class UpdateParser<TBot> : IUpdateParser<TBot>
+        where TBot : class, IBot
     {
-        protected IEnumerable<IMessageHandler<TBot>> MessageHandlers => _handlersAccessor.MessageHandlers;
+        protected IEnumerable<IUpdateHandler> MessageHandlers => _handlersAccessor.UpdateHandlers;
 
-        private readonly IMessageHandlersAccessor<TBot> _handlersAccessor;
+        private readonly IUpdateHandlersAccessor<TBot> _handlersAccessor;
 
-        public MessageParser(IMessageHandlersAccessor<TBot> handlersAccessor)
+        public UpdateParser(IUpdateHandlersAccessor<TBot> handlersAccessor)
         {
             _handlersAccessor = handlersAccessor;
         }
@@ -25,7 +25,7 @@ namespace NetTelegramBot.Framework
             }
         }
 
-        public virtual IEnumerable<IMessageHandler<TBot>> FindMessageHandlers(Update update)
+        public virtual IEnumerable<IUpdateHandler> FindHandlersFor(Update update)
         {
             return MessageHandlers
                 .Where(x => x.CanHandle(update));

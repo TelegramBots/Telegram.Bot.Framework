@@ -5,9 +5,8 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework
 {
-    public abstract class BotCommandBase<TIBot, TCommandArgs> : IBotCommand<TIBot>
-        where TIBot : IBot
-        where TCommandArgs : IBotCommandArgs<TIBot>, new()
+    public abstract class CommandBase<TCommandArgs> : ICommand<TCommandArgs>
+        where TCommandArgs : ICommandArgs, new()
     {
         /// <summary>
         /// Command name without leading '/'
@@ -16,7 +15,7 @@ namespace NetTelegramBot.Framework
 
         public IBot Bot { get; set; }
 
-        protected BotCommandBase(string name)
+        protected CommandBase(string name)
         {
             Name = name;
         }
@@ -37,13 +36,13 @@ namespace NetTelegramBot.Framework
             return new TCommandArgs { RawInput = update.Message.Text };
         }
 
-        public virtual async Task HandleMessageAsync(Update update)
+        public virtual async Task HandleUpdateAsync(Update update)
         {
             var args = ParseInput(update);
             await HandleCommand(update, args);
         }
 
-        public virtual async Task HandleCommand(Update update, IBotCommandArgs<TIBot> commandArguments)
+        public virtual async Task HandleCommand(Update update, TCommandArgs commandArguments)
         {
             await ProcessCommand(update, ParseInput(update));
         }

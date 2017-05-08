@@ -5,7 +5,7 @@ using RecurrentTasks;
 namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IBotUpdateManager<TBot> : IRunnable
-        where TBot : IBot
+        where TBot : class, IBot
     {
         Task HandleUpdateAsync(Update update);
     }

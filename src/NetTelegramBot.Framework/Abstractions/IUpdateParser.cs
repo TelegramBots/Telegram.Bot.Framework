@@ -3,11 +3,11 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework.Abstractions
 {
-    public interface IMessageParser<TBot>
-        where TBot : IBot
+    public interface IUpdateParser<TBot>
+        where TBot : class, IBot
     {
         void SetBot(IBot bot);
 
-        IEnumerable<IMessageHandler<TBot>> FindMessageHandlers(Update update);
+        IEnumerable<IUpdateHandler> FindHandlersFor(Update update);
     }
 }

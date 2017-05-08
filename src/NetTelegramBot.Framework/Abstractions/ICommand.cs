@@ -3,14 +3,14 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework.Abstractions
 {
-    public interface IBotCommand<TIBot> : IMessageHandler<TIBot>
-        where TIBot : IBot
+    public interface ICommand<in TCommandArgs> : IUpdateHandler
+        where TCommandArgs : ICommandArgs
     {
         /// <summary>
         /// Command name without leading '/'
         /// </summary>
         string Name { get; }
 
-        Task HandleCommand(Update update, IBotCommandArgs<TIBot> commandArguments);
+        Task HandleCommand(Update update, TCommandArgs commandArguments);
     }
 }

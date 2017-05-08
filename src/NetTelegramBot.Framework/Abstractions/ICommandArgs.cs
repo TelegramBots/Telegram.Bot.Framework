@@ -1,7 +1,6 @@
 ﻿namespace NetTelegramBot.Framework.Abstractions
 {
-    public interface IBotCommandArgs<TIBot>
-        where TIBot : IBot
+    public interface ICommandArgs
     {
         string RawInput { get; set; }
     }

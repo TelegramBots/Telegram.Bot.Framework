@@ -9,7 +9,7 @@ using RecurrentTasks;
 namespace NetTelegramBot.Framework
 {
     public class BotUpdateManager<TBot> : IBotUpdateManager<TBot>
-        where TBot : IBot
+        where TBot : class, IBot
     {
         private readonly TBot _bot;
 

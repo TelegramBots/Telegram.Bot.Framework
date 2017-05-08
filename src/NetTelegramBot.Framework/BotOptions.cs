@@ -2,8 +2,8 @@
 
 namespace NetTelegramBot.Framework
 {
-    public class BotOptions<TIBot> : IBotOptions<TIBot>
-        where TIBot : IBot
+    public class BotOptions<TBot> : IBotOptions<TBot>
+        where TBot : class, IBot
     {
         public string ApiToken { get; set; }
 

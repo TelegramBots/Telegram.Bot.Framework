@@ -3,13 +3,12 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Framework.Abstractions
 {
-    public interface IMessageHandler<TIBot>
-        where TIBot : IBot
+    public interface IUpdateHandler
     {
         IBot Bot { get; set; }
 
         bool CanHandle(Update update);
 
-        Task HandleMessageAsync(Update update);
+        Task HandleUpdateAsync(Update update);
     }
 }

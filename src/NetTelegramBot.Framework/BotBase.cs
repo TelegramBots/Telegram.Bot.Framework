@@ -8,7 +8,7 @@ using NetTelegramBotApi.Types;
 namespace NetTelegramBot.Framework
 {
     public abstract class BotBase<TBot> : IBot
-        where TBot : IBot
+        where TBot : class, IBot
     {
         public User BotUserInfo
         {
@@ -25,15 +25,15 @@ namespace NetTelegramBot.Framework
 
         protected readonly TelegramBot Bot;
 
-        protected readonly IMessageParser<TBot> MessageParser;
+        protected readonly IUpdateParser<TBot> UpdateParser;
 
         private User _botUserInfo;
 
-        protected BotBase(IBotOptions<TBot> botOptions, IMessageParser<TBot> messageParser)
+        protected BotBase(IBotOptions<TBot> botOptions, IUpdateParser<TBot> updateParser)
         {
             Bot = new TelegramBot(botOptions.ApiToken);
-            MessageParser = messageParser;
-            MessageParser.SetBot(this);
+            UpdateParser = updateParser;
+            UpdateParser.SetBot(this);
         }
 
         public abstract Task HandleUnknownMessageAsync(Update update);
@@ -47,13 +47,13 @@ namespace NetTelegramBot.Framework
         {
             //if (update?.Message != null)
             {
-                var handlers = MessageParser.FindMessageHandlers(update).ToArray();
+                var handlers = UpdateParser.FindHandlersFor(update).ToArray();
                 if (handlers.Any())
                 {
                     foreach (var handler in handlers)
                     {
                         handler.Bot = this;
-                        await handler.HandleMessageAsync(update);
+                        await handler.HandleUpdateAsync(update);
                     }
                 }
                 else

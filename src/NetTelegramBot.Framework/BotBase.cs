@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi;
 using NetTelegramBotApi.Requests;
@@ -25,15 +25,14 @@ namespace NetTelegramBot.Framework
 
         protected readonly TelegramBot Bot;
 
-        protected readonly IUpdateParser<TBot> UpdateParser;
-
         private User _botUserInfo;
 
-        protected BotBase(IBotOptions<TBot> botOptions, IUpdateParser<TBot> updateParser)
+        private readonly BotOptions<TBot> _botOptions;
+
+        protected BotBase(IOptions<BotOptions<TBot>> botOptions)
         {
-            Bot = new TelegramBot(botOptions.ApiToken);
-            UpdateParser = updateParser;
-            UpdateParser.SetBot(this);
+            _botOptions = botOptions.Value;
+            Bot = new TelegramBot(_botOptions.ApiToken);
         }
 
         public abstract Task HandleUnknownMessageAsync(Update update);
@@ -41,30 +40,6 @@ namespace NetTelegramBot.Framework
         public async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
         {
             return await Bot.MakeRequestAsync(request);
-        }
-
-        public virtual async Task ProcessUpdateAsync(Update update)
-        {
-            //if (update?.Message != null)
-            {
-                var handlers = UpdateParser.FindHandlersFor(update).ToArray();
-                if (handlers.Any())
-                {
-                    foreach (var handler in handlers)
-                    {
-                        handler.Bot = this;
-                        var result = await handler.HandleUpdateAsync(update);
-                        if (result == UpdateHandlingResult.Handled)
-                        {
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    await HandleUnknownMessageAsync(update);
-                }
-            }
         }
     }
 }

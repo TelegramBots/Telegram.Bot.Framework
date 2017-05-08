@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NetTelegramBot.Framework;
-using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
 
 namespace NetTelegramBot.Sample.Bots.EchoBot
 {
     public class EchoBot : BotBase<EchoBot>
     {
-        public EchoBot(IBotOptions<EchoBot> botOptions, IUpdateParser<EchoBot> updateParser) 
-            : base(botOptions, updateParser)
+        public EchoBot(IOptions<BotOptions<EchoBot>> botOptions)
+            : base(botOptions)
         {
+
         }
 
         public override Task HandleUnknownMessageAsync(Update update)

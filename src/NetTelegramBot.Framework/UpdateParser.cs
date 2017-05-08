@@ -6,7 +6,7 @@ using NetTelegramBotApi.Types;
 namespace NetTelegramBot.Framework
 {
     public class UpdateParser<TBot> : IUpdateParser<TBot>
-        where TBot : class, IBot
+        where TBot : BotBase<TBot>
     {
         protected IEnumerable<IUpdateHandler> MessageHandlers => _handlersAccessor.UpdateHandlers;
 
@@ -15,14 +15,6 @@ namespace NetTelegramBot.Framework
         public UpdateParser(IUpdateHandlersAccessor<TBot> handlersAccessor)
         {
             _handlersAccessor = handlersAccessor;
-        }
-
-        public void SetBot(IBot bot)
-        {
-            foreach (var handler in MessageHandlers)
-            {
-                handler.Bot = bot;
-            }
         }
 
         public virtual IEnumerable<IUpdateHandler> FindHandlersFor(Update update)

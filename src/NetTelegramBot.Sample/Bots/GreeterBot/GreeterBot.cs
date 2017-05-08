@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NetTelegramBot.Framework;
-using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
@@ -8,8 +8,8 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
 {
     public class GreeterBot : BotBase<GreeterBot>
     {
-        public GreeterBot(IBotOptions<GreeterBot> botOptions, IUpdateParser<GreeterBot> updateParser)
-            : base(botOptions, updateParser)
+        public GreeterBot(IOptions<BotOptions<GreeterBot>> botOptions)
+            : base(botOptions)
         {
 
         }

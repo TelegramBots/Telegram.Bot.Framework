@@ -1,11 +1,10 @@
-﻿using NetTelegramBot.Framework.Tests.Helpers;
-using NetTelegramBotApi.Types;
+﻿using NetTelegramBotApi.Types;
 using Xunit;
 
 namespace NetTelegramBot.Framework.Tests
 {
     public class BotCommandBaseTests
-    {
+    {/*
         [Theory(DisplayName = "Accept handling specific commands")]
         [InlineData("/test")]
         [InlineData("/test    ")]
@@ -15,7 +14,7 @@ namespace NetTelegramBot.Framework.Tests
         [InlineData("/test@test_bot  !")]
         public void ShouldAcceptHandlingAll(string text)
         {
-            const bool Expected = true;
+            const bool expected = true;
             var sut = new TestCommand("test");
             var update = new Update
             {
@@ -25,9 +24,9 @@ namespace NetTelegramBot.Framework.Tests
                 }
             };
             var actual = sut.CanHandle(update);
-            Assert.Equal(Expected, actual);
+            Assert.Equal(expected, actual);
         }
-        /*
+        
         [Theory]
         [InlineData(null)]
         [InlineData("")]

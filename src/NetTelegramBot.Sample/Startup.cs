@@ -41,9 +41,10 @@ namespace NetTelegramBot.Sample
             _configuration.GetSection("GreeterBot").Bind(greeterBotOptions);
 
             services.AddTelegramBot(greeterBotOptions)
-                .AddUpdateHandler<HiCommand>()
-                .AddUpdateHandler<PhotoForwarder>()
                 .AddUpdateHandler<StartCommand>()
+                .AddUpdateHandler<PhotoForwarder>()
+                .AddUpdateHandler<HiCommand>()
+                .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
         }
 

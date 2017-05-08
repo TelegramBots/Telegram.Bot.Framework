@@ -36,17 +36,12 @@ namespace NetTelegramBot.Framework
             return new TCommandArgs { RawInput = update.Message.Text };
         }
 
-        public virtual async Task HandleUpdateAsync(Update update)
+        public virtual async Task<UpdateHandlingResult> HandleUpdateAsync(Update update)
         {
             var args = ParseInput(update);
-            await HandleCommand(update, args);
+            return await HandleCommand(update, args);
         }
 
-        public virtual async Task HandleCommand(Update update, TCommandArgs commandArguments)
-        {
-            await ProcessCommand(update, ParseInput(update));
-        }
-
-        public abstract Task ProcessCommand(Update update, TCommandArgs args);
+        public abstract Task<UpdateHandlingResult> HandleCommand(Update update, TCommandArgs args);
     }
 }

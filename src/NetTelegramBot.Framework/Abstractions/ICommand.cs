@@ -11,6 +11,6 @@ namespace NetTelegramBot.Framework.Abstractions
         /// </summary>
         string Name { get; }
 
-        Task HandleCommand(Update update, TCommandArgs commandArguments);
+        Task<UpdateHandlingResult> HandleCommand(Update update, TCommandArgs args);
     }
 }

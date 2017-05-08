@@ -9,6 +9,6 @@ namespace NetTelegramBot.Framework.Abstractions
 
         bool CanHandle(Update update);
 
-        Task HandleUpdateAsync(Update update);
+        Task<UpdateHandlingResult> HandleUpdateAsync(Update update);
     }
 }

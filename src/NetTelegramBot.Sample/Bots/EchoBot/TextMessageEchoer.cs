@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NetTelegramBot.Framework;
+using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
@@ -12,7 +13,7 @@ namespace NetTelegramBot.Sample.Bots.EchoBot
             return !string.IsNullOrEmpty(update.Message?.Text);
         }
 
-        public override async Task HandleUpdateAsync(Update update)
+        public override async Task<UpdateHandlingResult> HandleUpdateAsync(Update update)
         {
             var req = new SendMessage(update.Message.Chat.Id, $"You said:\n`{update.Message.Text.Replace("\n", "`\n`")}`")
             {
@@ -20,6 +21,7 @@ namespace NetTelegramBot.Sample.Bots.EchoBot
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
             await Bot.MakeRequestAsync(req);
+            return UpdateHandlingResult.Continue;
         }
     }
 }

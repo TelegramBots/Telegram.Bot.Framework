@@ -47,7 +47,7 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
             };
         }
 
-        public override async Task ProcessCommand(Update update, HiCommandArgs args)
+        public override async Task<UpdateHandlingResult> HandleCommand(Update update, HiCommandArgs args)
         {
             var req = new SendMessage(update.Message.Chat.Id, string.Format(HiMessageFormat, args.PersonName))
             {
@@ -55,6 +55,7 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
             await Bot.MakeRequestAsync(req);
+            return UpdateHandlingResult.Continue;
         }
     }
 }

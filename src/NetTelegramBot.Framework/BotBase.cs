@@ -53,7 +53,11 @@ namespace NetTelegramBot.Framework
                     foreach (var handler in handlers)
                     {
                         handler.Bot = this;
-                        await handler.HandleUpdateAsync(update);
+                        var result = await handler.HandleUpdateAsync(update);
+                        if (result == UpdateHandlingResult.Handled)
+                        {
+                            break;
+                        }
                     }
                 }
                 else

@@ -3,16 +3,15 @@ using NetTelegramBot.Framework;
 using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
-using SampleEchoBot.Services;
 
-namespace SampleEchoBot.Commands
+namespace SampleEchoBot.Bots.GreeterBot
 {
-    public interface IPhotoForwarder : IMessageHandler<IEchoBot>
+    public interface IPhotoForwarder : IMessageHandler<IGreeterBot>
     {
 
     }
 
-    public class PhotoForwarder : MessageHandlerBase<IEchoBot>, IPhotoForwarder
+    public class PhotoForwarder : MessageHandlerBase<IGreeterBot>, IPhotoForwarder
     {
         public override bool CanHandle(Update update)
         {

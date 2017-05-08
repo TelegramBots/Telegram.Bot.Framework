@@ -9,8 +9,8 @@ namespace NetTelegramBot.Framework
 
         public string BotName { get; set; }
 
-        public bool? UseWebhook { get; set; }
+        public bool UseWebhook { get; set; }
 
-        public string WebhookUrl { get; set; }
+        public string WebhookUrl { get; set; } 
     }
 }

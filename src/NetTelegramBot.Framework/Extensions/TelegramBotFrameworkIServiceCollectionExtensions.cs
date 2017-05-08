@@ -80,7 +80,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             IFBuilder3<TIBot, TBot> IFBuilder2<TIBot, TBot>.AddMessageParser<TMessageParser>()
             {
-                // ToDo
                 throw new NotImplementedException();
             }
         }
@@ -102,7 +101,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             public IServiceCollection AddBotManager<TBotManager>() where TBotManager : IBotUpdateManager<TIBot>
             {
-                // ToDo 
                 throw new NotImplementedException();
             }
 

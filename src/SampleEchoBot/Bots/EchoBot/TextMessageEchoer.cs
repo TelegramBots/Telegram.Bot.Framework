@@ -3,9 +3,8 @@ using NetTelegramBot.Framework;
 using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
-using SampleEchoBot.Services;
 
-namespace SampleEchoBot.Commands
+namespace SampleEchoBot.Bots.EchoBot
 {
     public interface ITextMessageEchoer : IMessageHandler<IEchoBot>
     {

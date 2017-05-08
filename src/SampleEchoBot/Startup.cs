@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetTelegramBot.Framework;
 using NetTelegramBot.Framework.Abstractions;
-using SampleEchoBot.Commands;
-using SampleEchoBot.Services;
+using SampleEchoBot.Bots.EchoBot;
+using SampleEchoBot.Bots.GreeterBot;
 
 namespace SampleEchoBot
 {
@@ -30,19 +30,21 @@ namespace SampleEchoBot
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var botOptions = new BotOptions<IEchoBot>
-            {
-                ApiToken = _configuration["EchoBot:ApiToken"],
-                BotName = _configuration["EchoBot:BotName"],
-                UseWebhook = _configuration.GetValue<bool?>("EchoBot:UseWebhook"),
-                WebhookUrl = _configuration["EchoBot:WebhookUrl"],
-            };
-
+            var echoBotOptions = new BotOptions<IEchoBot>();
+            _configuration.GetSection("EchoBot").Bind(echoBotOptions);
             services.AddTelegramBot<IEchoBot, EchoBot>()
-                .AddBotOptions(botOptions)
+                .AddBotOptions(echoBotOptions)
                 .AddDefaultMessageParser()
-                .AddMessageHandler<IPhotoForwarder, PhotoForwarder>()
                 .AddMessageHandler<ITextMessageEchoer, TextMessageEchoer>()
+                .AddDefaultUpdateManager();
+
+            var greeterBotOptions = new BotOptions<IGreeterBot>();
+            _configuration.GetSection("GreeterBot").Bind(greeterBotOptions);
+            services.AddTelegramBot<IGreeterBot, GreeterBot>()
+                .AddBotOptions(greeterBotOptions)
+                .AddDefaultMessageParser()
+                .AddMessageHandler<IHiCommand, HiCommand>()
+                .AddMessageHandler<IPhotoForwarder, PhotoForwarder>()
                 .AddMessageHandler<IStartCommand, StartCommand>()
                 .AddDefaultUpdateManager();
         }
@@ -72,7 +74,9 @@ namespace SampleEchoBot
                            //    .GetRequiredService<IMessageHandlersAccessor<IEchoBot>>();
                            //var parser = scope.ServiceProvider.GetRequiredService<IMessageParser<IEchoBot>>();
                            //var bot = scope.ServiceProvider.GetRequiredService<IEchoBot>();
-                           var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<IEchoBot>>();
+
+                           //var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<IEchoBot>>();
+                           var mgr = scope.ServiceProvider.GetRequiredService<IBotUpdateManager<IGreeterBot>>();
                            mgr.Run(null);
                        }
                        await Task.Delay(2000);

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
@@ -24,16 +23,18 @@ namespace NetTelegramBot.Framework
 
         public virtual bool CanHandle(Update update)
         {
-            return Regex.IsMatch(update.Message.Text, $@"^/{Name}(?:@{Bot.BotUserInfo.Username})?\s*", RegexOptions.IgnoreCase);
+            var canHandle = false;
+            if (!string.IsNullOrEmpty(update.Message.Text))
+            {
+                canHandle = Regex.IsMatch(update.Message.Text,
+                    $@"^/{Name}(?:@{Bot.BotUserInfo.Username})?\s*", RegexOptions.IgnoreCase);
+            }
+            return canHandle;
         }
 
         public virtual TCommandArgs ParseInput(Update update)
         {
-            var args = new TCommandArgs();
-            var tokens = update.Message.Text.Trim().Split(' ');
-            var input = string.Join(" ", tokens.Skip(1).ToArray());
-            args.RawInput = input;
-            return args;
+            return new TCommandArgs { RawInput = update.Message.Text };
         }
 
         public virtual async Task HandleMessageAsync(Update update)

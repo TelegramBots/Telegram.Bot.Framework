@@ -3,7 +3,7 @@ using NetTelegramBot.Framework;
 using NetTelegramBot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
 
-namespace SampleEchoBot.Services
+namespace SampleEchoBot.Bots.EchoBot
 {
     public interface IEchoBot : IBot
     {
@@ -18,7 +18,7 @@ namespace SampleEchoBot.Services
 
         }
 
-        public override Task HandleUnknownMessageAsync(Message message)
+        public override Task HandleUnknownMessageAsync(Update update)
         {
             throw new System.NotImplementedException();
         }

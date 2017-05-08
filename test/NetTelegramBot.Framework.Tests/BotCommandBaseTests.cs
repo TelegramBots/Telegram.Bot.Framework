@@ -1,9 +1,33 @@
-﻿using Xunit;
+﻿using NetTelegramBot.Framework.Tests.Helpers;
+using NetTelegramBotApi.Types;
+using Xunit;
 
 namespace NetTelegramBot.Framework.Tests
 {
-    public class CommandParserTests
+    public class BotCommandBaseTests
     {
+        [Theory(DisplayName = "Accept handling specific commands")]
+        [InlineData("/test")]
+        [InlineData("/test    ")]
+        [InlineData("/test abc")]
+        [InlineData("/test@test_bot")]
+        [InlineData("/test@test_bot ")]
+        [InlineData("/test@test_bot  !")]
+        public void ShouldAcceptHandlingAll(string text)
+        {
+            const bool Expected = true;
+            var sut = new TestCommand("test");
+            var update = new Update
+            {
+                Message = new Message
+                {
+                    Text = text,
+                }
+            };
+            var actual = sut.CanHandle(update);
+            Assert.Equal(Expected, actual);
+        }
+        /*
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -72,5 +96,6 @@ namespace NetTelegramBot.Framework.Tests
             Assert.Equal("cmd", command.Name);
             Assert.Equal(new[] { "arg1", "arg2", "arg3" }, command.Args);
         }
+        */
     }
 }

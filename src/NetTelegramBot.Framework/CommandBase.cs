@@ -44,7 +44,7 @@ namespace NetTelegramBot.Framework
             if (!string.IsNullOrEmpty(update.Message.Text))
             {
                 canHandle = Regex.IsMatch(update.Message.Text,
-                    $@"^/{Name}(?:@{Bot.BotUserInfo.Username})?\s*", RegexOptions.IgnoreCase);
+                    $@"^\s*/{Name}(?:(?:@{Bot.BotUserInfo.Username}(?:\s+.*)?)|\s+.*|)\s*$", RegexOptions.IgnoreCase);
             }
             return canHandle;
         }

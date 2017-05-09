@@ -26,7 +26,7 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
 
         }
 
-        public override bool CanHandle(Update update)
+        protected override bool CanHandleCommand(Update update)
         {
             var canHandle = false;
             if (!string.IsNullOrEmpty(update.Message.Text))
@@ -37,7 +37,7 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
             return canHandle;
         }
 
-        public override HiCommandArgs ParseInput(Update update)
+        protected override HiCommandArgs ParseInput(Update update)
         {
             var tokens = Regex.Split(update.Message.Text.Trim(), @"\s+");
             return new HiCommandArgs

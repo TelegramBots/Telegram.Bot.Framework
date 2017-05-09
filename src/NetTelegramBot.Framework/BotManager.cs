@@ -24,13 +24,12 @@ namespace NetTelegramBot.Framework
 
         public async Task HandleUpdateAsync(Update update)
         {
-            var handlers = _updateParser.FindHandlersFor(update).ToArray();
+            var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
             if (handlers.Any())
             {
                 foreach (var handler in handlers)
                 {
-                    handler.Bot = _bot;
-                    var result = await handler.HandleUpdateAsync(update);
+                    var result = await handler.HandleUpdateAsync(_bot, update);
                     if (result == UpdateHandlingResult.Handled)
                     {
                         break;
@@ -45,6 +44,8 @@ namespace NetTelegramBot.Framework
 
         public async Task GetAndHandleNewUpdatesAsync()
         {
+            await EnsureWebhookDisabledForBot(_bot);
+
             IEnumerable<Update> updates;
             do
             {
@@ -57,9 +58,17 @@ namespace NetTelegramBot.Framework
 
                 if (updates.Any())
                 {
-                    _offset = updates.Last()?.UpdateId + 1;
+                    _offset = updates.Last().UpdateId + 1;
                 }
             } while (updates.Any());
+        }
+
+        private static async Task EnsureWebhookDisabledForBot(IBot bot)
+        {
+            if (!string.IsNullOrEmpty(bot.WebhookInfo.Url))
+            {
+                await bot.MakeRequestAsync(new SetWebhook(""));
+            }
         }
     }
 }

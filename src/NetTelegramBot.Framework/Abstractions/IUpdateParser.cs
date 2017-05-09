@@ -6,6 +6,6 @@ namespace NetTelegramBot.Framework.Abstractions
     public interface IUpdateParser<TBot>
         where TBot : class, IBot
     {
-        IEnumerable<IUpdateHandler> FindHandlersFor(Update update);
+        IEnumerable<IUpdateHandler> FindHandlersForUpdate(IBot bot, Update update);
     }
 }

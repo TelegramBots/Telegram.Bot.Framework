@@ -5,10 +5,8 @@ namespace NetTelegramBot.Framework.Abstractions
 {
     public interface IUpdateHandler
     {
-        IBot Bot { get; set; }
+        bool CanHandleUpdate(IBot bot, Update update);
 
-        bool CanHandle(Update update);
-
-        Task<UpdateHandlingResult> HandleUpdateAsync(Update update);
+        Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update);
     }
 }

@@ -10,34 +10,27 @@ namespace NetTelegramBot.Framework
     public abstract class BotBase<TBot> : IBot
         where TBot : class, IBot
     {
-        public User BotUserInfo
-        {
-            get
-            {
-                if (_botUserInfo == null)
-                {
-                    _botUserInfo = Bot.MakeRequestAsync(new GetMe()).Result;
-                }
-                return _botUserInfo;
-            }
-            protected set => _botUserInfo = value;
-        }
+        public User BotUserInfo => _botUserInfo ?? (_botUserInfo = Bot.MakeRequestAsync(new GetMe()).Result);
+
+        public WebhookInfo WebhookInfo => _webhookInfo ?? (_webhookInfo = MakeRequestAsync(new GetWebhookInfo()).Result);
 
         protected readonly TelegramBot Bot;
 
         private User _botUserInfo;
 
-        private readonly BotOptions<TBot> _botOptions;
+        private WebhookInfo _webhookInfo;
+
+        protected BotOptions<TBot> BotOptions { get; }
 
         protected BotBase(IOptions<BotOptions<TBot>> botOptions)
         {
-            _botOptions = botOptions.Value;
-            Bot = new TelegramBot(_botOptions.ApiToken);
+            BotOptions = botOptions.Value;
+            Bot = new TelegramBot(BotOptions.ApiToken);
         }
 
         public abstract Task HandleUnknownMessageAsync(Update update);
 
-        public async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
+        public virtual async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
         {
             return await Bot.MakeRequestAsync(request);
         }

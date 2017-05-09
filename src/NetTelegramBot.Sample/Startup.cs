@@ -34,15 +34,14 @@ namespace NetTelegramBot.Sample
             services.AddTelegramBot(echoBotOptions)
                 .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
+            services.AddTask<BotUpdateGetterTask<EchoBot>>();
 
             services.AddTelegramBot<GreeterBot>(Configuration.GetSection("GreeterBot"))
                 .AddUpdateHandler<StartCommand>()
                 .AddUpdateHandler<PhotoForwarder>()
                 .AddUpdateHandler<HiCommand>()
-                .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
-
-            services.AddTask<SampleTask>();
+            services.AddTask<BotUpdateGetterTask<GreeterBot>>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -59,7 +58,9 @@ namespace NetTelegramBot.Sample
                 await context.Response.WriteAsync("Hello World!");
             });
 
-            app.StartTask<SampleTask>(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3));
+            app.StartTask<BotUpdateGetterTask<EchoBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+
+            app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
         }
     }
 }

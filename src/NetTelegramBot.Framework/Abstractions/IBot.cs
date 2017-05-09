@@ -7,6 +7,8 @@ namespace NetTelegramBot.Framework.Abstractions
     {
         User BotUserInfo { get; }
 
+        WebhookInfo WebhookInfo { get; }
+
         Task<T> MakeRequestAsync<T>(NetTelegramBotApi.Requests.RequestBase<T> request);
     }
 }

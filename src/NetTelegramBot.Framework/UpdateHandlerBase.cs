@@ -6,10 +6,8 @@ namespace NetTelegramBot.Framework
 {
     public abstract class UpdateHandlerBase : IUpdateHandler
     {
-        public IBot Bot { get; set; }
+        public abstract bool CanHandleUpdate(IBot bot, Update update);
 
-        public abstract bool CanHandle(Update update);
-
-        public abstract Task<UpdateHandlingResult> HandleUpdateAsync(Update update);
+        public abstract Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update);
     }
 }

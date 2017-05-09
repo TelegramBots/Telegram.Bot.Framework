@@ -13,14 +13,32 @@ namespace NetTelegramBot.Framework
         /// </summary>
         public string Name { get; }
 
-        public IBot Bot { get; set; }
+        protected IBot Bot { get; private set; }
 
         protected CommandBase(string name)
         {
             Name = name;
         }
 
-        public virtual bool CanHandle(Update update)
+        public bool CanHandleUpdate(IBot bot, Update update)
+        {
+            Bot = Bot ?? bot;
+            return CanHandleCommand(update);
+        }
+
+        public async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+        {
+            Bot = Bot ?? bot;
+            var args = ParseInput(update);
+            return await HandleCommand(update, args);
+        }
+
+        protected virtual TCommandArgs ParseInput(Update update)
+        {
+            return new TCommandArgs { RawInput = update.Message.Text };
+        }
+
+        protected virtual bool CanHandleCommand(Update update)
         {
             var canHandle = false;
             if (!string.IsNullOrEmpty(update.Message.Text))
@@ -29,17 +47,6 @@ namespace NetTelegramBot.Framework
                     $@"^/{Name}(?:@{Bot.BotUserInfo.Username})?\s*", RegexOptions.IgnoreCase);
             }
             return canHandle;
-        }
-
-        public virtual TCommandArgs ParseInput(Update update)
-        {
-            return new TCommandArgs { RawInput = update.Message.Text };
-        }
-
-        public virtual async Task<UpdateHandlingResult> HandleUpdateAsync(Update update)
-        {
-            var args = ParseInput(update);
-            return await HandleCommand(update, args);
         }
 
         public abstract Task<UpdateHandlingResult> HandleCommand(Update update, TCommandArgs args);

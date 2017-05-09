@@ -8,15 +8,15 @@ namespace NetTelegramBot.Sample.Bots.GreeterBot
 {
     public class PhotoForwarder : UpdateHandlerBase
     {
-        public override bool CanHandle(Update update)
+        public override bool CanHandleUpdate(IBot bot, Update update)
         {
             return update.Message.Photo != null;
         }
 
-        public override async Task<UpdateHandlingResult> HandleUpdateAsync(Update update)
+        public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
             var req = new ForwardMessage(update.Message.Chat.Id, update.Message.Chat.Id, update.Message.MessageId);
-            await Bot.MakeRequestAsync(req);
+            await bot.MakeRequestAsync(req);
             return UpdateHandlingResult.Handled;
         }
     }

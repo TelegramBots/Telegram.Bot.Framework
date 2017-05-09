@@ -8,19 +8,19 @@ namespace NetTelegramBot.Sample.Bots.EchoBot
 {
     public class TextMessageEchoer : UpdateHandlerBase
     {
-        public override bool CanHandle(Update update)
+        public override bool CanHandleUpdate(IBot bot, Update update)
         {
             return !string.IsNullOrEmpty(update.Message?.Text);
         }
 
-        public override async Task<UpdateHandlingResult> HandleUpdateAsync(Update update)
+        public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
             var req = new SendMessage(update.Message.Chat.Id, $"You said:\n`{update.Message.Text.Replace("\n", "`\n`")}`")
             {
                 ReplyToMessageId = update.Message.MessageId,
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
-            await Bot.MakeRequestAsync(req);
+            await bot.MakeRequestAsync(req);
             return UpdateHandlingResult.Continue;
         }
     }

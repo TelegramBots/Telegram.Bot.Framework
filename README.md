@@ -1,6 +1,7 @@
 ﻿# Telegram Bot Framework for .NET Core
 
 [![Build Status](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework)
+[![NuGet](https://img.shields.io/nuget/v/NetTelegram.Bot.Framework.svg)](https://www.nuget.org/packages/NetTelegram.Bot.Framework)
 
 Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 

@@ -1,18 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Simple framework for building Telegram bots.</Description>
+    <AssemblyName>NetTelegramBot.Framework</AssemblyName>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <Description>Simple framework for building Telegram bots</Description>
+    <Authors>Poulad</Authors>
+    <Owners>Poulad</Owners>
+    <PackageId>NetTelegram.Bot.Framework</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
     <DebugType>portable</DebugType>
     <AssemblyTitle>NetTelegramBot.Framework</AssemblyTitle>
-    <VersionPrefix>1.0.0-alpha1</VersionPrefix>
-    <AssemblyName>NetTelegramBot.Framework</AssemblyName>
-    <PackageId>NetTelegramBot.Framework</PackageId>
-    <PackageTags>telegram;bot;api</PackageTags>
-    <PackageReleaseNotes>It works</PackageReleaseNotes>
+    <PackageTags>telegram bot chatbot chat netcore</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Simple framework for building Telegram bots</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/pouladpld/NetTelegramBot.Framework</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/pouladpld/NetTelegramBot.Framework.git</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/pouladpld/NetTelegramBot.Framework/master/docs/icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/pouladpld/NetTelegramBot.Framework/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>NetTelegramBot.Framework.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

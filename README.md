@@ -1,13 +1,67 @@
-﻿NetTelegramBot Framework
-========================
+﻿# Telegram Bot Framework for .NET Core
 
-Simple framework for building Telegram bots.
+[![Build Status](https://travis-ci.org/pouladpld/NetTelegramBot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/NetTelegramBot.Framework)
 
-Key features:
+Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
-1. Multiple bots inside one app
-2. All chat logs and settings are saved in Azure Storage Tables
-3. Chat logs are saved in different tables by year - just drop old tables when you are out of space
-4. Flexible command handling: `/command arg1 arg2` and `/command_arg1_arg2`
+## Screenshots
 
-Based on [NetTelegramBotApi](https://github.com/justdmitry/NetTelegramBotApi) library.
+--> Add here <--
+
+## Getting Started
+
+### Requirements
+
+- Visual Studio 2017 or [.NET Core 1.1](https://www.microsoft.com/net/download/core#/current).
+
+> Talk to **[BotFather](http://t.me/botfather)** to get a token for your Telegram bot.
+
+### Implementation
+
+Getting your bot to work is very easy with this framework. Following code snippets show that:
+
+#### Bot Type
+
+```c#
+class EchoBot : BotBase<EchoBot>
+{
+    ...
+}
+```
+
+#### Message Handler
+
+```c#
+class TextMessageEchoer : UpdateHandlerBase
+{
+    public override bool CanHandleUpdate(IBot bot, Update update)
+    {
+        // Can handle it only if the update is a text message
+    }
+
+    public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
+    {
+        // Echo back the text to user
+        return UpdateHandlingResult.Handled;
+    }
+}
+```
+
+#### Configure the Bot
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddTelegramBot<EchoBot>(Configuration.GetSection("EchoBot"))
+        .AddUpdateHandler<TextMessageEchoer>()
+        .Configure();
+}
+```
+
+## Examples
+
+Have a look at the [Sample app](./src/NetTelegramBot.Sample/) to see some examples.
+
+## Credits
+
+Special thanks to [Dmitry Popov](https://github.com/justdmitry) for building [NetTelegramBotApi](https://github.com/justdmitry/NetTelegramBotApi) library.

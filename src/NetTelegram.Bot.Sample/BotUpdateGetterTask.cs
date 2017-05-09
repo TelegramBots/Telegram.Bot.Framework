@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NetTelegram.Bot.Framework.Abstractions;
 using RecurrentTasks;
 
-namespace NetTelegramBot.Sample
+namespace NetTelegram.Bot.Sample
 {
     public class BotUpdateGetterTask<TBot> : IRunnable
         where TBot : class, IBot

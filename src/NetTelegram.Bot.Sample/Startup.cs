@@ -6,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetTelegram.Bot.Framework;
-using NetTelegramBot.Sample.Bots.EchoBot;
-using NetTelegramBot.Sample.Bots.GreeterBot;
+using NetTelegram.Bot.Sample.Bots.EchoBot;
+using NetTelegram.Bot.Sample.Bots.GreeterBot;
 using RecurrentTasks;
 
-namespace NetTelegramBot.Sample
+namespace NetTelegram.Bot.Sample
 {
     public class Startup
     {
@@ -53,14 +53,21 @@ namespace NetTelegramBot.Sample
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseTelegramBotWebhook<EchoBot>(ensureWebhookEnabled: !env.IsDevelopment());
+
+            app.UseTelegramBotWebhook<GreeterBot>(ensureWebhookEnabled: !env.IsDevelopment());
+
+            if (env.IsDevelopment())
+            {
+                app.StartTask<BotUpdateGetterTask<EchoBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+
+                app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+            }
+
             app.Run(async context =>
             {
                 await context.Response.WriteAsync("Hello World!");
             });
-
-            app.StartTask<BotUpdateGetterTask<EchoBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
-
-            app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
         }
     }
 }

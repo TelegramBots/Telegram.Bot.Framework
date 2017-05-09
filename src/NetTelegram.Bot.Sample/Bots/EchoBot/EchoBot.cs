@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework;
 using NetTelegramBotApi.Types;
 
-namespace NetTelegramBot.Sample.Bots.EchoBot
+namespace NetTelegram.Bot.Sample.Bots.EchoBot
 {
     public class EchoBot : BotBase<EchoBot>
     {

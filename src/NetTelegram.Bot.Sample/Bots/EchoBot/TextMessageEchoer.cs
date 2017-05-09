@@ -4,7 +4,7 @@ using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace NetTelegramBot.Sample.Bots.EchoBot
+namespace NetTelegram.Bot.Sample.Bots.EchoBot
 {
     public class TextMessageEchoer : UpdateHandlerBase
     {

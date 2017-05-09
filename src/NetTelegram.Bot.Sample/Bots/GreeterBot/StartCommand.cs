@@ -4,7 +4,7 @@ using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace NetTelegramBot.Sample.Bots.GreeterBot
+namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 {
     public class StartCommandArgs : ICommandArgs
     {

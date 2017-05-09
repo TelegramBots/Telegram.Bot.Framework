@@ -7,8 +7,6 @@
 
         string BotName { get; set; }
 
-        bool UseWebhook { get; set; }
-
-        string WebhookUrl { get; set; }
+        string WebhookRoute { get; set; }
     }
 }

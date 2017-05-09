@@ -1,41 +1,68 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NetTelegram.Bot.Framework.Abstractions;
+using NetTelegramBotApi.Types;
+using Newtonsoft.Json;
 
 namespace NetTelegram.Bot.Framework
 {
     public class TelegramBotMiddleware<TBot>
-//        where TBot : BotBase
+        where TBot : BotBase<TBot>
     {
         private readonly RequestDelegate _next;
 
-        private readonly string _requestPath;
+        private readonly IBotManager<TBot> _botManager;
 
-        private TBot _bot;
-
-        public TelegramBotMiddleware(RequestDelegate next, PathString requestPath)
+        public TelegramBotMiddleware(RequestDelegate next, IBotManager<TBot> botManager)
         {
-            this._next = next;
-            this._requestPath = requestPath;
+            _next = next;
+            _botManager = botManager;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            if (!string.Equals(context.Request.Path, _requestPath, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(context.Request.Path, _botManager.WebhookRoute, StringComparison.OrdinalIgnoreCase)
+                ||
+                !context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
             {
                 await _next.Invoke(context);
                 return;
             }
 
-            if (_bot == null)
+            string data;
+            using (var reader = new StreamReader(context.Request.Body))
             {
-                _bot = context.RequestServices.GetRequiredService<TBot>();
+                data = await reader.ReadToEndAsync();
             }
 
-            //await _bot.ProcessIncomingWebhookAsync(context.Request.Body);
+            Update update;
+            try
+            {
+                update = JsonConvert.DeserializeObject<Update>(data);
+                if (update == null)
+                {
+                    throw new NullReferenceException();
+                }
+            }
+            catch (Exception e)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                return;
+            }
 
-            context.Response.StatusCode = StatusCodes.Status200OK;
+            try
+            {
+                var botManager = context.RequestServices.GetRequiredService<IBotManager<TBot>>();
+                await botManager.HandleUpdateAsync(update);
+                context.Response.StatusCode = StatusCodes.Status200OK;
+            }
+            catch (Exception e)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
         }
     }
 }

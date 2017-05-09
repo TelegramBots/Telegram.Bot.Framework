@@ -88,8 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         x.ApiToken = _botOptions.ApiToken;
                         x.BotName = _botOptions.BotName;
-                        x.UseWebhook = _botOptions.UseWebhook;
-                        x.WebhookUrl = _botOptions.WebhookUrl;
+                        x.WebhookRoute = _botOptions.WebhookRoute;
                     });
                 }
                 else

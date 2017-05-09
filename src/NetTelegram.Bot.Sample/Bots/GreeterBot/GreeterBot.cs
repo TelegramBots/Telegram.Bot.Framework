@@ -5,7 +5,7 @@ using NetTelegram.Bot.Framework;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
 
-namespace NetTelegramBot.Sample.Bots.GreeterBot
+namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 {
     public class GreeterBot : BotBase<GreeterBot>
     {

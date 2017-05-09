@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace NetTelegramBot.Sample
+namespace NetTelegram.Bot.Sample
 {
     public class Program
     {

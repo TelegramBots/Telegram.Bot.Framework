@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi.Requests;
 using NetTelegramBotApi.Types;
@@ -10,16 +12,24 @@ namespace NetTelegram.Bot.Framework
     public class BotManager<TBot> : IBotManager<TBot>
         where TBot : BotBase<TBot>
     {
+        public string WebhookRoute { get; }
+
         private readonly TBot _bot;
 
         private readonly IUpdateParser<TBot> _updateParser;
 
+        private readonly IBotOptions<TBot> _botOptions;
+
         private long? _offset;
 
-        public BotManager(TBot bot, IUpdateParser<TBot> updateParser)
+        public BotManager(TBot bot, IUpdateParser<TBot> updateParser, IOptions<BotOptions<TBot>> botOptions)
         {
             _bot = bot;
             _updateParser = updateParser;
+            _botOptions = botOptions.Value;
+            WebhookRoute = _botOptions.WebhookRoute
+                .Replace("{botname}", _botOptions.BotName)
+                .Replace("{token}", _botOptions.ApiToken);
         }
 
         public async Task HandleUpdateAsync(Update update)
@@ -61,6 +71,27 @@ namespace NetTelegram.Bot.Framework
                     _offset = updates.Last().UpdateId + 1;
                 }
             } while (updates.Any());
+        }
+
+        public async Task SetWebhook(string appBaseUrl)
+        {
+            if (!appBaseUrl.EndsWith("/"))
+            {
+                appBaseUrl += '/';
+            }
+
+            var webhookRoute = WebhookRoute;
+            if (webhookRoute.StartsWith("/"))
+            {
+                webhookRoute = webhookRoute.Remove(0, 1);
+            }
+
+            var req = new SetWebhook(appBaseUrl + webhookRoute);
+            var response = await _bot.MakeRequestAsync(req);
+            if (!response)
+            {
+                throw new Exception($"Failed to set webhook. Telegram API response: false");
+            }
         }
 
         private static async Task EnsureWebhookDisabledForBot(IBot bot)

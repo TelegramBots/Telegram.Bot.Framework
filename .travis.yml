@@ -1,0 +1,12 @@
+language: csharp
+dist: trusty
+mono: none
+sudo: required
+dotnet: 1.0.3
+script:
+  - chmod +x ./scripts/build.sh
+  - ./scripts/build.sh
+  - chmod +x ./scripts/test.sh
+  - ./scripts/test.sh
+notifications:
+  email: false

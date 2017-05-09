@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>NetTelegram.Bot.Framework</PackageId>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <Description>Simple framework for building Telegram bots</Description>
+    <Authors>Poulad</Authors>
+    <Owners>Poulad</Owners>
+    <PackageVersion>1.0.2</PackageVersion>
+    <DebugType>portable</DebugType>
+    <AssemblyName>NetTelegram.Bot.Framework</AssemblyName>
+    <AssemblyTitle>NetTelegram.Bot.Framework</AssemblyTitle>
+    <PackageTags>telegram bot chatbot chat netcore</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Simple framework for building Telegram bots</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/pouladpld/NetTelegram.Bot.Framework</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/pouladpld/NetTelegram.Bot.Framework.git</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/pouladpld/NetTelegram.Bot.Framework/master/docs/icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/pouladpld/NetTelegram.Bot.Framework/master/LICENSE</PackageLicenseUrl>
+    <Product>NetTelegram.Bot.Framework</Product>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.6\NetTelegram.Bot.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.6\NetTelegram.Bot.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />
+    <PackageReference Include="NetTelegramBotApi" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>

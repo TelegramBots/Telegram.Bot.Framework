@@ -9,7 +9,7 @@ set -e
 
 echo "## Start test.."
 
-dotnet test "$rootdir/test/NetTelegramBot.Framework.Tests/NetTelegramBot.Framework.Tests.csproj" --configuration Release --list-tests
-dotnet test "$rootdir/test/NetTelegramBot.Framework.Tests/NetTelegramBot.Framework.Tests.csproj" --configuration Release --no-build
+dotnet test "$rootdir/test/NetTelegram.Bot.Framework.Tests/NetTelegram.Bot.Framework.Tests.csproj" --configuration Release --list-tests
+dotnet test "$rootdir/test/NetTelegram.Bot.Framework.Tests/NetTelegram.Bot.Framework.Tests.csproj" --configuration Release --no-build
 
 echo "#> test completed"

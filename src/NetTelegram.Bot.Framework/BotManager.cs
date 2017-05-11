@@ -9,9 +9,16 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegram.Bot.Framework
 {
+    /// <summary>
+    /// Manages bot and sends updates to handlers
+    /// </summary>
+    /// <typeparam name="TBot">Type of bot</typeparam>
     public class BotManager<TBot> : IBotManager<TBot>
         where TBot : BotBase<TBot>
     {
+        /// <summary>
+        /// Gets webhook's route from bot options provided
+        /// </summary>
         public string WebhookRoute { get; }
 
         private readonly TBot _bot;
@@ -22,16 +29,27 @@ namespace NetTelegram.Bot.Framework
 
         private long? _offset;
 
+        /// <summary>
+        /// Initializes a new Bot Manager
+        /// </summary>
+        /// <param name="bot">Bot to be managed</param>
+        /// <param name="updateParser">List of update parsers for the bot</param>
+        /// <param name="botOptions">Options used to configure the bot</param>
         public BotManager(TBot bot, IUpdateParser<TBot> updateParser, IOptions<BotOptions<TBot>> botOptions)
         {
             _bot = bot;
             _updateParser = updateParser;
             _botOptions = botOptions.Value;
             WebhookRoute = _botOptions.WebhookRoute
-                .Replace("{botname}", _botOptions.BotName)
+                .Replace("{botname}", _botOptions.BotUserName)
                 .Replace("{token}", _botOptions.ApiToken);
         }
 
+        /// <summary>
+        /// Handle the update
+        /// </summary>
+        /// <param name="update">Update to be handled</param>
+        /// <returns></returns>
         public async Task HandleUpdateAsync(Update update)
         {
             var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
@@ -52,6 +70,10 @@ namespace NetTelegram.Bot.Framework
             }
         }
 
+        /// <summary>
+        /// Pulls the updates from Telegram if any and passes them to handlers
+        /// </summary>
+        /// <returns></returns>
         public async Task GetAndHandleNewUpdatesAsync()
         {
             await EnsureWebhookDisabledForBot(_bot);
@@ -73,6 +95,11 @@ namespace NetTelegram.Bot.Framework
             } while (updates.Any());
         }
 
+        /// <summary>
+        /// Sets webhook for this bot
+        /// </summary>
+        /// <param name="appBaseUrl">Applications's base url</param>
+        /// <returns></returns>
         public async Task SetWebhook(string appBaseUrl)
         {
             if (!appBaseUrl.EndsWith("/"))

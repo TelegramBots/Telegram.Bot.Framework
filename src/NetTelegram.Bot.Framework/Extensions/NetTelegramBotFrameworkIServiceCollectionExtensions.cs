@@ -8,10 +8,20 @@ using NetTelegram.Bot.Framework.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extensoin methods for adding a Telegram Bot to an Microsoft.Extensions.DependencyInjection.IServiceCollection
+    /// </summary>
     public static class NetTelegramBotFrameworkIServiceCollectionExtensions
     {
-        public static IServiceCollection Services;
+        private static IServiceCollection _services;
 
+        /// <summary>
+        /// Adds a Telegram bot to the service collection using the bot's options
+        /// </summary>
+        /// <typeparam name="TBot">Type of Telegarm bot</typeparam>
+        /// <param name="services">Instance of IServiceCollection</param>
+        /// <param name="botOptions">Optins for configuring the bot</param>
+        /// <returns>Instance of bot framework builder</returns>
         public static ITelegramBotFrameworkBuilder<TBot> AddTelegramBot<TBot>
             (this IServiceCollection services, BotOptions<TBot> botOptions)
             where TBot : BotBase<TBot>
@@ -26,10 +36,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(botOptions));
             }
 
-            Services = services;
+            _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(botOptions);
         }
 
+        /// <summary>
+        /// Adds a Telegram bot to the service collection using configurations
+        /// </summary>
+        /// <typeparam name="TBot">Type of Telegarm bot</typeparam>
+        /// <param name="services">Instance of IServiceCollection</param>
+        /// <param name="config">Configuring for the bot</param>
+        /// <returns>Instance of bot framework builder</returns>
         public static ITelegramBotFrameworkBuilder<TBot> AddTelegramBot<TBot>
             (this IServiceCollection services, IConfiguration config)
             where TBot : BotBase<TBot>
@@ -39,19 +56,36 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(config));
             }
 
-            Services = services;
+            _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(config);
         }
 
+        /// <summary>
+        /// Responsible for configuring services for the bot and adding them to the container
+        /// </summary>
+        /// <typeparam name="TBot">Type of bot</typeparam>
         public interface ITelegramBotFrameworkBuilder<TBot>
             where TBot : BotBase<TBot>
         {
+            /// <summary>
+            /// Configures an update handler for the bot
+            /// </summary>
+            /// <typeparam name="T">Type of update handler</typeparam>
+            /// <returns>Itself</returns>
             ITelegramBotFrameworkBuilder<TBot> AddUpdateHandler<T>()
                 where T : class, IUpdateHandler;
 
+            /// <summary>
+            /// Completes the configuration for the bot and adds all the services
+            /// </summary>
+            /// <returns>Instance of IServiceCollection</returns>
             IServiceCollection Configure();
         }
 
+        /// <summary>
+        /// Responsible for configuring services for the bot and adding them to the container
+        /// </summary>
+        /// <typeparam name="TBot">Type of bot</typeparam>
         public class TelegramBotFrameworkBuilder<TBot> : ITelegramBotFrameworkBuilder<TBot>
             where TBot : BotBase<TBot>
         {
@@ -61,16 +95,29 @@ namespace Microsoft.Extensions.DependencyInjection
 
             private readonly IConfiguration _configuration;
 
+            /// <summary>
+            /// Initializes and instance of this class with the options provided
+            /// </summary>
+            /// <param name="botOptions">Optoins for the bot</param>
             public TelegramBotFrameworkBuilder(BotOptions<TBot> botOptions)
             {
                 _botOptions = botOptions;
             }
 
+            /// <summary>
+            /// Initializes and instance of this class with the configuration provided
+            /// </summary>
+            /// <param name="configuration">Configuration for the bot</param>
             public TelegramBotFrameworkBuilder(IConfiguration configuration)
             {
                 _configuration = configuration;
             }
 
+            /// <summary>
+            /// Configures an update handler for the bot
+            /// </summary>
+            /// <typeparam name="T">Type of update handler</typeparam>
+            /// <returns>Itself</returns>
             public ITelegramBotFrameworkBuilder<TBot> AddUpdateHandler<T>()
                 where T : class, IUpdateHandler
             {
@@ -78,39 +125,43 @@ namespace Microsoft.Extensions.DependencyInjection
                 return this;
             }
 
+            /// <summary>
+            /// Completes the configuration for the bot and adds all the services
+            /// </summary>
+            /// <returns>Instance of IServiceCollection</returns>
             public IServiceCollection Configure()
             {
                 EnsureValidConfiguration();
 
                 if (_botOptions != null)
                 {
-                    Services.Configure<BotOptions<TBot>>(x =>
+                    _services.Configure<BotOptions<TBot>>(x =>
                     {
                         x.ApiToken = _botOptions.ApiToken;
-                        x.BotName = _botOptions.BotName;
+                        x.BotUserName = _botOptions.BotUserName;
                         x.WebhookRoute = _botOptions.WebhookRoute;
                     });
                 }
                 else
                 {
-                    Services.Configure<BotOptions<TBot>>(_configuration);
+                    _services.Configure<BotOptions<TBot>>(_configuration);
                 }
 
-                Services.AddScoped<TBot>();
+                _services.AddScoped<TBot>();
 
-                _handlerTypes.ForEach(x => Services.AddTransient(x));
+                _handlerTypes.ForEach(x => _services.AddTransient(x));
 
-                Services.AddScoped<IUpdateHandlersAccessor<TBot>>(factory =>
+                _services.AddScoped<IUpdateHandlersAccessor<TBot>>(factory =>
                 {
                     var handlers = _handlerTypes.Select(x => (IUpdateHandler)factory.GetRequiredService(x)).ToArray();
                     return new UpdateHanldersAccessor<TBot>(handlers);
                 });
 
-                Services.AddScoped<IUpdateParser<TBot>, UpdateParser<TBot>>();
+                _services.AddScoped<IUpdateParser<TBot>, UpdateParser<TBot>>();
 
-                Services.AddScoped<IBotManager<TBot>, BotManager<TBot>>();
+                _services.AddScoped<IBotManager<TBot>, BotManager<TBot>>();
 
-                return Services;
+                return _services;
             }
 
             private void EnsureValidConfiguration()

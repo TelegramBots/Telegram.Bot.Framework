@@ -6,7 +6,7 @@ using Xunit;
 
 namespace NetTelegram.Bot.Framework.Tests
 {
-    public class BotCommandBaseTests
+    public class CommandBaseTests
     {
         [Theory(DisplayName = "Accept handling specific commands")]
         [InlineData("/test")]

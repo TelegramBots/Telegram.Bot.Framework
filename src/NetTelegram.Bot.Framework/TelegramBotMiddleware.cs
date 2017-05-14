@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,10 @@ using Newtonsoft.Json;
 
 namespace NetTelegram.Bot.Framework
 {
+    /// <summary>
+    /// Middleware for handling Telegram bot's webhook requests in an ASP.NET Core app
+    /// </summary>
+    /// <typeparam name="TBot">Type of bot</typeparam>
     public class TelegramBotMiddleware<TBot>
         where TBot : BotBase<TBot>
     {
@@ -16,12 +21,22 @@ namespace NetTelegram.Bot.Framework
 
         private readonly IBotManager<TBot> _botManager;
 
+        /// <summary>
+        /// Initialize and instance of middleware
+        /// </summary>
+        /// <param name="next">Instance of request delegate</param>
+        /// <param name="botManager">Bot manager for the bot</param>
         public TelegramBotMiddleware(RequestDelegate next, IBotManager<TBot> botManager)
         {
             _next = next;
             _botManager = botManager;
         }
 
+        /// <summary>
+        /// Gets invoked to handle the incoming request
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             if (!string.Equals(context.Request.Path, _botManager.WebhookRoute, StringComparison.OrdinalIgnoreCase)
@@ -49,6 +64,7 @@ namespace NetTelegram.Bot.Framework
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return;
             }
@@ -61,6 +77,7 @@ namespace NetTelegram.Bot.Framework
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
         }

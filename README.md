@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework)
 [![NuGet](https://img.shields.io/nuget/v/NetTelegram.Bot.Framework.svg)](https://www.nuget.org/packages/NetTelegram.Bot.Framework)
 
+<img src="./docs/icon.png" alt="Telegram Bot Framework Logo" width=200 height=200 />
+
 Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
 ## Screenshots

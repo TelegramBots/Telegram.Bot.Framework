@@ -6,9 +6,9 @@ using NetTelegramBotApi.Types;
 
 namespace NetTelegram.Bot.Sample.Bots.EchoBot
 {
-    public class EchoBot : BotBase<EchoBot>
+    public class EchoerBot : BotBase<EchoerBot>
     {
-        public EchoBot(IOptions<BotOptions<EchoBot>> botOptions)
+        public EchoerBot(IOptions<BotOptions<EchoerBot>> botOptions)
             : base(botOptions)
         {
 

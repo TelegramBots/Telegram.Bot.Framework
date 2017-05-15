@@ -7,6 +7,8 @@
 
 Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
+You can see a sample bot using this framework in action here: [https://t.me/NTBF_SampleBot](https://t.me/NTBF_SampleBot)
+
 ## Screenshots
 
 --> Add here <--

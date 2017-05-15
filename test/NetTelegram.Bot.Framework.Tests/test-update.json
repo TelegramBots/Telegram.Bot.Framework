@@ -1,0 +1,19 @@
+﻿{
+  "update_id": 594924625,
+  "message": {
+    "message_id": 17,
+    "from": {
+      "id": 195793677,
+      "first_name": "Test Name",
+      "username": "test_user"
+    },
+    "chat": {
+      "id": 325426679,
+      "first_name": "Test Name",
+      "username": "test_user",
+      "type": "private"
+    },
+    "date": 1494906408,
+    "text": "hi"
+  }
+}

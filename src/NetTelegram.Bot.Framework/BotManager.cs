@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -17,9 +19,9 @@ namespace NetTelegram.Bot.Framework
         where TBot : BotBase<TBot>
     {
         /// <summary>
-        /// Gets webhook's route from bot options provided
+        /// Gets webhook's url from bot options provided
         /// </summary>
-        public string WebhookRoute { get; }
+        public string WebhookUrl { get; }
 
         private readonly TBot _bot;
 
@@ -40,7 +42,7 @@ namespace NetTelegram.Bot.Framework
             _bot = bot;
             _updateParser = updateParser;
             _botOptions = botOptions.Value;
-            WebhookRoute = _botOptions.WebhookRoute
+            WebhookUrl = _botOptions.WebhookUrl
                 .Replace("{botname}", _botOptions.BotUserName)
                 .Replace("{token}", _botOptions.ApiToken);
         }
@@ -98,26 +100,25 @@ namespace NetTelegram.Bot.Framework
         /// <summary>
         /// Sets webhook for this bot
         /// </summary>
-        /// <param name="appBaseUrl">Applications's base url</param>
         /// <returns></returns>
-        public async Task SetWebhook(string appBaseUrl)
+        public async Task SetWebhook()
         {
-            if (!appBaseUrl.EndsWith("/"))
-            {
-                appBaseUrl += '/';
-            }
+            await EnsureWebhookDisabledForBot(_bot);
 
-            var webhookRoute = WebhookRoute;
-            if (webhookRoute.StartsWith("/"))
+            try
             {
-                webhookRoute = webhookRoute.Remove(0, 1);
+                var file = new FileStream(_botOptions.PathToCertificate, FileMode.Open);
+                var req = new SetWebhook(WebhookUrl, new FileToSend(file, "certificate.pem"));
+                var response = await _bot.MakeRequestAsync(req);
+                if (!response)
+                {
+                    throw new Exception($"Failed to set webhook. Telegram API response: false");
+                }
             }
-
-            var req = new SetWebhook(appBaseUrl + webhookRoute);
-            var response = await _bot.MakeRequestAsync(req);
-            if (!response)
+            catch (Exception e)
             {
-                throw new Exception($"Failed to set webhook. Telegram API response: false");
+                Debug.WriteLine(e.Message);
+                throw;
             }
         }
 

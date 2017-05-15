@@ -14,7 +14,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SampleEchoBot": {
+    "NetTelegram.Bot.Sample": {
       "applicationUrl": "http://localhost:53137",
       "commandName": "Project",
       "environmentVariables": {

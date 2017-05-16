@@ -9,6 +9,7 @@ using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
 using NetTelegramBotApi.Util;
 using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NetTelegram.Bot.Framework
 {

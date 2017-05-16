@@ -139,7 +139,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         x.ApiToken = _botOptions.ApiToken;
                         x.BotUserName = _botOptions.BotUserName;
-                        x.WebhookRoute = _botOptions.WebhookRoute;
+                        x.WebhookUrl = _botOptions.WebhookUrl;
+                        x.PathToCertificate = _botOptions.PathToCertificate;
                     });
                 }
                 else

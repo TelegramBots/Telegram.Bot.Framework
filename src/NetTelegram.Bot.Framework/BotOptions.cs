@@ -20,8 +20,13 @@ namespace NetTelegram.Bot.Framework
         public string BotUserName { get; set; }
 
         /// <summary>
-        /// Route to be used for webhook updates
+        /// Url to be used for webhook updates
         /// </summary>
-        public string WebhookRoute { get; set; }
+        public string WebhookUrl { get; set; }
+
+        /// <summary>
+        /// Path to TLS certificate file. The .pem public key file used for encrypting and authenticating webhooks
+        /// </summary>
+        public string PathToCertificate { get; set; }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi.Types;
+using NetTelegramBotApi.Util;
 using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NetTelegram.Bot.Framework
 {
@@ -39,7 +42,7 @@ namespace NetTelegram.Bot.Framework
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (!string.Equals(context.Request.Path, _botManager.WebhookRoute, StringComparison.OrdinalIgnoreCase)
+            if (!_botManager.WebhookUrl.Contains(context.Request.Path)
                 ||
                 !context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
             {
@@ -47,16 +50,26 @@ namespace NetTelegram.Bot.Framework
                 return;
             }
 
+            ILogger logger = context.RequestServices.GetRequiredService<ILogger<TelegramBotMiddleware<TBot>>>();
+
             string data;
             using (var reader = new StreamReader(context.Request.Body))
             {
                 data = await reader.ReadToEndAsync();
             }
 
+            logger.LogTrace($"Update Data:`{data}`");
+
             Update update;
+
             try
             {
-                update = JsonConvert.DeserializeObject<Update>(data);
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new JsonLowerCaseUnderscoreContractResolver(),
+                    Converters = new List<JsonConverter> { new UnixDateTimeConverter() }
+                };
+                update = JsonConvert.DeserializeObject<Update>(data, settings);
                 if (update == null)
                 {
                     throw new NullReferenceException();

@@ -22,6 +22,19 @@ namespace NetTelegram.Bot.Framework
         public static IApplicationBuilder UseTelegramBotWebhook<TBot>(this IApplicationBuilder app, bool ensureWebhookEnabled = false)
             where TBot : BotBase<TBot>
         {
+            IBotManager<TBot> botManager = FindBotManager<TBot>(app);
+
+            if (ensureWebhookEnabled)
+            {
+                botManager.SetWebhook().Wait();
+            }
+
+            return app.UseMiddleware<TelegramBotMiddleware<TBot>>();
+        }
+
+        private static IBotManager<TBot> FindBotManager<TBot>(IApplicationBuilder app)
+            where TBot : BotBase<TBot>
+        {
             IBotManager<TBot> botManager;
             try
             {
@@ -35,16 +48,9 @@ namespace NetTelegram.Bot.Framework
             {
                 throw new ConfigurationException(
                     "Bot Manager service is not available", string.Format("Use services.{0}<{1}>()",
-                    nameof(NetTelegramBotFrameworkIServiceCollectionExtensions.AddTelegramBot), typeof(TBot).Name));
+                        nameof(NetTelegramBotFrameworkIServiceCollectionExtensions.AddTelegramBot), typeof(TBot).Name));
             }
-
-            if (ensureWebhookEnabled)
-            {
-                var env = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
-                botManager.SetWebhook(env.WebRootPath).Wait();
-            }
-
-            return app.UseMiddleware<TelegramBotMiddleware<TBot>>();
+            return botManager;
         }
     }
 }

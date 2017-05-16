@@ -7,6 +7,12 @@
 
 Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
+You can see 2 sample bots using this framework in action here:
+
+[Sample - Greeter bot](https://t.me/sample_greeter_bot)
+
+[Sample - Echoer bot](https://t.me/sample_echoer_bot)
+
 ## Screenshots
 
 --> Add here <--
@@ -26,7 +32,7 @@ Getting your bot to work is very easy with this framework. Following code snippe
 #### Bot Type
 
 ```c#
-class EchoBot : BotBase<EchoBot>
+class EchoerBot : BotBase<EchoerBot>
 {
     ...
 }
@@ -55,15 +61,24 @@ class TextMessageEchoer : UpdateHandlerBase
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddTelegramBot<EchoBot>(Configuration.GetSection("EchoBot"))
+    services.AddTelegramBot<EchoerBot>(Configuration.GetSection("EchoerBot"))
         .AddUpdateHandler<TextMessageEchoer>()
         .Configure();
 }
 ```
 
+#### Use Webhook Middleware
+
+```c#
+public void Configure(IApplicationBuilder app)
+{
+    app.UseTelegramBotWebhook<EchoerBot>(ensureWebhookEnabled: true);
+}
+```
+
 ## Examples
 
-Have a look at the [Sample app](./src/NetTelegramBot.Sample/) to see some examples.
+Have a look at the [Sample app](./src/NetTelegram.Bot.Sample/) to see some examples.
 
 ## Credits
 

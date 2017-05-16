@@ -245,4 +245,4 @@ ModelManifest.xml
 .fake/
 
 # Settings for development time
-appsettings.[Dd]evelopment.json
+appsettings.*.json

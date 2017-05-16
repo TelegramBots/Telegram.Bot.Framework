@@ -18,8 +18,13 @@
         string BotUserName { get; set; }
 
         /// <summary>
-        /// Route to be used for webhook updates
+        /// Url to be used for webhook updates
         /// </summary>
-        string WebhookRoute { get; set; }
+        string WebhookUrl { get; set; }
+
+        /// <summary>
+        /// Path to TLS certificate file. The .pem public key file used for encrypting and authenticating webhooks
+        /// </summary>
+        string PathToCertificate { get; set; }
     }
 }

@@ -28,13 +28,13 @@ namespace NetTelegram.Bot.Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var echoBotOptions = new BotOptions<EchoBot>();
-            Configuration.GetSection("EchoBot").Bind(echoBotOptions);
+            var echoBotOptions = new BotOptions<EchoerBot>();
+            Configuration.GetSection("EchoerBot").Bind(echoBotOptions);
 
             services.AddTelegramBot(echoBotOptions)
                 .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
-            services.AddTask<BotUpdateGetterTask<EchoBot>>();
+            services.AddTask<BotUpdateGetterTask<EchoerBot>>();
 
             services.AddTelegramBot<GreeterBot>(Configuration.GetSection("GreeterBot"))
                 .AddUpdateHandler<StartCommand>()
@@ -44,7 +44,7 @@ namespace NetTelegram.Bot.Sample
             services.AddTask<BotUpdateGetterTask<GreeterBot>>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
             loggerFactory.AddConsole();
 
@@ -53,15 +53,20 @@ namespace NetTelegram.Bot.Sample
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseTelegramBotWebhook<EchoBot>(ensureWebhookEnabled: !env.IsDevelopment());
-
-            app.UseTelegramBotWebhook<GreeterBot>(ensureWebhookEnabled: !env.IsDevelopment());
-
             if (env.IsDevelopment())
             {
-                app.StartTask<BotUpdateGetterTask<EchoBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+                app.StartTask<BotUpdateGetterTask<EchoerBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
 
                 app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+
+                logger.LogInformation("Update getting tasks are scheduled for bot(s)");
+            }
+            else
+            {
+                app.UseTelegramBotWebhook<EchoerBot>(ensureWebhookEnabled: true);
+                app.UseTelegramBotWebhook<GreeterBot>(ensureWebhookEnabled: true);
+
+                logger.LogInformation("Webhooks are set for bot(s)");
             }
 
             app.Run(async context =>

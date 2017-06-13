@@ -54,22 +54,30 @@ namespace NetTelegram.Bot.Framework
         /// <returns></returns>
         public async Task HandleUpdateAsync(Update update)
         {
-            var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
-            if (handlers.Any())
+            try
             {
-                foreach (var handler in handlers)
+                var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
+                if (handlers.Any())
                 {
-                    var result = await handler.HandleUpdateAsync(_bot, update);
-                    if (result == UpdateHandlingResult.Handled)
+                    foreach (var handler in handlers)
                     {
-                        break;
+                        var result = await handler.HandleUpdateAsync(_bot, update);
+                        if (result == UpdateHandlingResult.Handled)
+                        {
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    await _bot.HandleUnknownMessage(update);
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _bot.HandleUnknownMessageAsync(update);
+                await _bot.HandleFaultedUpdate(update, e);
             }
+
         }
 
         /// <summary>
@@ -83,7 +91,7 @@ namespace NetTelegram.Bot.Framework
             IEnumerable<Update> updates;
             do
             {
-                updates = await _bot.MakeRequestAsync(new GetUpdates { Offset = _offset });
+                updates = await _bot.MakeRequest(new GetUpdates { Offset = _offset });
 
                 foreach (var update in updates)
                 {
@@ -109,7 +117,7 @@ namespace NetTelegram.Bot.Framework
             {
                 var file = new FileStream(_botOptions.PathToCertificate, FileMode.Open);
                 var req = new SetWebhook(WebhookUrl, new FileToSend(file, "certificate.pem"));
-                var response = await _bot.MakeRequestAsync(req);
+                var response = await _bot.MakeRequest(req);
                 if (!response)
                 {
                     throw new Exception($"Failed to set webhook. Telegram API response: false");
@@ -126,7 +134,7 @@ namespace NetTelegram.Bot.Framework
         {
             if (!string.IsNullOrEmpty(bot.WebhookInfo.Url))
             {
-                await bot.MakeRequestAsync(new SetWebhook(""));
+                await bot.MakeRequest(new SetWebhook(""));
             }
         }
     }

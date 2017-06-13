@@ -74,7 +74,7 @@ namespace NetTelegram.Bot.Framework
         protected virtual bool CanHandleCommand(Update update)
         {
             var canHandle = false;
-            if (!string.IsNullOrEmpty(update.Message.Text))
+            if (!string.IsNullOrEmpty(update.Message?.Text))
             {
                 canHandle = Regex.IsMatch(update.Message.Text,
                     $@"^\s*/{Name}(?:(?:@{Bot.BotUserInfo.Username}(?:\s+.*)?)|\s+.*|)\s*$", RegexOptions.IgnoreCase);

@@ -33,7 +33,7 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
                 ReplyToMessageId = update.Message.ForwardFromMessageId,
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
-            await Bot.MakeRequestAsync(req);
+            await Bot.MakeRequest(req);
             return UpdateHandlingResult.Handled;
         }
     }

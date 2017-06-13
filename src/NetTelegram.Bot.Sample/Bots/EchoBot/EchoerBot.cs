@@ -14,7 +14,12 @@ namespace NetTelegram.Bot.Sample.Bots.EchoBot
 
         }
 
-        public override Task HandleUnknownMessageAsync(Update update)
+        public override Task HandleUnknownMessage(Update update)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task HandleFaultedUpdate(Update update, Exception exception)
         {
             throw new NotImplementedException();
         }

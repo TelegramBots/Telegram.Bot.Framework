@@ -20,7 +20,7 @@ namespace NetTelegram.Bot.Sample.Bots.EchoBot
                 ReplyToMessageId = update.Message.MessageId,
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
-            await bot.MakeRequestAsync(req);
+            await bot.MakeRequest(req);
             return UpdateHandlingResult.Continue;
         }
     }

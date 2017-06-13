@@ -54,7 +54,7 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
                 ReplyToMessageId = update.Message.MessageId,
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
-            await Bot.MakeRequestAsync(req);
+            await Bot.MakeRequest(req);
             return UpdateHandlingResult.Continue;
         }
     }

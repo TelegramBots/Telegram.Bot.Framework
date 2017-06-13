@@ -24,6 +24,6 @@ namespace NetTelegram.Bot.Framework.Abstractions
         /// <typeparam name="T">Type of expected response from Telegram Bot API</typeparam>
         /// <param name="request">Telegram API request call to be sent</param>
         /// <returns>Response from Telegram API</returns>
-        Task<T> MakeRequestAsync<T>(NetTelegramBotApi.Requests.RequestBase<T> request);
+        Task<T> MakeRequest<T>(NetTelegramBotApi.Requests.RequestBase<T> request);
     }
 }

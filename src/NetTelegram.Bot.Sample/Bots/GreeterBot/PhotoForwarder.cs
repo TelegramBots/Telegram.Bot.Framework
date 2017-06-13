@@ -16,7 +16,7 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
         public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
             var req = new ForwardMessage(update.Message.Chat.Id, update.Message.Chat.Id, update.Message.MessageId);
-            await bot.MakeRequestAsync(req);
+            await bot.MakeRequest(req);
             return UpdateHandlingResult.Handled;
         }
     }

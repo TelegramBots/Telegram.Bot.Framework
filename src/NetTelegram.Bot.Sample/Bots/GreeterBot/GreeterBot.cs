@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework;
@@ -17,7 +18,7 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
             _logger = logger;
         }
 
-        public override async Task HandleUnknownMessageAsync(Update update)
+        public override async Task HandleUnknownMessage(Update update)
         {
             _logger.LogWarning($"Unable to handle an update sent by {update.Message.From.FirstName}");
             var req = new SendMessage(update.Message.Chat.Id, "Sorry! I don't know what to do with this message")
@@ -26,6 +27,11 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
                 ParseMode = SendMessage.ParseModeEnum.Markdown,
             };
             await Bot.MakeRequestAsync(req);
+        }
+
+        public override Task HandleFaultedUpdate(Update update, Exception exception)
+        {
+            throw new NotImplementedException();
         }
     }
 }

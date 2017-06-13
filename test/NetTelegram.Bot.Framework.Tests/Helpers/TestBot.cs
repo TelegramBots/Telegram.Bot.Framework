@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NetTelegramBotApi.Types;
 
@@ -12,9 +13,14 @@ namespace NetTelegram.Bot.Framework.Tests.Helpers
 
         }
 
-        public override Task HandleUnknownMessageAsync(Update update)
+        public override Task HandleUnknownMessage(Update update)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public override Task HandleFaultedUpdate(Update update, Exception exception)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegramBotApi;
@@ -22,7 +23,7 @@ namespace NetTelegram.Bot.Framework
         /// <summary>
         /// Gets this Bot's webhook information set on Telegram
         /// </summary>
-        public WebhookInfo WebhookInfo => _webhookInfo ?? (_webhookInfo = MakeRequestAsync(new GetWebhookInfo()).Result);
+        public WebhookInfo WebhookInfo => _webhookInfo ?? (_webhookInfo = MakeRequest(new GetWebhookInfo()).Result);
 
         /// <summary>
         /// Instance of Telegram bot
@@ -53,7 +54,15 @@ namespace NetTelegram.Bot.Framework
         /// </summary>
         /// <param name="update"></param>
         /// <returns></returns>
-        public abstract Task HandleUnknownMessageAsync(Update update);
+        public abstract Task HandleUnknownMessage(Update update);
+
+        /// <summary>
+        /// Receives the update when the hanlding process throws an exception for the update
+        /// </summary>
+        /// <param name="update"></param>
+        /// <param name="exception">Exception thrown while processing the update</param>
+        /// <returns></returns>
+        public abstract Task HandleFaultedUpdate(Update update, Exception exception);
 
         /// <summary>
         /// Sends a HTTPS request to Telegram bot API
@@ -61,7 +70,7 @@ namespace NetTelegram.Bot.Framework
         /// <typeparam name="T">Type of expected response from Telegram Bot API</typeparam>
         /// <param name="request">Telegram API request call to be sent</param>
         /// <returns>Response from Telegram API</returns>
-        public virtual async Task<T> MakeRequestAsync<T>(RequestBase<T> request)
+        public virtual async Task<T> MakeRequest<T>(RequestBase<T> request)
         {
             return await Bot.MakeRequestAsync(request);
         }

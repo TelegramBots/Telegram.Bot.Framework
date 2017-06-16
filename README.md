@@ -1,7 +1,7 @@
 ﻿# Telegram Bot Framework for .NET Core
 
-[![Build Status](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/NetTelegram.Bot.Framework)
-[![NuGet](https://img.shields.io/nuget/v/NetTelegram.Bot.Framework.svg)](https://www.nuget.org/packages/NetTelegram.Bot.Framework)
+[![Build Status](https://travis-ci.org/pouladpld/Telegram.Bot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/Telegram.Bot.Framework)
+[![NuGet](https://img.shields.io/nuget/v/Telegram.Bot.Framework.svg)](https://www.nuget.org/packages/Telegram.Bot.Framework)
 
 <img src="./docs/icon.png" alt="Telegram Bot Framework Logo" width=200 height=200 />
 
@@ -78,8 +78,4 @@ public void Configure(IApplicationBuilder app)
 
 ## Examples
 
-Have a look at the [Sample app](./src/NetTelegram.Bot.Sample/) to see some examples.
-
-## Credits
-
-Special thanks to [Dmitry Popov](https://github.com/justdmitry) for building [NetTelegramBotApi](https://github.com/justdmitry/NetTelegramBotApi) library.
+Have a look at the [Sample app](./src/Telegram.Bot.Sample/) to see some examples.

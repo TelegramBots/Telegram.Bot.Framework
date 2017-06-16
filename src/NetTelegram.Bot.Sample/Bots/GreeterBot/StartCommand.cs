@@ -1,14 +1,16 @@
 ﻿using System.Threading.Tasks;
 using NetTelegram.Bot.Framework;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Requests;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 {
     public class StartCommandArgs : ICommandArgs
     {
         public string RawInput { get; set; }
+
+        public string ArgsInput { get; set; }
     }
 
     public class StartCommand : CommandBase<StartCommandArgs>
@@ -28,12 +30,11 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 
         public override async Task<UpdateHandlingResult> HandleCommand(Update update, StartCommandArgs args)
         {
-            var req = new SendMessage(update.Message.Chat.Id, string.Format(StartMessageFormat, update.Message.From.FirstName))
-            {
-                ReplyToMessageId = update.Message.ForwardFromMessageId,
-                ParseMode = SendMessage.ParseModeEnum.Markdown,
-            };
-            await Bot.MakeRequest(req);
+            await Bot.Client.SendTextMessageAsync(update.Message.Chat.Id,
+                string.Format(StartMessageFormat, update.Message.From.FirstName),
+                ParseMode.Markdown,
+                replyToMessageId: update.Message.ForwardFromMessageId);
+
             return UpdateHandlingResult.Handled;
         }
     }

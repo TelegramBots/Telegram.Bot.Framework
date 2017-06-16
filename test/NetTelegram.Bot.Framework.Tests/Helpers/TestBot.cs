@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework.Tests.Helpers
 {

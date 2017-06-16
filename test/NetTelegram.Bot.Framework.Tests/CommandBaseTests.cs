@@ -1,7 +1,7 @@
 ﻿using Moq;
 using NetTelegram.Bot.Framework.Abstractions;
 using NetTelegram.Bot.Framework.Tests.Helpers;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 using Xunit;
 
 namespace NetTelegram.Bot.Framework.Tests

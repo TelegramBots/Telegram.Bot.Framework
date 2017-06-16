@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi;
-using NetTelegramBotApi.Requests;
-using NetTelegramBotApi.Types;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework
 {
@@ -16,28 +15,26 @@ namespace NetTelegram.Bot.Framework
         where TBot : class, IBot
     {
         /// <summary>
-        /// Gets this Bot's user information
+        /// Bot's user information
         /// </summary>
-        public User BotUserInfo => _botUserInfo ?? (_botUserInfo = Bot.MakeRequestAsync(new GetMe()).Result);
+        public User BotUserInfo
+        {
+            get => _botUser ?? (_botUser = Client.GetMeAsync().Result);
+
+            internal set => _botUser = value;
+        }
 
         /// <summary>
-        /// Gets this Bot's webhook information set on Telegram
+        /// Instance of Telegram bot client
         /// </summary>
-        public WebhookInfo WebhookInfo => _webhookInfo ?? (_webhookInfo = MakeRequest(new GetWebhookInfo()).Result);
-
-        /// <summary>
-        /// Instance of Telegram bot
-        /// </summary>
-        protected readonly TelegramBot Bot;
+        public ITelegramBotClient Client { get; }
 
         /// <summary>
         /// Options used to the configure the bot instance
         /// </summary>
         protected BotOptions<TBot> BotOptions { get; }
 
-        private User _botUserInfo;
-
-        private WebhookInfo _webhookInfo;
+        private User _botUser;
 
         /// <summary>
         /// Initializes a new Bot
@@ -46,7 +43,7 @@ namespace NetTelegram.Bot.Framework
         protected BotBase(IOptions<BotOptions<TBot>> botOptions)
         {
             BotOptions = botOptions.Value;
-            Bot = new TelegramBot(BotOptions.ApiToken);
+            Client = new TelegramBotClient(BotOptions.ApiToken);
         }
 
         /// <summary>
@@ -64,15 +61,12 @@ namespace NetTelegram.Bot.Framework
         /// <returns></returns>
         public abstract Task HandleFaultedUpdate(Update update, Exception exception);
 
-        /// <summary>
-        /// Sends a HTTPS request to Telegram bot API
-        /// </summary>
-        /// <typeparam name="T">Type of expected response from Telegram Bot API</typeparam>
-        /// <param name="request">Telegram API request call to be sent</param>
-        /// <returns>Response from Telegram API</returns>
-        public virtual async Task<T> MakeRequest<T>(RequestBase<T> request)
+        internal async Task SetBotUserInfoAsync()
         {
-            return await Bot.MakeRequestAsync(request);
+            if (_botUser == null)
+            {
+                _botUser = await Client.GetMeAsync();
+            }
         }
     }
 }

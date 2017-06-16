@@ -1,12 +1,14 @@
 ﻿using System.Threading.Tasks;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework.Tests.Helpers
 {
     public class TestCommandArgs : ICommandArgs
     {
         public string RawInput { get; set; }
+
+        public string ArgsInput { get; set; }
     }
 
     public class TestCommand : CommandBase<TestCommandArgs>

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework
 {
@@ -63,7 +63,19 @@ namespace NetTelegram.Bot.Framework
         /// <returns>Instance of this command's arguments</returns>
         protected virtual TCommandArgs ParseInput(Update update)
         {
-            return new TCommandArgs { RawInput = update.Message.Text };
+            var args = new TCommandArgs
+            {
+                RawInput = update.Message.Text,
+            };
+            var argsInputMatch = Regex.Match(update.Message.Text,
+                $@"^/{Name}(?:(?:@{Bot.BotUserInfo.Username}(?:\s(?<args>.*))?)|\s(?<args>.*)|)$",
+                RegexOptions.IgnoreCase);
+            if (argsInputMatch.Success)
+            {
+                args.ArgsInput = argsInputMatch.Groups[1].Value; // todo unit test
+            }
+
+            return args;
         }
 
         /// <summary>

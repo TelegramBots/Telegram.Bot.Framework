@@ -36,7 +36,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
-    <PackageReference Include="NetTelegramBotApi" Version="4.1.0" />
+    <PackageReference Include="Telegram.Bot" Version="12.0.0-beta-04" />
   </ItemGroup>
 
 </Project>

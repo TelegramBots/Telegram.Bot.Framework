@@ -6,8 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Requests;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework
 {
@@ -29,7 +28,7 @@ namespace NetTelegram.Bot.Framework
 
         private readonly IBotOptions<TBot> _botOptions;
 
-        private long? _offset;
+        private int _offset;
 
         /// <summary>
         /// Initializes a new Bot Manager
@@ -56,6 +55,8 @@ namespace NetTelegram.Bot.Framework
         {
             try
             {
+                await _bot.SetBotUserInfoAsync();
+
                 var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
                 if (handlers.Any())
                 {
@@ -91,7 +92,7 @@ namespace NetTelegram.Bot.Framework
             IEnumerable<Update> updates;
             do
             {
-                updates = await _bot.MakeRequest(new GetUpdates { Offset = _offset });
+                updates = await _bot.Client.GetUpdatesAsync(_offset);
 
                 foreach (var update in updates)
                 {
@@ -100,7 +101,7 @@ namespace NetTelegram.Bot.Framework
 
                 if (updates.Any())
                 {
-                    _offset = updates.Last().UpdateId + 1;
+                    _offset = updates.Last().Id + 1;
                 }
             } while (updates.Any());
         }
@@ -111,17 +112,13 @@ namespace NetTelegram.Bot.Framework
         /// <returns></returns>
         public async Task SetWebhook()
         {
-            await EnsureWebhookDisabledForBot(_bot);
+            //await EnsureWebhookDisabledForBot(_bot);
 
             try
             {
                 var file = new FileStream(_botOptions.PathToCertificate, FileMode.Open);
-                var req = new SetWebhook(WebhookUrl, new FileToSend(file, "certificate.pem"));
-                var response = await _bot.MakeRequest(req);
-                if (!response)
-                {
-                    throw new Exception($"Failed to set webhook. Telegram API response: false");
-                }
+                var fileToSend = new FileToSend("certificate.pem", file);
+                await _bot.Client.SetWebhookAsync(WebhookUrl, fileToSend);
             }
             catch (Exception e)
             {
@@ -132,9 +129,10 @@ namespace NetTelegram.Bot.Framework
 
         private static async Task EnsureWebhookDisabledForBot(IBot bot)
         {
-            if (!string.IsNullOrEmpty(bot.WebhookInfo.Url))
+            bool success = await bot.Client.DeleteWebhookAsync();
+            if (!success)
             {
-                await bot.MakeRequest(new SetWebhook(""));
+                throw new Exception(); // todo
             }
         }
     }

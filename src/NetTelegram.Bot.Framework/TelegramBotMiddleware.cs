@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Types;
-using NetTelegramBotApi.Util;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework
 {
@@ -66,8 +65,8 @@ namespace NetTelegram.Bot.Framework
             {
                 var settings = new JsonSerializerSettings
                 {
-                    ContractResolver = new JsonLowerCaseUnderscoreContractResolver(),
-                    Converters = new List<JsonConverter> { new UnixDateTimeConverter() }
+                    //ContractResolver = new JsonLowerCaseUnderscoreContractResolver(), // todo
+                    //Converters = new List<JsonConverter> { new UnixDateTimeConverter() } // todo
                 };
                 update = JsonConvert.DeserializeObject<Update>(data, settings);
                 if (update == null)

@@ -9,5 +9,7 @@
         /// Raw user's text input
         /// </summary>
         string RawInput { get; set; }
+
+        string ArgsInput { get; set; }
     }
 }

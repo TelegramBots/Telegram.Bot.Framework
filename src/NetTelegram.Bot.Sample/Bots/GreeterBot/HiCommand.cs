@@ -1,15 +1,18 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NetTelegram.Bot.Framework;
 using NetTelegram.Bot.Framework.Abstractions;
-using NetTelegramBotApi.Requests;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 {
     public class HiCommandArgs : ICommandArgs
     {
         public string RawInput { get; set; }
+
+        public string ArgsInput { get; set; }
 
         public string PersonName { get; set; }
     }
@@ -20,41 +23,49 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 
         private const string HiMessageFormat = "Hello, *{0}*!";
 
+        private const string HelpText = "Here is a tip to use this command:\n" +
+                                        "```\n" +
+                                        "/hi John" +
+                                        "```";
+
         public HiCommand()
             : base(CommandName)
         {
 
         }
 
-        protected override bool CanHandleCommand(Update update)
-        {
-            var canHandle = false;
-            if (!string.IsNullOrEmpty(update.Message.Text))
-            {
-                canHandle = Regex.IsMatch(update.Message.Text,
-                    $@"^/{Name}(?:@{Bot.BotUserInfo.Username})?\s+\w+", RegexOptions.IgnoreCase);
-            }
-            return canHandle;
-        }
-
         protected override HiCommandArgs ParseInput(Update update)
         {
             var tokens = Regex.Split(update.Message.Text.Trim(), @"\s+");
-            return new HiCommandArgs
+            var args = base.ParseInput(update);
+
+            if (tokens.Length > 1)
             {
-                RawInput = update.Message.Text,
-                PersonName = tokens[1],
-            };
+                args.PersonName = string.Join(" ", tokens.Skip(1));
+            }
+
+            return args;
         }
 
         public override async Task<UpdateHandlingResult> HandleCommand(Update update, HiCommandArgs args)
         {
-            var req = new SendMessage(update.Message.Chat.Id, string.Format(HiMessageFormat, args.PersonName))
+            string text;
+            if (args.PersonName is null)
             {
-                ReplyToMessageId = update.Message.MessageId,
-                ParseMode = SendMessage.ParseModeEnum.Markdown,
-            };
-            await Bot.MakeRequest(req);
+                text = HelpText;
+            }
+            else
+            {
+                text = string.Format(HiMessageFormat, args.PersonName);
+            }
+
+            await Bot.Client.SendTextMessageAsync(
+                update.Message.Chat.Id,
+                text,
+                ParseMode.Markdown,
+                replyToMessageId: update.Message.MessageId
+                );
+
             return UpdateHandlingResult.Continue;
         }
     }

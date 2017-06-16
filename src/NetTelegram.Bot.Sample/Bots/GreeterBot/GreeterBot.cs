@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetTelegram.Bot.Framework;
-using NetTelegramBotApi.Requests;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 {
@@ -20,18 +19,19 @@ namespace NetTelegram.Bot.Sample.Bots.GreeterBot
 
         public override async Task HandleUnknownMessage(Update update)
         {
-            _logger.LogWarning($"Unable to handle an update sent by {update.Message.From.FirstName}");
-            var req = new SendMessage(update.Message.Chat.Id, "Sorry! I don't know what to do with this message")
-            {
-                ReplyToMessageId = update.Message.MessageId,
-                ParseMode = SendMessage.ParseModeEnum.Markdown,
-            };
-            await Bot.MakeRequestAsync(req);
+            _logger.LogWarning("Unable to handle an update");
+
+            const string unknownUpdateText = "Sorry! I don't know what to do with this message";
+
+            await Client.SendTextMessageAsync(update.Message.Chat.Id,
+                unknownUpdateText,
+                replyToMessageId: update.Message.MessageId);
         }
 
         public override Task HandleFaultedUpdate(Update update, Exception exception)
         {
-            throw new NotImplementedException();
+            _logger.LogCritical("Exception thrown while handling an update");
+            return Task.CompletedTask;
         }
     }
 }

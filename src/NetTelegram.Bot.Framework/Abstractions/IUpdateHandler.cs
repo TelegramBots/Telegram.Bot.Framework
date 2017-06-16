@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using NetTelegramBotApi.Types;
+using Telegram.Bot.Types;
 
 namespace NetTelegram.Bot.Framework.Abstractions
 {

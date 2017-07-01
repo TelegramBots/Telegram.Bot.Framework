@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace Telegram.Bot.Framework
         /// Gets webhook's url from bot options provided
         /// </summary>
         public string WebhookUrl { get; }
+        
+        internal IBot Bot => _bot;
 
         private readonly TBot _bot;
 
@@ -119,6 +122,25 @@ namespace Telegram.Bot.Framework
             {
                 return _bot.Client.DeleteWebhookAsync(); // todo check if it always returns `true`
             }
+        }
+
+        public (bool Success, IUpdateHandler gameUpdateHandler) TryFindGameUpdateHandler(string gameShortName)
+        {
+            if (string.IsNullOrWhiteSpace(gameShortName))
+                throw new ArgumentNullException(nameof(gameShortName));
+
+            Update gameUpdate = new Update
+            {
+                CallbackQuery = new CallbackQuery
+                {
+                    GameShortName = gameShortName,
+                },
+            };
+
+            IUpdateHandler gameHandler = _updateParser.FindHandlersForUpdate(_bot, gameUpdate)
+                .SingleOrDefault();
+
+            return (gameHandler != null, gameHandler);
         }
     }
 }

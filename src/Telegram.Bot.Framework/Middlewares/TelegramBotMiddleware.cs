@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.Middlewares
 {
     /// <summary>
     /// Middleware for handling Telegram bot's webhook requests in an ASP.NET Core app
@@ -24,7 +23,7 @@ namespace Telegram.Bot.Framework
         private readonly IBotManager<TBot> _botManager;
 
         /// <summary>
-        /// Initialize and instance of middleware
+        /// Initializes an instance of middleware
         /// </summary>
         /// <param name="next">Instance of request delegate</param>
         /// <param name="botManager">Bot manager for the bot</param>
@@ -49,10 +48,11 @@ namespace Telegram.Bot.Framework
                 return;
             }
 
-            ILogger logger = context.RequestServices.GetRequiredService<ILogger<TelegramBotMiddleware<TBot>>>();
+            ILogger logger = (context.RequestServices as IServiceProvider)
+                .GetRequiredService<ILogger<TelegramBotMiddleware<TBot>>>();
 
             string data;
-            using (var reader = new StreamReader(context.Request.Body))
+            using (var reader = new StreamReader(context.Request.Body as Stream))
             {
                 data = await reader.ReadToEndAsync();
             }
@@ -78,7 +78,7 @@ namespace Telegram.Bot.Framework
 
             try
             {
-                var botManager = context.RequestServices.GetRequiredService<IBotManager<TBot>>();
+                var botManager = context.RequestServices.GetRequiredService<IBotManager<TBot>>(); // todo use _botManager field
                 await botManager.HandleUpdateAsync(update);
                 context.Response.StatusCode = StatusCodes.Status200OK;
             }

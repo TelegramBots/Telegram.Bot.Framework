@@ -28,6 +28,8 @@ namespace Telegram.Bot.Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Echo Bot
+            
             var echoBotOptions = new BotOptions<EchoerBot>();
             Configuration.GetSection("EchoerBot").Bind(echoBotOptions);
 
@@ -35,16 +37,26 @@ namespace Telegram.Bot.Sample
                 .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
             services.AddTask<BotUpdateGetterTask<EchoerBot>>();
+            
+            #endregion
+
+            #region Greeter Bot
 
             services.AddTelegramBot<GreeterBot>(Configuration.GetSection("GreeterBot"))
                 .AddUpdateHandler<StartCommand>()
                 .AddUpdateHandler<PhotoForwarder>()
                 .AddUpdateHandler<HiCommand>()
+                .AddUpdateHandler<CrazyCircleGameHandler>()
                 .Configure();
             services.AddTask<BotUpdateGetterTask<GreeterBot>>();
+
+            services.AddDataProtection(); // Needed for Crazy Circle game
+
+            #endregion
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
             loggerFactory.AddConsole();
 
@@ -56,10 +68,10 @@ namespace Telegram.Bot.Sample
             if (env.IsDevelopment())
             {
                 app.UseTelegramBotLongPolling<EchoerBot>();
-                app.StartTask<BotUpdateGetterTask<EchoerBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+                app.StartTask<BotUpdateGetterTask<EchoerBot>>(TimeSpan.FromSeconds(8), TimeSpan.FromSeconds(3));
 
                 app.UseTelegramBotLongPolling<GreeterBot>();
-                app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
+                app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3));
 
                 logger.LogInformation("Update getting tasks are scheduled for bot(s)");
             }
@@ -70,6 +82,8 @@ namespace Telegram.Bot.Sample
 
                 logger.LogInformation("Webhooks are set for bot(s)");
             }
+
+            app.UseTelegramGame<GreeterBot>();
 
             app.Run(async context =>
             {

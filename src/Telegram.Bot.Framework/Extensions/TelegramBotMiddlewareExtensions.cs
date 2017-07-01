@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Framework.Extensions;
+using Telegram.Bot.Framework.Middlewares;
 
 // ReSharper disable once CheckNamespace
 namespace Telegram.Bot.Framework
@@ -49,6 +49,20 @@ namespace Telegram.Bot.Framework
             {
                 botManager.SetWebhookStateAsync(false).Wait();
             }
+
+            return app;
+        }
+
+        /// <summary>
+        /// Add a Telegram game score middleware to the app
+        /// </summary>
+        /// <typeparam name="TBot">Type of bot</typeparam>
+        /// <param name="app">Instance of IApplicationBuilder</param>
+        /// <returns>Instance of IApplicationBuilder</returns>
+        public static IApplicationBuilder UseTelegramGame<TBot>(this IApplicationBuilder app)
+            where TBot : BotBase<TBot>
+        {
+            app.UseMiddleware<TelegramGameScoreMiddleware<TBot>>();
 
             return app;
         }

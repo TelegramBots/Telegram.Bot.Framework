@@ -25,6 +25,12 @@ namespace Telegram.Bot.Sample
                 _logger.LogTrace($"{typeof(TBot).Name}: Checking for updates...");
                 await _botManager.GetAndHandleNewUpdatesAsync();
                 _logger.LogTrace($"{typeof(TBot).Name}: Handling updates finished");
+            }).ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    throw task.Exception.InnerException;
+                }
             });
         }
     }

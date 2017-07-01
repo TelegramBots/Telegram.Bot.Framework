@@ -14,7 +14,7 @@ namespace Telegram.Bot.Framework.Abstractions
         /// Gets webhook's url from bot options provided
         /// </summary>
         string WebhookUrl { get; }
-
+        
         /// <summary>
         /// Handle the update
         /// </summary>
@@ -38,5 +38,7 @@ namespace Telegram.Bot.Framework.Abstractions
         /// Disabling webhook means user wants to use long polling method to get updates.
         /// </remarks>
         Task SetWebhookStateAsync(bool enabled);
+
+        (bool Success, IUpdateHandler gameUpdateHandler) TryFindGameUpdateHandler(string gameShortName);
     }
 }

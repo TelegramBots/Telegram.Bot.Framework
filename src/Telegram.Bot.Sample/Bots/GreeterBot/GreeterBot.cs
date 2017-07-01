@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Sample.Bots.GreeterBot
 {
@@ -23,9 +24,16 @@ namespace Telegram.Bot.Sample.Bots.GreeterBot
 
             const string unknownUpdateText = "Sorry! I don't know what to do with this message";
 
-            await Client.SendTextMessageAsync(update.Message.Chat.Id,
-                unknownUpdateText,
-                replyToMessageId: update.Message.MessageId);
+            if (update.Type == UpdateType.MessageUpdate)
+            {
+                await Client.SendTextMessageAsync(update.Message.Chat.Id,
+                    unknownUpdateText,
+                    replyToMessageId: update.Message.MessageId);
+            }
+            else
+            {
+                
+            }
         }
 
         public override Task HandleFaultedUpdate(Update update, Exception exception)

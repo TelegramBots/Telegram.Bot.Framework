@@ -36,8 +36,10 @@ namespace Telegram.Bot.Framework
         /// <returns>List of update handlers for the bot able to handle that update</returns>
         public virtual IEnumerable<IUpdateHandler> FindHandlersForUpdate(IBot bot, Update update)
         {
-            return UpdateHandlers
+            IEnumerable<IUpdateHandler> handlers = UpdateHandlers
                 .Where(x => x.CanHandleUpdate(bot, update));
+
+            return handlers;
         }
     }
 }

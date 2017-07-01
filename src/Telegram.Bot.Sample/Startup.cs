@@ -55,16 +55,18 @@ namespace Telegram.Bot.Sample
 
             if (env.IsDevelopment())
             {
+                app.UseTelegramBotLongPolling<EchoerBot>();
                 app.StartTask<BotUpdateGetterTask<EchoerBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
 
+                app.UseTelegramBotLongPolling<GreeterBot>();
                 app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(6), TimeSpan.FromSeconds(3));
 
                 logger.LogInformation("Update getting tasks are scheduled for bot(s)");
             }
             else
             {
-                app.UseTelegramBotWebhook<EchoerBot>(ensureWebhookEnabled: true);
-                app.UseTelegramBotWebhook<GreeterBot>(ensureWebhookEnabled: true);
+                app.UseTelegramBotWebhook<EchoerBot>();
+                app.UseTelegramBotWebhook<GreeterBot>();
 
                 logger.LogInformation("Webhooks are set for bot(s)");
             }

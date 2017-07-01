@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Framework.Extensions;
 
+// ReSharper disable once CheckNamespace
 namespace Telegram.Bot.Framework
 {
     /// <summary>
@@ -19,17 +20,37 @@ namespace Telegram.Bot.Framework
         /// <param name="app">Instance of IApplicationBuilder</param>
         /// <param name="ensureWebhookEnabled">Whether to set the webhook immediately by making a request to Telegram bot API</param>
         /// <returns>Instance of IApplicationBuilder</returns>
-        public static IApplicationBuilder UseTelegramBotWebhook<TBot>(this IApplicationBuilder app, bool ensureWebhookEnabled = false)
+        public static IApplicationBuilder UseTelegramBotWebhook<TBot>(this IApplicationBuilder app, bool ensureWebhookEnabled = true)
             where TBot : BotBase<TBot>
         {
             IBotManager<TBot> botManager = FindBotManager<TBot>(app);
 
             if (ensureWebhookEnabled)
             {
-                botManager.SetWebhook().Wait();
+                botManager.SetWebhookStateAsync(true).Wait();
             }
 
             return app.UseMiddleware<TelegramBotMiddleware<TBot>>();
+        }
+
+        /// <summary>
+        /// Removes and disables webhooks for bot
+        /// </summary>
+        /// <typeparam name="TBot">Type of bot</typeparam>
+        /// <param name="app">Instance of IApplicationBuilder</param>
+        /// <param name="ensureWebhookDisabled">If true, a request is immediately made to delete webhook</param>
+        /// <returns>Instance of IApplicationBuilder</returns>
+        public static IApplicationBuilder UseTelegramBotLongPolling<TBot>(this IApplicationBuilder app, bool ensureWebhookDisabled = true)
+            where TBot : BotBase<TBot>
+        {
+            IBotManager<TBot> botManager = FindBotManager<TBot>(app);
+
+            if (ensureWebhookDisabled)
+            {
+                botManager.SetWebhookStateAsync(false).Wait();
+            }
+
+            return app;
         }
 
         private static IBotManager<TBot> FindBotManager<TBot>(IApplicationBuilder app)
@@ -48,7 +69,7 @@ namespace Telegram.Bot.Framework
             {
                 throw new ConfigurationException(
                     "Bot Manager service is not available", string.Format("Use services.{0}<{1}>()",
-                        nameof(NetTelegramBotFrameworkIServiceCollectionExtensions.AddTelegramBot), typeof(TBot).Name));
+                        nameof(TelegramBotFrameworkIServiceCollectionExtensions.AddTelegramBot), typeof(TBot).Name));
             }
             return botManager;
         }

@@ -68,7 +68,7 @@ namespace Telegram.Bot.Framework
                 RawInput = update.Message.Text,
             };
             var argsInputMatch = Regex.Match(update.Message.Text,
-                $@"^/{Name}(?:(?:@{Bot.BotUserInfo.Username}(?:\s(?<args>.*))?)|\s(?<args>.*)|)$",
+                $@"^/{Name}(?:(?:@{Bot.UserName}(?:\s(?<args>.*))?)|\s(?<args>.*)|)$",
                 RegexOptions.IgnoreCase);
             if (argsInputMatch.Success)
             {
@@ -89,7 +89,7 @@ namespace Telegram.Bot.Framework
             if (!string.IsNullOrEmpty(update.Message?.Text))
             {
                 canHandle = Regex.IsMatch(update.Message.Text,
-                    $@"^\s*/{Name}(?:(?:@{Bot.BotUserInfo.Username}(?:\s+.*)?)|\s+.*|)\s*$", RegexOptions.IgnoreCase);
+                    $@"^\s*/{Name}(?:(?:@{Bot.UserName}(?:\s+.*)?)|\s+.*|)\s*$", RegexOptions.IgnoreCase);
             }
             return canHandle;
         }

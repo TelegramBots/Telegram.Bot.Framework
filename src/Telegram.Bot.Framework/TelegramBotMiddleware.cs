@@ -43,7 +43,7 @@ namespace Telegram.Bot.Framework
         {
             if (!_botManager.WebhookUrl.Contains(context.Request.Path)
                 ||
-                !context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
+                !context.Request.Method.Equals(HttpMethods.Post, StringComparison.OrdinalIgnoreCase))
             {
                 await _next.Invoke(context);
                 return;

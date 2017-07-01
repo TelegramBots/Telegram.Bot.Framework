@@ -28,10 +28,15 @@ namespace Telegram.Bot.Framework.Abstractions
         /// <returns></returns>
         Task GetAndHandleNewUpdatesAsync();
 
+
         /// <summary>
-        /// Sets webhook for this bot
+        /// Enables or disables the webhook for this bot
         /// </summary>
-        /// <returns></returns>
-        Task SetWebhook();
+        /// <param name="enabled">Whether webhook should be set or deleted</param>
+        /// <remarks>
+        /// Webhook url will be retrieved from bot's <see cref="BotOptions{TBot}">options</see>.
+        /// Disabling webhook means user wants to use long polling method to get updates.
+        /// </remarks>
+        Task SetWebhookStateAsync(bool enabled);
     }
 }

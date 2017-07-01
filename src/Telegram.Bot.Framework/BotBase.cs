@@ -14,14 +14,9 @@ namespace Telegram.Bot.Framework
         where TBot : class, IBot
     {
         /// <summary>
-        /// Bot's user information
+        /// Gets Bot's user name
         /// </summary>
-        public User BotUserInfo
-        {
-            get => _botUser ?? (_botUser = Client.GetMeAsync().Result);
-
-            internal set => _botUser = value;
-        }
+        public string UserName => BotOptions.BotUserName;
 
         /// <summary>
         /// Instance of Telegram bot client
@@ -32,8 +27,6 @@ namespace Telegram.Bot.Framework
         /// Options used to the configure the bot instance
         /// </summary>
         protected BotOptions<TBot> BotOptions { get; }
-
-        private User _botUser;
 
         /// <summary>
         /// Initializes a new Bot
@@ -59,13 +52,5 @@ namespace Telegram.Bot.Framework
         /// <param name="exception">Exception thrown while processing the update</param>
         /// <returns></returns>
         public abstract Task HandleFaultedUpdate(Update update, Exception exception);
-
-        internal async Task SetBotUserInfoAsync()
-        {
-            if (_botUser == null)
-            {
-                _botUser = await Client.GetMeAsync();
-            }
-        }
     }
 }

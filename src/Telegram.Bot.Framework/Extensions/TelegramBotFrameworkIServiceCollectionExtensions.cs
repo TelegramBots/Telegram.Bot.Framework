@@ -6,12 +6,13 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Framework.Extensions;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Extensoin methods for adding a Telegram Bot to an Microsoft.Extensions.DependencyInjection.IServiceCollection
     /// </summary>
-    public static class NetTelegramBotFrameworkIServiceCollectionExtensions
+    public static class TelegramBotFrameworkIServiceCollectionExtensions
     {
         private static IServiceCollection _services;
 

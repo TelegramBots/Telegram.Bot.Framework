@@ -17,10 +17,10 @@ namespace Telegram.Bot.Framework.Tests
         [InlineData("/test@test_bot  !")]
         public void ShouldAcceptHandlingAll(string text)
         {
-            var botUser = new User { Username = "Test_Bot" };
+            const string botUsername = "Test_Bot";
             var mockBot = new Mock<IBot>();
-            mockBot.SetupGet(x => x.BotUserInfo)
-                .Returns(botUser);
+            mockBot.SetupGet(x => x.UserName)
+                .Returns(botUsername);
 
             var update = new Update
             {
@@ -47,10 +47,10 @@ namespace Telegram.Bot.Framework.Tests
         [InlineData("/tes@test_bot")]
         public void ShouldRefuseHandlingTextMessages(string text)
         {
-            var botUser = new User { Username = "Test_Bot" };
+            const string botUsername = "Test_Bot";
             var mockBot = new Mock<IBot>();
-            mockBot.SetupGet(x => x.BotUserInfo)
-                .Returns(botUser);
+            mockBot.SetupGet(x => x.UserName)
+                .Returns(botUsername);
 
             var update = new Update
             {

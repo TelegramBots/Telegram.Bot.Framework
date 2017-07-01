@@ -8,9 +8,9 @@ namespace Telegram.Bot.Framework.Abstractions
     public interface IBot
     {
         /// <summary>
-        /// Gets this Bot's user information
+        /// Gets Bot's user name
         /// </summary>
-        User BotUserInfo { get; }
+        string UserName { get; }
 
         /// <summary>
         /// Instance of Telegram bot client

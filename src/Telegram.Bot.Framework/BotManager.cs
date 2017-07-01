@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,23 +52,23 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public async Task HandleUpdateAsync(Update update)
         {
+            bool anyHandlerExists = false;
             try
             {
-                await _bot.SetBotUserInfoAsync();
+                var handlers = _updateParser.FindHandlersForUpdate(_bot, update);
 
-                var handlers = _updateParser.FindHandlersForUpdate(_bot, update).ToArray();
-                if (handlers.Any())
+                foreach (IUpdateHandler handler in handlers)
                 {
-                    foreach (var handler in handlers)
+                    anyHandlerExists = true;
+
+                    var result = await handler.HandleUpdateAsync(_bot, update);
+                    if (result == UpdateHandlingResult.Handled)
                     {
-                        var result = await handler.HandleUpdateAsync(_bot, update);
-                        if (result == UpdateHandlingResult.Handled)
-                        {
-                            break;
-                        }
+                        return;
                     }
                 }
-                else
+
+                if (!anyHandlerExists)
                 {
                     await _bot.HandleUnknownMessage(update);
                 }
@@ -78,7 +77,6 @@ namespace Telegram.Bot.Framework
             {
                 await _bot.HandleFaultedUpdate(update, e);
             }
-
         }
 
         /// <summary>
@@ -87,8 +85,6 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public async Task GetAndHandleNewUpdatesAsync()
         {
-            await EnsureWebhookDisabledForBot(_bot);
-
             IEnumerable<Update> updates;
             do
             {
@@ -99,40 +95,29 @@ namespace Telegram.Bot.Framework
                     await HandleUpdateAsync(update);
                 }
 
-                if (updates.Any())
-                {
-                    _offset = updates.Last().Id + 1;
-                }
+                _offset = updates.LastOrDefault()?.Id + 1 ?? _offset;
             } while (updates.Any());
         }
 
         /// <summary>
-        /// Sets webhook for this bot
+        /// Enables or disables the webhook for this bot
         /// </summary>
-        /// <returns></returns>
-        public async Task SetWebhook()
+        /// <param name="enabled">Whether webhook should be set or deleted</param>
+        /// <remarks>
+        /// Webhook url will be retrieved from bot's <see cref="BotOptions{TBot}"/>.
+        /// Disabling webhook means user wants to use long polling method to get updates.
+        /// </remarks>
+        public Task SetWebhookStateAsync(bool enabled)
         {
-            //await EnsureWebhookDisabledForBot(_bot);
-
-            try
+            if (enabled)
             {
                 var file = new FileStream(_botOptions.PathToCertificate, FileMode.Open);
                 var fileToSend = new FileToSend("certificate.pem", file);
-                await _bot.Client.SetWebhookAsync(WebhookUrl, fileToSend);
+                return _bot.Client.SetWebhookAsync(WebhookUrl, fileToSend);
             }
-            catch (Exception e)
+            else
             {
-                Debug.WriteLine(e.Message);
-                throw;
-            }
-        }
-
-        private static async Task EnsureWebhookDisabledForBot(IBot bot)
-        {
-            bool success = await bot.Client.DeleteWebhookAsync();
-            if (!success)
-            {
-                throw new Exception("Failed to delete webhook");
+                return _bot.Client.DeleteWebhookAsync(); // todo check if it always returns `true`
             }
         }
     }

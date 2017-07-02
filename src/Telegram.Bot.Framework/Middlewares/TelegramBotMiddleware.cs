@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Telegram.Bot.Framework.Abstractions;
@@ -12,7 +10,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Middlewares
 {
     /// <summary>
-    /// Middleware for handling Telegram bot's webhook requests in an ASP.NET Core app
+    /// Middleware for handling Telegram bot's webhook requests
     /// </summary>
     /// <typeparam name="TBot">Type of bot</typeparam>
     public class TelegramBotMiddleware<TBot>
@@ -22,15 +20,21 @@ namespace Telegram.Bot.Framework.Middlewares
 
         private readonly IBotManager<TBot> _botManager;
 
+        private readonly ILogger<TelegramBotMiddleware<TBot>> _logger;
+
         /// <summary>
         /// Initializes an instance of middleware
         /// </summary>
         /// <param name="next">Instance of request delegate</param>
         /// <param name="botManager">Bot manager for the bot</param>
-        public TelegramBotMiddleware(RequestDelegate next, IBotManager<TBot> botManager)
+        /// <param name="logger">Logger for this bot</param>
+        public TelegramBotMiddleware(RequestDelegate next, 
+            IBotManager<TBot> botManager,
+            ILogger<TelegramBotMiddleware<TBot>> logger)
         {
             _next = next;
             _botManager = botManager;
+            _logger = logger;
         }
 
         /// <summary>
@@ -40,51 +44,46 @@ namespace Telegram.Bot.Framework.Middlewares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (!_botManager.WebhookUrl.Contains(context.Request.Path)
-                ||
-                !context.Request.Method.Equals(HttpMethods.Post, StringComparison.OrdinalIgnoreCase))
+            if (!(
+                context.Request.Method == HttpMethods.Post &&
+                _botManager.WebhookUrl.Contains(context.Request.Path)
+                ))
             {
                 await _next.Invoke(context);
                 return;
             }
-
-            ILogger logger = (context.RequestServices as IServiceProvider)
-                .GetRequiredService<ILogger<TelegramBotMiddleware<TBot>>>();
-
+            
             string data;
             using (var reader = new StreamReader(context.Request.Body as Stream))
             {
                 data = await reader.ReadToEndAsync();
             }
 
-            logger.LogTrace($"Update Data:`{data}`");
+            _logger.LogTrace($"Update Data:`{data}`");
 
-            Update update;
-
+            Update update = null;
             try
             {
                 update = JsonConvert.DeserializeObject<Update>(data);
-                if (update == null)
-                {
-                    throw new NullReferenceException();
-                }
             }
-            catch (Exception e)
+            catch (JsonException e)
             {
-                Debug.WriteLine(e.Message);
+                _logger.LogWarning($"Unable to deserialize update payload. {e.Message}");
+            }
+            if (update == null)
+            {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 return;
             }
-
+            
             try
             {
-                var botManager = context.RequestServices.GetRequiredService<IBotManager<TBot>>(); // todo use _botManager field
-                await botManager.HandleUpdateAsync(update);
+                await _botManager.HandleUpdateAsync(update);
                 context.Response.StatusCode = StatusCodes.Status200OK;
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                _logger.LogError($"Error occured while handling update `{update.Id}`. {e.Message}");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             }
         }

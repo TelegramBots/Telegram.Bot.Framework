@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,9 +42,13 @@ namespace Telegram.Bot.Framework
             _bot = bot;
             _updateParser = updateParser;
             _botOptions = botOptions.Value;
-            WebhookUrl = _botOptions.WebhookUrl
-                .Replace("{botname}", _botOptions.BotUserName)
-                .Replace("{token}", _botOptions.ApiToken);
+
+            string webhook = _botOptions.BaseUrl;
+            if (webhook[webhook.Length - 1] != '/')
+                webhook += '/';
+            webhook += $"{_botOptions.BotUserName}/webhook/{_botOptions.ApiToken}";
+
+            WebhookUrl = webhook;
         }
 
         /// <summary>
@@ -141,6 +144,15 @@ namespace Telegram.Bot.Framework
                 .SingleOrDefault();
 
             return (gameHandler != null, gameHandler);
+        }
+
+        internal static class Constants
+        {
+            public const string BotNamePlaceholder = "{botname}";
+
+            public const string ApiTokenPlaceholder = "{token}";
+
+            public const string GameShortNamePlaceholder = "{game}";
         }
     }
 }

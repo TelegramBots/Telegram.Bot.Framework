@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.2" />
     <PackageReference Include="RecurrentTasks" Version="3.2.0" />
   </ItemGroup>
 

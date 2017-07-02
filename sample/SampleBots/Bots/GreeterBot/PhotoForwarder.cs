@@ -3,7 +3,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Sample.Bots.GreeterBot
+namespace SampleBots.Bots.GreeterBot
 {
     public class PhotoForwarder : UpdateHandlerBase
     {

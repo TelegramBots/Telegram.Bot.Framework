@@ -49,8 +49,8 @@ namespace Telegram.Bot.Framework
         /// Receives the update when the hanlding process throws an exception for the update
         /// </summary>
         /// <param name="update"></param>
-        /// <param name="exception">Exception thrown while processing the update</param>
+        /// <param name="e">Exception thrown while processing the update</param>
         /// <returns></returns>
-        public abstract Task HandleFaultedUpdate(Update update, Exception exception);
+        public abstract Task HandleFaultedUpdate(Update update, Exception e);
     }
 }

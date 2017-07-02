@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using RecurrentTasks;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace Telegram.Bot.Sample
+namespace SampleBots
 {
     public class BotUpdateGetterTask<TBot> : IRunnable
         where TBot : class, IBot

@@ -6,7 +6,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Sample.Bots.GreeterBot
+namespace SampleBots.Bots.GreeterBot
 {
     public class GreeterBot : BotBase<GreeterBot>
     {
@@ -36,7 +36,7 @@ namespace Telegram.Bot.Sample.Bots.GreeterBot
             }
         }
 
-        public override Task HandleFaultedUpdate(Update update, Exception exception)
+        public override Task HandleFaultedUpdate(Update update, Exception e)
         {
             _logger.LogCritical("Exception thrown while handling an update");
             return Task.CompletedTask;

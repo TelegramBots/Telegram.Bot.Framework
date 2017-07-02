@@ -18,7 +18,7 @@ namespace Telegram.Bot.Framework.Tests.Helpers
             throw new NotImplementedException();
         }
 
-        public override Task HandleFaultedUpdate(Update update, Exception exception)
+        public override Task HandleFaultedUpdate(Update update, Exception e)
         {
             throw new NotImplementedException();
         }

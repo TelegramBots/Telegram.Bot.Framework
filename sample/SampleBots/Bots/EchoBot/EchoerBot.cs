@@ -6,7 +6,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Sample.Bots.EchoBot
+namespace SampleBots.Bots.EchoBot
 {
     public class EchoerBot : BotBase<EchoerBot>
     {
@@ -36,7 +36,7 @@ namespace Telegram.Bot.Sample.Bots.EchoBot
             }
         }
 
-        public override Task HandleFaultedUpdate(Update update, Exception exception)
+        public override Task HandleFaultedUpdate(Update update, Exception e)
         {
             _logger.LogCritical("Exception thrown while handling an update");
             return Task.CompletedTask;

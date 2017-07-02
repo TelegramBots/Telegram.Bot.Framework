@@ -4,7 +4,7 @@ using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Sample.Bots.GreeterBot
+namespace SampleBots.Bots.GreeterBot
 {
     public class StartCommandArgs : ICommandArgs
     {

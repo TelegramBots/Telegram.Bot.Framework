@@ -3,13 +3,13 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace Telegram.Bot.Sample
+namespace SampleGames
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Console.Title = "Telegram.Bot.Framework - Samples";
+            Console.Title = "Telegram.Bot.Framework - Sample Games";
 
             var config = new ConfigurationBuilder()
                 .AddCommandLine(args)

@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Telegram.Bot.Framework;
 
-namespace Telegram.Bot.Sample.Bots.GreeterBot
+namespace SampleGames.Bots.CrazyCircle
 {
     public class CrazyCircleGameHandler : GameUpdateHandlerBase
     {
         public CrazyCircleGameHandler(IDataProtectionProvider protectionProvider)
             : base(protectionProvider,
-                  Constants.GameBaseUrl, Constants.GameShortName,
-                  "http://localhost:53136/sample_greeter_bot/")
+                Constants.GameBaseUrl, Constants.GameShortName,
+                "http://localhost:53136/sample_greeter_bot/")
         {
 
         }

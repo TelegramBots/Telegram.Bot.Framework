@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,11 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RecurrentTasks;
+using SampleBots.Bots.EchoBot;
+using SampleBots.Bots.GreeterBot;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Sample.Bots.EchoBot;
-using Telegram.Bot.Sample.Bots.GreeterBot;
 
-namespace Telegram.Bot.Sample
+namespace SampleBots
 {
     public class Startup
     {
@@ -45,24 +46,34 @@ namespace Telegram.Bot.Sample
             services.AddTelegramBot<GreeterBot>(Configuration.GetSection("GreeterBot"))
                 .AddUpdateHandler<StartCommand>()
                 .AddUpdateHandler<PhotoForwarder>()
-                .AddUpdateHandler<CrazyCircleGameHandler>()
                 .AddUpdateHandler<HiCommand>()
                 .Configure();
             services.AddTask<BotUpdateGetterTask<GreeterBot>>();
-
-            services.AddDataProtection(); // Needed for Crazy Circle game
 
             #endregion
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            ILoggerFactory loggerFactory, ILogger<Startup> logger)
+            ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
+            ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                    appBuilder.Run(context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        return Task.CompletedTask;
+                    })
+                );
             }
 
             #region Echoer Bot
@@ -82,8 +93,6 @@ namespace Telegram.Bot.Sample
             #endregion
 
             #region Greeter Bot
-
-            app.UseTelegramGame<GreeterBot>();
 
             if (env.IsDevelopment())
             {

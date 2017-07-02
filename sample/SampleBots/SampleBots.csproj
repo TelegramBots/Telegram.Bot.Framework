@@ -7,14 +7,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="RecurrentTasks" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />
-    <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
+    <ProjectReference Include="..\..\src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 
 </Project>

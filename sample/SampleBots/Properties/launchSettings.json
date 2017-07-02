@@ -14,7 +14,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Telegram.Bot.Sample": {
+    "SampleBots": {
       "applicationUrl": "http://localhost:53137",
       "commandName": "Project",
       "environmentVariables": {

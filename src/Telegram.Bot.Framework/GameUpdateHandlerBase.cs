@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
 using Newtonsoft.Json;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -18,14 +19,19 @@ namespace Telegram.Bot.Framework
 
         protected readonly string GameShortname;
 
+        protected readonly string BotBaseUrl;
+
         protected GameUpdateHandlerBase(
             IDataProtectionProvider protectionProvider,
             string gameBaseUrl,
-            string gameShortname)
+            string gameShortname,
+            string botBaseUrl // todo Use bot options instead
+            )
         {
             _dataProtector = protectionProvider.CreateProtector(nameof(GameUpdateHandlerBase));
             GameBaseUrl = gameBaseUrl;
             GameShortname = gameShortname;
+            BotBaseUrl = botBaseUrl;
         }
 
         public override bool CanHandleUpdate(IBot bot, Update update)
@@ -47,7 +53,11 @@ namespace Telegram.Bot.Framework
             {
                 string protectedPlayerid = ProtectPlayerId(
                     long.Parse(update.CallbackQuery.From.Id), update.CallbackQuery.InlineMessageId);
-                string url = string.Format(Constants.UrlFormat, GameBaseUrl, protectedPlayerid);
+
+                string callbackUrl = BotBaseUrl + GameShortname;
+                callbackUrl = WebUtility.UrlEncode(callbackUrl);
+
+                string url = string.Format(Constants.UrlFormat, GameBaseUrl, protectedPlayerid, callbackUrl);
                 await bot.Client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, url: url);
             }
 
@@ -59,10 +69,14 @@ namespace Telegram.Bot.Framework
             var userMessageId = UnprotectPlayerId(playerid);
             try
             {
-                // todo remove this try-catch after issue with deserializing response is resolved
-                await bot.Client.SetGameScoreAsync((int)userMessageId.UserId, score, userMessageId.InlineMessageId);
+                await bot.Client.SetGameScoreAsync((int) userMessageId.UserId, score, userMessageId.InlineMessageId);
             }
             catch (JsonException e)
+            {
+                // todo remove this try-catch after issue with deserializing response is resolved
+                Debug.WriteLine(e);
+            }
+            catch (ApiRequestException e)
             {
                 Debug.WriteLine(e);
             }
@@ -100,7 +114,7 @@ namespace Telegram.Bot.Framework
 
             public const string PlayerIdFormat = "{0}:{1}"; // {userId}:{inlineMessageId} such as "1234:-324431213435"
 
-            public const string UrlFormat = "{0}#id={1}";
+            public const string UrlFormat = "{0}#id={1}&gameScoreUrl={2}";
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Telegram.Bot.Sample.Bots.GreeterBot
     {
         public override bool CanHandleUpdate(IBot bot, Update update)
         {
-            return update.Message.Photo != null;
+            return update.Message?.Photo != null;
         }
 
         public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)

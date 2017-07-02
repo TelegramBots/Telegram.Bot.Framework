@@ -28,8 +28,8 @@ namespace Telegram.Bot.Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            #region Echo Bot
-            
+            #region Echoer Bot
+
             var echoBotOptions = new BotOptions<EchoerBot>();
             Configuration.GetSection("EchoerBot").Bind(echoBotOptions);
 
@@ -37,7 +37,7 @@ namespace Telegram.Bot.Sample
                 .AddUpdateHandler<TextMessageEchoer>()
                 .Configure();
             services.AddTask<BotUpdateGetterTask<EchoerBot>>();
-            
+
             #endregion
 
             #region Greeter Bot
@@ -45,8 +45,8 @@ namespace Telegram.Bot.Sample
             services.AddTelegramBot<GreeterBot>(Configuration.GetSection("GreeterBot"))
                 .AddUpdateHandler<StartCommand>()
                 .AddUpdateHandler<PhotoForwarder>()
-                .AddUpdateHandler<HiCommand>()
                 .AddUpdateHandler<CrazyCircleGameHandler>()
+                .AddUpdateHandler<HiCommand>()
                 .Configure();
             services.AddTask<BotUpdateGetterTask<GreeterBot>>();
 
@@ -65,25 +65,39 @@ namespace Telegram.Bot.Sample
                 app.UseDeveloperExceptionPage();
             }
 
+            #region Echoer Bot
+
             if (env.IsDevelopment())
             {
                 app.UseTelegramBotLongPolling<EchoerBot>();
                 app.StartTask<BotUpdateGetterTask<EchoerBot>>(TimeSpan.FromSeconds(8), TimeSpan.FromSeconds(3));
-
-                app.UseTelegramBotLongPolling<GreeterBot>();
-                app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3));
-
-                logger.LogInformation("Update getting tasks are scheduled for bot(s)");
+                logger.LogInformation("Update getting task is scheduled for bot " + nameof(EchoerBot));
             }
             else
             {
                 app.UseTelegramBotWebhook<EchoerBot>();
-                app.UseTelegramBotWebhook<GreeterBot>();
-
-                logger.LogInformation("Webhooks are set for bot(s)");
+                logger.LogInformation("Webhook is set for bot " + nameof(EchoerBot));
             }
 
+            #endregion
+
+            #region Greeter Bot
+
             app.UseTelegramGame<GreeterBot>();
+
+            if (env.IsDevelopment())
+            {
+                app.UseTelegramBotLongPolling<GreeterBot>();
+                app.StartTask<BotUpdateGetterTask<GreeterBot>>(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3));
+                logger.LogInformation("Update getting task is scheduled for bot " + nameof(GreeterBot));
+            }
+            else
+            {
+                app.UseTelegramBotWebhook<GreeterBot>();
+                logger.LogInformation("Webhook is set for bot " + nameof(GreeterBot));
+            }
+
+            #endregion
 
             app.Run(async context =>
             {

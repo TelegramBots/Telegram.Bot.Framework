@@ -28,6 +28,7 @@ namespace SampleGames
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddDataProtection();
 
             #region CrazyCircle Bot
@@ -63,6 +64,12 @@ namespace SampleGames
                     })
                 );
             }
+
+            app.UseCors(builder => builder
+                .WithOrigins("http://crazy-circle-game.apphb.com")
+                .WithMethods(HttpMethods.Get, HttpMethods.Post)
+                .DisallowCredentials()
+            );
 
             app.UseStaticFiles();
 

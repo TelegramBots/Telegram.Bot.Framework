@@ -77,9 +77,9 @@ namespace Telegram.Bot.Framework
 
                         string gameUrl = BotGameOptions
                             .Single(g => g.ShortName == gameHandler.ShortName)
-                            .PageUrl;
+                            .Url;
 
-                        gameHandler.GamePageUrl = gameUrl 
+                        gameHandler.GamePageUrl = gameUrl
                             ?? _botOptions.BaseUrl + $"{_botOptions.BotUserName}/games/" + "{game}";
                     }
 

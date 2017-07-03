@@ -3,7 +3,7 @@ using Telegram.Bot.Framework;
 
 namespace SampleGames.Bots.CrazyCircle
 {
-    public class CrazyCircleGameHandler : GameUpdateHandlerBase
+    public class CrazyCircleGameHandler : GameHandlerBase
     {
         public CrazyCircleGameHandler(IDataProtectionProvider protectionProvider)
             : base(protectionProvider, Constants.GameShortName)

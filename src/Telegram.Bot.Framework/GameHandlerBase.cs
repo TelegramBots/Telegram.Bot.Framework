@@ -12,7 +12,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
-    public abstract class GameUpdateHandlerBase : UpdateHandlerBase, IGameHandler
+    public abstract class GameHandlerBase : UpdateHandlerBase, IGameHandler
     {
         public string ShortName { get; }
 
@@ -22,6 +22,10 @@ namespace Telegram.Bot.Framework
             set
             {
                 _botBaseUrl = value;
+
+                if (value.StartsWith("https://"))
+                    value = "http://" + value.Substring(8);
+
                 _scoresCallbackUrl = value + $"games/{ShortName}/scores";
             }
         }
@@ -31,6 +35,9 @@ namespace Telegram.Bot.Framework
             get { return _gamePageUrl; }
             set
             {
+                if (value.StartsWith("https://"))
+                    value = "http://" + value.Substring(8);
+
                 _gamePageUrl = value
                     .Replace("{game}", ShortName);
             }
@@ -46,11 +53,11 @@ namespace Telegram.Bot.Framework
 
         private string _gamePageUrl;
 
-        protected GameUpdateHandlerBase(IDataProtectionProvider protectionProvider,
+        protected GameHandlerBase(IDataProtectionProvider protectionProvider,
             string shortName)
         {
             ShortName = shortName;
-            _dataProtector = protectionProvider.CreateProtector(nameof(GameUpdateHandlerBase));
+            _dataProtector = protectionProvider.CreateProtector(nameof(GameHandlerBase));
         }
 
         public override bool CanHandleUpdate(IBot bot, Update update)
@@ -149,7 +156,7 @@ namespace Telegram.Bot.Framework
             }
 
             string playerid = string.Join(Constants.PlayerIdSeparator.ToString(), values);
-            //playerid = _dataProtector.Protect(playerid); todo
+            playerid = _dataProtector.Protect(playerid);
             playerid = WebUtility.UrlEncode(playerid);
 
             return playerid;
@@ -158,7 +165,7 @@ namespace Telegram.Bot.Framework
         private (int UserId, (string InlineMessageId, (ChatId ChatId, int MessageId))) DecodePlayerId(string encodedPlayerid)
         {
             encodedPlayerid = WebUtility.UrlDecode(encodedPlayerid);
-            //encodedPlayerid = _dataProtector.Unprotect(encodedPlayerid); todo
+            encodedPlayerid = _dataProtector.Unprotect(encodedPlayerid);
 
             string[] tokens = encodedPlayerid
                 .Split(Constants.PlayerIdSeparator);

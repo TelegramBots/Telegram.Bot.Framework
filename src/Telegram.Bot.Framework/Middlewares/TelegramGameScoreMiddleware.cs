@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Middlewares
                 return;
             }
 
-            var gameHandler = (GameUpdateHandlerBase)gameHandlerTuple.gameUpdateHandler;
+            var gameHandler = (GameHandlerBase)gameHandlerTuple.gameUpdateHandler; // todo Use IGameHandler
 
             if (context.Request.Method == HttpMethods.Get)
             {

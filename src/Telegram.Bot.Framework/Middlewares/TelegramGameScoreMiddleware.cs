@@ -37,7 +37,6 @@ namespace Telegram.Bot.Framework.Middlewares
                     context.Request.Path.StartsWithSegments(route.Replace("{game}", g.ShortName)))
                     ?.ShortName;
 
-            // todo use PUT method instead of POST
             if (string.IsNullOrWhiteSpace(gameShortname) ||
                 !new[] { HttpMethods.Post, HttpMethods.Get }.Contains(context.Request.Method))
             {

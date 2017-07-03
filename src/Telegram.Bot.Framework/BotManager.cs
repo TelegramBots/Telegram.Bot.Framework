@@ -21,8 +21,14 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public string WebhookUrl { get; }
 
+        /// <summary>
+        /// Instance of bot under management
+        /// </summary>
         public IBot Bot => _bot;
 
+        /// <summary>
+        /// Array of game options for this bot's games
+        /// </summary>
         public BotGameOption[] BotGameOptions => _botOptions.GameOptions;
 
         private readonly TBot _bot;
@@ -137,7 +143,15 @@ namespace Telegram.Bot.Framework
             }
         }
 
-        public (bool Success, IUpdateHandler gameUpdateHandler) TryFindGameUpdateHandler(string gameShortName)
+        /// <summary>
+        /// Finds a handler for game by its short name
+        /// </summary>
+        /// <param name="gameShortName">Game's short name</param>
+        /// <returns>
+        /// A tuple with Success indicating presense of a game handler, and GameHandler, instance of
+        /// game handler for that game
+        /// </returns>
+        public (bool Success, IGameHandler GameHandler) TryFindGameHandler(string gameShortName)
         {
             if (string.IsNullOrWhiteSpace(gameShortName))
                 throw new ArgumentNullException(nameof(gameShortName));
@@ -153,9 +167,15 @@ namespace Telegram.Bot.Framework
             IUpdateHandler gameHandler = _updateParser.FindHandlersForUpdate(_bot, gameUpdate)
                 .SingleOrDefault();
 
-            return (gameHandler != null, gameHandler);
+            return (gameHandler != null, gameHandler as IGameHandler);
         }
 
+        /// <summary>
+        /// Replaces tokens, if any, in a game url
+        /// </summary>
+        /// <param name="urlFormat">A url with possibly tokens such as {game}</param>
+        /// <param name="gameShortName">Game's short name</param>
+        /// <returns>A url with all tokens replaced by their respective values</returns>
         public string ReplaceGameUrlTokens(string urlFormat, string gameShortName)
         {
             string url = ReplaceUrlTokens(urlFormat)

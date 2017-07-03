@@ -12,21 +12,41 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// Base class for bot's games
+    /// </summary>
     public abstract class GameHandlerBase : UpdateHandlerBase, IGameHandler
     {
+        /// <summary>
+        /// Game's short name
+        /// </summary>
         public string ShortName { get; }
 
+        /// <summary>
+        /// Game configuration options
+        /// </summary>
         public BotGameOption Options { get; set; }
 
         private readonly IDataProtector _dataProtector;
 
-        protected GameHandlerBase(IDataProtectionProvider protectionProvider,
+        /// <summary>
+        /// Initializes a new instance of game handler
+        /// </summary>
+        /// <param name="protectionProvider"></param>
+        /// <param name="shortName">Game's short name</param>
+        protected GameHandlerBase(IDataProtectionProvider protectionProvider, // todo use Property Injection from BotManager instead
             string shortName)
         {
             ShortName = shortName;
             _dataProtector = protectionProvider.CreateProtector(nameof(GameHandlerBase));
         }
 
+        /// <summary>
+        /// Indicates whether this handler should receive the update for handling by quickly checking the update type such as text, photo, or etc.
+        /// </summary>
+        /// <param name="bot">Instance of the bot this command is operating for</param>
+        /// <param name="update">Update for the bot</param>
+        /// <returns><value>true</value> if this handler should get the update; otherwise <value>false</value></returns>
         public override bool CanHandleUpdate(IBot bot, Update update)
         {
             bool canHandle = false;
@@ -40,6 +60,12 @@ namespace Telegram.Bot.Framework
             return canHandle;
         }
 
+        /// <summary>
+        /// Handles the update for bot. This method will be called only if CanHandleUpdate returns <value>true</value>
+        /// </summary>
+        /// <param name="bot">Instance of the bot this command is operating for</param>
+        /// <param name="update">The update to be handled</param>
+        /// <returns>Result of handling this update</returns>
         public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
             if (update.Type == UpdateType.CallbackQueryUpdate)
@@ -60,6 +86,12 @@ namespace Telegram.Bot.Framework
             return UpdateHandlingResult.Handled;
         }
 
+        /// <summary>
+        /// Set game score for user based on encrypted playerid
+        /// </summary>
+        /// <param name="bot">Instance of the bot</param>
+        /// <param name="playerid">Encoded and protected player id</param>
+        /// <param name="score">User's score</param>
         public virtual async Task SetGameScoreAsync(IBot bot, string playerid, int score)
         {
             var ids = DecodePlayerId(playerid);
@@ -88,6 +120,12 @@ namespace Telegram.Bot.Framework
             }
         }
 
+        /// <summary>
+        /// Get game scores for chat based on encrypted playerid
+        /// </summary>
+        /// <param name="bot">Instance of the bot</param>
+        /// <param name="playerid">Encoded and protected player id</param>
+        /// <returns>Array of scores for chat</returns>
         public virtual Task<GameHighScore[]> GetHighestScoresAsync(IBot bot, string playerid)
         {
             var ids = DecodePlayerId(playerid);

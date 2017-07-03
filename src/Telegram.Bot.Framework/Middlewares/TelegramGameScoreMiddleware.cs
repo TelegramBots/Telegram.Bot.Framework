@@ -51,14 +51,14 @@ namespace Telegram.Bot.Framework.Middlewares
                 return;
             }
 
-            var gameHandlerTuple = _botManager.TryFindGameUpdateHandler(gameShortname);
+            var gameHandlerTuple = _botManager.TryFindGameHandler(gameShortname);
             if (!gameHandlerTuple.Success)
             {
                 await _next.Invoke(context);
                 return;
             }
 
-            IGameHandler gameHandler = (IGameHandler)gameHandlerTuple.gameUpdateHandler;
+            IGameHandler gameHandler = gameHandlerTuple.GameHandler;
 
             if (context.Request.Method == HttpMethods.Get)
             {

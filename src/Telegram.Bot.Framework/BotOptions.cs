@@ -29,6 +29,9 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public string PathToCertificate { get; set; }
 
+        /// <summary>
+        /// Array of options for this bot's games
+        /// </summary>
         public BotGameOption[] GameOptions { get; set; }
     }
 }

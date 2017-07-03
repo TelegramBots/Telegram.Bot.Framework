@@ -13,7 +13,7 @@ namespace Telegram.Bot.Framework
     /// Manages bot and sends updates to handlers
     /// </summary>
     /// <typeparam name="TBot">Type of bot</typeparam>
-    public class BotManager<TBot> : IBotManager<TBot>
+    public class BotManager<TBot> : IInternalBotManager<TBot>
         where TBot : BotBase<TBot>
     {
         /// <summary>
@@ -21,9 +21,9 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public string WebhookUrl { get; }
 
-        internal IBot Bot => _bot;
+        public IBot Bot => _bot;
 
-        internal BotGameOption[] BotGameOptions => _botOptions.GameOptions;
+        public BotGameOption[] BotGameOptions => _botOptions.GameOptions;
 
         private readonly TBot _bot;
 
@@ -45,12 +45,7 @@ namespace Telegram.Bot.Framework
             _updateParser = updateParser;
             _botOptions = botOptions.Value;
 
-            string webhook = _botOptions.BaseUrl;
-            if (webhook[webhook.Length - 1] != '/')
-                webhook += '/';
-            webhook += $"{_botOptions.BotUserName}/webhook/{_botOptions.ApiToken}";
-
-            WebhookUrl = webhook;
+            WebhookUrl = ReplaceUrlTokens(_botOptions.WebhookUrl);
         }
 
         /// <summary>
@@ -72,15 +67,14 @@ namespace Telegram.Bot.Framework
                     if (handler is IGameHandler)
                     {
                         IGameHandler gameHandler = handler as IGameHandler;
-                        gameHandler.BotBaseUrl = _botOptions.BaseUrl +
-                            $"{_botOptions.BotUserName}/";
 
-                        string gameUrl = BotGameOptions
-                            .Single(g => g.ShortName == gameHandler.ShortName)
-                            .Url;
+                        var options = BotGameOptions
+                            .Single(g => g.ShortName == gameHandler.ShortName);
 
-                        gameHandler.GamePageUrl = gameUrl
-                            ?? _botOptions.BaseUrl + $"{_botOptions.BotUserName}/games/" + "{game}";
+                        options.Url = ReplaceGameUrlTokens(options.Url, options.ShortName);
+                        options.ScoresUrl = ReplaceGameUrlTokens(options.ScoresUrl, options.ShortName);
+
+                        gameHandler.Options = options;
                     }
 
                     var result = await handler.HandleUpdateAsync(_bot, update);
@@ -162,13 +156,33 @@ namespace Telegram.Bot.Framework
             return (gameHandler != null, gameHandler);
         }
 
+        public string ReplaceGameUrlTokens(string urlFormat, string gameShortName)
+        {
+            string url = ReplaceUrlTokens(urlFormat)
+                .Replace(Constants.Placeholders.GameShortNamePlaceholder, gameShortName);
+
+            return url;
+        }
+
+        internal string ReplaceUrlTokens(string urlFormat)
+        {
+            string url = urlFormat
+                .Replace(Constants.Placeholders.BotUserNamePlaceholder, _botOptions.BotUserName)
+                .Replace(Constants.Placeholders.ApiTokenPlaceholder, _botOptions.ApiToken);
+
+            return url;
+        }
+
         internal static class Constants
         {
-            public const string BotNamePlaceholder = "{botname}";
+            public static class Placeholders
+            {
+                public const string BotUserNamePlaceholder = "{bot}";
 
-            public const string ApiTokenPlaceholder = "{token}";
+                public const string ApiTokenPlaceholder = "{token}";
 
-            public const string GameShortNamePlaceholder = "{game}";
+                public const string GameShortNamePlaceholder = "{game}";
+            }
         }
     }
 }

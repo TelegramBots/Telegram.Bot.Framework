@@ -41,12 +41,11 @@ namespace Telegram.Bot.Framework.Middlewares
         /// Gets invoked to handle the incoming request
         /// </summary>
         /// <param name="context"></param>
-        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             if (!(
                 context.Request.Method == HttpMethods.Post &&
-                _botManager.WebhookUrl.Contains(context.Request.Path)
+                _botManager.WebhookUrl.EndsWith(context.Request.Path)
                 ))
             {
                 await _next.Invoke(context);
@@ -54,7 +53,7 @@ namespace Telegram.Bot.Framework.Middlewares
             }
             
             string data;
-            using (var reader = new StreamReader(context.Request.Body as Stream))
+            using (var reader = new StreamReader(context.Request.Body))
             {
                 data = await reader.ReadToEndAsync();
             }

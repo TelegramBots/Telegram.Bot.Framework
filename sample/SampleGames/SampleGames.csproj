@@ -17,13 +17,14 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.2" />
+    <PackageReference Include="Telegram.Bot" Version="12.0.0-beta-04" />
     <PackageReference Include="RecurrentTasks" Version="3.2.0" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />
+    <!--<ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />-->
     <ProjectReference Include="..\..\src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 

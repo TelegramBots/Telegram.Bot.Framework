@@ -6,7 +6,7 @@
     <Description>Simple framework for building Telegram bots</Description>
     <Authors>Poulad</Authors>
     <Owners>Poulad</Owners>
-    <PackageVersion>1.1.0-alpha</PackageVersion>
+    <PackageVersion>1.1.1-alpha</PackageVersion>
     <DebugType>portable</DebugType>
     <AssemblyName>Telegram.Bot.Framework</AssemblyName>
     <AssemblyTitle>Telegram.Bot.Framework</AssemblyTitle>
@@ -38,11 +38,11 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
-    <!--<PackageReference Include="Telegram.Bot" Version="12.0.0-beta-04" />-->
+    <PackageReference Include="Telegram.Bot" Version="12.0.0-beta-04" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />
+    <!--<ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />-->
   </ItemGroup>
 
 </Project>

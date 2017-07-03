@@ -8,12 +8,16 @@ using Telegram.Bot.Framework.Abstractions;
 
 namespace Telegram.Bot.Framework.Middlewares
 {
+    /// <summary>
+    /// Middleware for handling Telegram games' scores requests
+    /// </summary>
+    /// <typeparam name="TBot">Type of bot</typeparam>
     public class TelegramGameScoreMiddleware<TBot>
         where TBot : BotBase<TBot>
     {
         private readonly RequestDelegate _next;
 
-        private readonly IBotManager<TBot> _botManager;
+        private readonly IInternalBotManager<TBot> _botManager;
 
         /// <summary>
         /// Initializes an instance of middleware
@@ -23,18 +27,21 @@ namespace Telegram.Bot.Framework.Middlewares
         public TelegramGameScoreMiddleware(RequestDelegate next, IBotManager<TBot> botManager)
         {
             _next = next;
-            _botManager = botManager;
+            _botManager = (IInternalBotManager<TBot>)botManager;
         }
 
+        /// <summary>
+        /// Gets invoked to handle the incoming request
+        /// </summary>
+        /// <param name="context"></param>
         public async Task Invoke(HttpContext context)
         {
-            var bManager = (BotManager<TBot>)_botManager; // todo use an internal interface --> IInternalManager : IBotManager
+            string path = context.Request.Path.Value;
 
-            string route = $"/bots/{bManager.Bot.UserName}/games/{{game}}/scores"; // todo allow override default value from appsettings
-
-            string gameShortname = bManager.BotGameOptions
+            string gameShortname = _botManager.BotGameOptions
                 .SingleOrDefault(g =>
-                    context.Request.Path.StartsWithSegments(route.Replace("{game}", g.ShortName)))
+                    _botManager.ReplaceGameUrlTokens(g.ScoresUrl, g.ShortName).EndsWith(path)
+                        )
                     ?.ShortName;
 
             if (string.IsNullOrWhiteSpace(gameShortname) ||
@@ -51,24 +58,23 @@ namespace Telegram.Bot.Framework.Middlewares
                 return;
             }
 
-            var gameHandler = (GameHandlerBase)gameHandlerTuple.gameUpdateHandler; // todo Use IGameHandler
+            IGameHandler gameHandler = (IGameHandler)gameHandlerTuple.gameUpdateHandler;
 
             if (context.Request.Method == HttpMethods.Get)
             {
                 string playerid = context.Request.Query["id"];
 
-                var highScores = await gameHandler.GetHighestScoresAsync(bManager.Bot, playerid);
+                var highScores = await gameHandler.GetHighestScoresAsync(_botManager.Bot, playerid);
 
                 var responseData = JsonConvert.SerializeObject(highScores);
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 context.Response.ContentType = "application/json; charset=utf-8";
                 await context.Response.WriteAsync(responseData);
-                return;
             }
             else if (context.Request.Method == HttpMethods.Post)
             {
                 string dataContent;
-                using (var reader = new StreamReader(context.Request.Body as Stream))
+                using (var reader = new StreamReader(context.Request.Body))
                 {
                     dataContent = await reader.ReadToEndAsync();
                 }
@@ -79,14 +85,12 @@ namespace Telegram.Bot.Framework.Middlewares
                     throw new Exception();
                 }
 
-                await gameHandler.SetGameScoreAsync(bManager.Bot, scoreData.PlayerId, scoreData.Score);
+                await gameHandler.SetGameScoreAsync(_botManager.Bot, scoreData.PlayerId, scoreData.Score);
                 context.Response.StatusCode = StatusCodes.Status201Created;
-                return;
             }
             else
             {
                 await _next.Invoke(context);
-                return;
             }
         }
     }

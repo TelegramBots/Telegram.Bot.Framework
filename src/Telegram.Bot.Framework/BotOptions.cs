@@ -20,9 +20,9 @@ namespace Telegram.Bot.Framework
         public string BotUserName { get; set; }
 
         /// <summary>
-        /// Base bot url to be used for webhook and game updates
+        /// Url to be used for webhook
         /// </summary>
-        public string BaseUrl { get; set; }
+        public string WebhookUrl { get; set; }
 
         /// <summary>
         /// Path to TLS certificate file. The .pem public key file used for encrypting and authenticating webhooks

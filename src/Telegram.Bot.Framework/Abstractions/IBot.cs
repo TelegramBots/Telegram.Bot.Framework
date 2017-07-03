@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace Telegram.Bot.Framework.Abstractions
+﻿namespace Telegram.Bot.Framework.Abstractions
 {
     /// <summary>
     /// A wrapper around TelegramBot class. Used to make calls to the Bot API

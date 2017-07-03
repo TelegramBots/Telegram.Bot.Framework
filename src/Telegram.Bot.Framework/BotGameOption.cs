@@ -5,5 +5,7 @@
         public string ShortName { get; set; }
 
         public string Url { get; set; }
+
+        public string ScoresUrl { get; set; }
     }
 }

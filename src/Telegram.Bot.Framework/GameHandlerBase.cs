@@ -16,42 +16,9 @@ namespace Telegram.Bot.Framework
     {
         public string ShortName { get; }
 
-        public string BotBaseUrl
-        {
-            get { return _botBaseUrl; }
-            set
-            {
-                _botBaseUrl = value;
-
-                if (value.StartsWith("https://"))
-                    value = "http://" + value.Substring(8);
-
-                _scoresCallbackUrl = value + $"games/{ShortName}/scores";
-            }
-        }
-
-        public string GamePageUrl
-        {
-            get { return _gamePageUrl; }
-            set
-            {
-                if (value.StartsWith("https://"))
-                    value = "http://" + value.Substring(8);
-
-                _gamePageUrl = value
-                    .Replace("{game}", ShortName);
-            }
-        }
-
-        protected string ScoresCallbackUrl => _scoresCallbackUrl;
+        public BotGameOption Options { get; set; }
 
         private readonly IDataProtector _dataProtector;
-
-        private string _scoresCallbackUrl;
-
-        private string _botBaseUrl;
-
-        private string _gamePageUrl;
 
         protected GameHandlerBase(IDataProtectionProvider protectionProvider,
             string shortName)
@@ -84,9 +51,9 @@ namespace Telegram.Bot.Framework
                     update.CallbackQuery.Message?.MessageId ?? default(int)
                     );
 
-                string callbackUrl = WebUtility.UrlEncode(ScoresCallbackUrl);
+                string callbackUrl = WebUtility.UrlEncode(Options.ScoresUrl);
 
-                string url = string.Format(Constants.UrlFormat, GamePageUrl, protectedPlayerid, callbackUrl);
+                string url = string.Format(Constants.UrlFormat, Options.Url, protectedPlayerid, callbackUrl);
                 await bot.Client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, url: url);
             }
 
@@ -191,9 +158,6 @@ namespace Telegram.Bot.Framework
         private static class Constants
         {
             public const char PlayerIdSeparator = ':';
-
-            // todo use this maybe
-            public const string PlayerIdFormat = "{0}:{1}"; // {userId}:{inlineMessageId} such as "1234:-324431213435"
 
             public const string UrlFormat = "{0}#id={1}&gameScoreUrl={2}";
         }

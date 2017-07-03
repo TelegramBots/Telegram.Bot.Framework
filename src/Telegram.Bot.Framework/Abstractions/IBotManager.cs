@@ -38,7 +38,5 @@ namespace Telegram.Bot.Framework.Abstractions
         /// Disabling webhook means user wants to use long polling method to get updates.
         /// </remarks>
         Task SetWebhookStateAsync(bool enabled);
-
-        (bool Success, IUpdateHandler gameUpdateHandler) TryFindGameUpdateHandler(string gameShortName);
     }
 }

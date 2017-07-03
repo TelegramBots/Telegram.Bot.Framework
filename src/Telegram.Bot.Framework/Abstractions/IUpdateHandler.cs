@@ -9,7 +9,8 @@ namespace Telegram.Bot.Framework.Abstractions
     public interface IUpdateHandler
     {
         /// <summary>
-        /// Indicates whether this handler should receive the update for handling by quickly checking the update type such as text, photo, or etc.
+        /// Indicates whether this handler should receive the update for handling by quickly checking
+        /// the update type such as text, photo, or etc.
         /// </summary>
         /// <param name="bot">Instance of the bot this command is operating for</param>
         /// <param name="update">Update for the bot</param>

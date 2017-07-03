@@ -142,6 +142,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         x.BotUserName = _botOptions.BotUserName;
                         x.BaseUrl = _botOptions.BaseUrl;
                         x.PathToCertificate = _botOptions.PathToCertificate;
+                        x.GameOptions = _botOptions.GameOptions;
                     });
                 }
                 else

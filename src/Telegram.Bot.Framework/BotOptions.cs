@@ -6,7 +6,7 @@ namespace Telegram.Bot.Framework
     /// Configurations for the bot
     /// </summary>
     /// <typeparam name="TBot">Type of Bot</typeparam>
-    public class BotOptions<TBot> : IBotOptions<TBot>
+    public class BotOptions<TBot>
         where TBot : class, IBot
     {
         /// <summary>
@@ -28,5 +28,7 @@ namespace Telegram.Bot.Framework
         /// Path to TLS certificate file. The .pem public key file used for encrypting and authenticating webhooks
         /// </summary>
         public string PathToCertificate { get; set; }
+
+        public BotGameOption[] GameOptions { get; set; }
     }
 }

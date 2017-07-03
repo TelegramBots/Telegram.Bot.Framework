@@ -6,17 +6,13 @@ namespace SampleGames.Bots.CrazyCircle
     public class CrazyCircleGameHandler : GameUpdateHandlerBase
     {
         public CrazyCircleGameHandler(IDataProtectionProvider protectionProvider)
-            : base(protectionProvider,
-                Constants.GameBaseUrl, Constants.GameShortName,
-                "http://localhost:53136/sample_greeter_bot/")
+            : base(protectionProvider, Constants.GameShortName)
         {
 
         }
 
         private static class Constants
         {
-            public const string GameBaseUrl = "https://pouladpld.github.io/tgGame/index.html";
-
             public const string GameShortName = "crazycircle";
         }
     }

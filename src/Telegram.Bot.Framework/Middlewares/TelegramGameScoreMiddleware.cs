@@ -28,15 +28,16 @@ namespace Telegram.Bot.Framework.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            var bManager = (BotManager<TBot>)_botManager;
-            //string gameUrl = _botManager.GameCallbackBaseUrl;
-            string gameShortname = null;
-            string path = context.Request.Path.Value;
-            if (context.Request.Path.StartsWithSegments('/' + bManager.Bot.UserName))
-            {
-                gameShortname = path.Substring(path.IndexOf(bManager.Bot.UserName, StringComparison.Ordinal) + bManager.Bot.UserName.Length + 1);
-            }
+            var bManager = (BotManager<TBot>)_botManager; // todo use an internal interface --> IInternalManager : IBotManager
 
+            string route = $"/bots/{bManager.Bot.UserName}/games/{{game}}/scores"; // todo allow override default value from appsettings
+
+            string gameShortname = bManager.BotGameOptions
+                .SingleOrDefault(g =>
+                    context.Request.Path.StartsWithSegments(route.Replace("{game}", g.ShortName)))
+                    ?.ShortName;
+
+            // todo use PUT method instead of POST
             if (string.IsNullOrWhiteSpace(gameShortname) ||
                 !new[] { HttpMethods.Post, HttpMethods.Get }.Contains(context.Request.Method))
             {

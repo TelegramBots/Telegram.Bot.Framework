@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,27 +12,45 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
-    public abstract class GameUpdateHandlerBase : UpdateHandlerBase
+    public abstract class GameUpdateHandlerBase : UpdateHandlerBase, IGameHandler
     {
+        public string ShortName { get; }
+
+        public string BotBaseUrl
+        {
+            get { return _botBaseUrl; }
+            set
+            {
+                _botBaseUrl = value;
+                _scoresCallbackUrl = value + $"games/{ShortName}/scores";
+            }
+        }
+
+        public string GamePageUrl
+        {
+            get { return _gamePageUrl; }
+            set
+            {
+                _gamePageUrl = value
+                    .Replace("{game}", ShortName);
+            }
+        }
+
+        protected string ScoresCallbackUrl => _scoresCallbackUrl;
+
         private readonly IDataProtector _dataProtector;
 
-        protected readonly string GameBaseUrl;
+        private string _scoresCallbackUrl;
 
-        protected readonly string GameShortname;
+        private string _botBaseUrl;
 
-        protected readonly string BotBaseUrl;
+        private string _gamePageUrl;
 
-        protected GameUpdateHandlerBase(
-            IDataProtectionProvider protectionProvider,
-            string gameBaseUrl,
-            string gameShortname,
-            string botBaseUrl // todo Use bot options instead
-            )
+        protected GameUpdateHandlerBase(IDataProtectionProvider protectionProvider,
+            string shortName)
         {
+            ShortName = shortName;
             _dataProtector = protectionProvider.CreateProtector(nameof(GameUpdateHandlerBase));
-            GameBaseUrl = gameBaseUrl;
-            GameShortname = gameShortname;
-            BotBaseUrl = botBaseUrl;
         }
 
         public override bool CanHandleUpdate(IBot bot, Update update)
@@ -39,7 +58,7 @@ namespace Telegram.Bot.Framework
             bool canHandle = false;
 
             if (update.CallbackQuery?.IsGameQuery == true &&
-                update.CallbackQuery.GameShortName.Equals(GameShortname, StringComparison.OrdinalIgnoreCase))
+                update.CallbackQuery.GameShortName == ShortName)
             {
                 canHandle = true;
             }
@@ -51,13 +70,16 @@ namespace Telegram.Bot.Framework
         {
             if (update.Type == UpdateType.CallbackQueryUpdate)
             {
-                string protectedPlayerid = ProtectPlayerId(
-                    long.Parse(update.CallbackQuery.From.Id), update.CallbackQuery.InlineMessageId);
+                string protectedPlayerid = EncodePlayerId(
+                    int.Parse(update.CallbackQuery.From.Id),
+                    update.CallbackQuery.InlineMessageId,
+                    update.CallbackQuery.Message?.Chat?.Id,
+                    update.CallbackQuery.Message?.MessageId ?? default(int)
+                    );
 
-                string callbackUrl = BotBaseUrl + GameShortname;
-                callbackUrl = WebUtility.UrlEncode(callbackUrl);
+                string callbackUrl = WebUtility.UrlEncode(ScoresCallbackUrl);
 
-                string url = string.Format(Constants.UrlFormat, GameBaseUrl, protectedPlayerid, callbackUrl);
+                string url = string.Format(Constants.UrlFormat, GamePageUrl, protectedPlayerid, callbackUrl);
                 await bot.Client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, url: url);
             }
 
@@ -66,10 +88,20 @@ namespace Telegram.Bot.Framework
 
         public virtual async Task SetGameScoreAsync(IBot bot, string playerid, int score)
         {
-            var userMessageId = UnprotectPlayerId(playerid);
+            var ids = DecodePlayerId(playerid);
             try
             {
-                await bot.Client.SetGameScoreAsync((int) userMessageId.UserId, score, userMessageId.InlineMessageId);
+                if (ids.Item2.InlineMessageId != null)
+                {
+                    await bot.Client.SetGameScoreAsync(ids.UserId, score, ids.Item2.InlineMessageId);
+                }
+                else
+                {
+                    await bot.Client.SetGameScoreAsync(ids.UserId, score,
+                        ids.Item2.Item2.ChatId,
+                        ids.Item2.Item2.MessageId);
+                }
+
             }
             catch (JsonException e)
             {
@@ -84,34 +116,76 @@ namespace Telegram.Bot.Framework
 
         public virtual Task<GameHighScore[]> GetHighestScoresAsync(IBot bot, string playerid)
         {
-            var userMessageId = UnprotectPlayerId(playerid);
-            return bot.Client.GetGameHighScoresAsync((int)userMessageId.UserId, userMessageId.InlineMessageId);
+            var ids = DecodePlayerId(playerid);
+
+            if (ids.Item2.InlineMessageId != null)
+            {
+                return bot.Client.GetGameHighScoresAsync(ids.UserId, ids.Item2.InlineMessageId);
+            }
+            else
+            {
+                return bot.Client.GetGameHighScoresAsync(ids.UserId,
+                    ids.Item2.Item2.ChatId,
+                    ids.Item2.Item2.MessageId);
+            }
         }
 
-        private string ProtectPlayerId(long userid, string chatInstance)
+        private string EncodePlayerId(int userid, string inlineMsgId, ChatId chatid, int msgId)
         {
-            string playerid = string.Format(Constants.PlayerIdFormat, userid, chatInstance);
-            playerid = _dataProtector.Protect(playerid);
+            var values = new List<string> { userid.ToString() };
+
+            if (inlineMsgId != null)
+            {
+                values.Add(inlineMsgId);
+            }
+            else if (chatid != null && msgId != default(int))
+            {
+                values.Add(chatid);
+                values.Add(msgId.ToString());
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+
+            string playerid = string.Join(Constants.PlayerIdSeparator.ToString(), values);
+            //playerid = _dataProtector.Protect(playerid); todo
             playerid = WebUtility.UrlEncode(playerid);
 
             return playerid;
         }
 
-        private (long UserId, string InlineMessageId) UnprotectPlayerId(string playerid)
+        private (int UserId, (string InlineMessageId, (ChatId ChatId, int MessageId))) DecodePlayerId(string encodedPlayerid)
         {
-            playerid = WebUtility.UrlDecode(playerid);
-            playerid = _dataProtector.Unprotect(playerid);
+            encodedPlayerid = WebUtility.UrlDecode(encodedPlayerid);
+            //encodedPlayerid = _dataProtector.Unprotect(encodedPlayerid); todo
 
-            string[] tokens = playerid
+            string[] tokens = encodedPlayerid
                 .Split(Constants.PlayerIdSeparator);
 
-            return (long.Parse(tokens[0]), tokens[1]);
+            int userid = int.Parse(tokens[0]);
+            if (tokens.Length == 2)
+            {
+                string inlineMsgId = tokens[1];
+                return (userid, (inlineMsgId, default((ChatId ChatId, int MessageId))));
+            }
+            else if (tokens.Length == 3)
+            {
+                ChatId chatid = new ChatId(tokens[1]);
+                int msgId = int.Parse(tokens[2]);
+                return (userid, (null, (chatid, msgId)));
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
         }
 
         private static class Constants
         {
             public const char PlayerIdSeparator = ':';
 
+            // todo use this maybe
             public const string PlayerIdFormat = "{0}:{1}"; // {userId}:{inlineMessageId} such as "1234:-324431213435"
 
             public const string UrlFormat = "{0}#id={1}&gameScoreUrl={2}";

@@ -20,14 +20,16 @@ namespace Telegram.Bot.Framework
         /// Gets webhook's url from bot options provided
         /// </summary>
         public string WebhookUrl { get; }
-        
+
         internal IBot Bot => _bot;
+
+        internal BotGameOption[] BotGameOptions => _botOptions.GameOptions;
 
         private readonly TBot _bot;
 
         private readonly IUpdateParser<TBot> _updateParser;
 
-        private readonly IBotOptions<TBot> _botOptions;
+        private readonly BotOptions<TBot> _botOptions;
 
         private int _offset;
 
@@ -66,6 +68,20 @@ namespace Telegram.Bot.Framework
                 foreach (IUpdateHandler handler in handlers)
                 {
                     anyHandlerExists = true;
+
+                    if (handler is IGameHandler)
+                    {
+                        IGameHandler gameHandler = handler as IGameHandler;
+                        gameHandler.BotBaseUrl = _botOptions.BaseUrl +
+                            $"{_botOptions.BotUserName}/";
+
+                        string gameUrl = BotGameOptions
+                            .Single(g => g.ShortName == gameHandler.ShortName)
+                            .PageUrl;
+
+                        gameHandler.GamePageUrl = gameUrl 
+                            ?? _botOptions.BaseUrl + $"{_botOptions.BotUserName}/games/" + "{game}";
+                    }
 
                     var result = await handler.HandleUpdateAsync(_bot, update);
                     if (result == UpdateHandlingResult.Handled)

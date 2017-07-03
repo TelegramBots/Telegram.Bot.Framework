@@ -6,7 +6,7 @@
     <Description>Simple framework for building Telegram bots</Description>
     <Authors>Poulad</Authors>
     <Owners>Poulad</Owners>
-    <PackageVersion>1.1.1-alpha</PackageVersion>
+    <PackageVersion>1.1.1-beta</PackageVersion>
     <DebugType>portable</DebugType>
     <AssemblyName>Telegram.Bot.Framework</AssemblyName>
     <AssemblyTitle>Telegram.Bot.Framework</AssemblyTitle>

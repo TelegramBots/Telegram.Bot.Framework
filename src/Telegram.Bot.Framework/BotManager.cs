@@ -51,7 +51,10 @@ namespace Telegram.Bot.Framework
             _updateParser = updateParser;
             _botOptions = botOptions.Value;
 
-            WebhookUrl = ReplaceUrlTokens(_botOptions.WebhookUrl);
+            if (_botOptions.WebhookUrl != null)
+            {
+                WebhookUrl = ReplaceUrlTokens(_botOptions.WebhookUrl);
+            }
         }
 
         /// <summary>

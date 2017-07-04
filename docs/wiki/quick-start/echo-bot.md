@@ -2,6 +2,8 @@
 
 This guide shows you how to quickly run your first bot using Visual Studio 2017 and ASP.NET Core.
 
+**Complete code is in [SampleEchoBot project](../../../sample/SampleEchoBot)**.
+
 This guide assumes that:
 
 - You already have registered a bot and have its API Token.
@@ -20,14 +22,16 @@ Create your bot class:
 public class EchoBot : BotBase<EchoBot> {
     public EchoBot(IOptions<BotOptions<EchoBot>> botOptions)
         : base(botOptions) { }
+
     public override Task HandleUnknownMessage(Update update) => Task.CompletedTask;
+
     public override Task HandleFaultedUpdate(Update update, Exception e) => Task.CompletedTask;
 }
 ```
 
 ### Update Handlers
 
-Create a `/echo` command that echoes user input back:
+Create an `/echo` command that echoes user input back:
 
 ```c#
 public class EchoCommandArgs : ICommandArgs {
@@ -37,11 +41,14 @@ public class EchoCommandArgs : ICommandArgs {
 public class EchoCommand : CommandBase<EchoCommandArgs> {
     public EchoCommand() : base(name: "echo") {}
 
-    public override async Task<UpdateHandlingResult> HandleCommand(Update update, EchoCommand args) {
+    public override async Task<UpdateHandlingResult> HandleCommand(Update update, EchoCommandArgs args) {
+        string replyText = string.IsNullOrWhiteSpace(args.ArgsInput) ? "Echo What?" : args.ArgsInput;
+
         await bot.Client.SendTextMessageAsync(
             update.Message.Chat.Id,
-            args.ArgsInput ?? "Echo What?",
+            replyText,
             replyToMessageId: update.Message.MessageId);
+
         return UpdateHandlingResult.Handled;
     }
 }
@@ -52,7 +59,7 @@ public class EchoCommand : CommandBase<EchoCommandArgs> {
 ### Startup
 
 In `Startup` class, add the following code. This Adds Telegram bot and its update handlers to the DI
-container and also uses long-polling method to get new updates.
+container and also uses long-polling method to get new updates every 3 seconds.
 
 ```c#
 public void ConfigureServices(IServiceCollection services) {
@@ -62,15 +69,22 @@ public void ConfigureServices(IServiceCollection services) {
 }
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
-    Task loopTask = new Task(async () => {
-        var botManager = ((IServiceProvider)app.ApplicationServices).GetRequiredService<IBotManager<EchoBot>>();
-        while (true) {
+    var source = new CancellationTokenSource();
+    Task.Factory.StartNew(() => {
+        Console.WriteLine("Press Enter to stop bot manager...");
+        Console.ReadLine();
+        source.Cancel();
+    });
+    Task.Factory.StartNew(async () => {
+        var botManager = app.ApplicationServices.GetRequiredService<IBotManager<EchoBot>>();
+        while (!source.IsCancellationRequested) {
             await Task.Delay(3_000);
             await botManager.GetAndHandleNewUpdatesAsync();
-        }});
-    Task.Run(loopTask).ContinueWith(t => {
-            if (t.IsFaulted) throw t.Exception;
-        });
+        }
+        Console.WriteLine("Bot manager stopped.");
+    }).ContinueWith(t => {
+        if (t.IsFaulted) throw t.Exception;
+    });
 }
 ```
 

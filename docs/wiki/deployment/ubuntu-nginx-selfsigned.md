@@ -1,3 +1,4 @@
+# ToDo: Use FDD method and start with Echo Bot. Add Another guide for CrazyCircleGame
 # Deploy to Ubuntu with Nginx and Self-Signed Certificate
 
 This tutorial shows you how to deploy your bot to an **Ubuntu 17.04** server and setup **webhooks**
@@ -131,7 +132,9 @@ server {
     ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
     ssl_prefer_server_ciphers on;
 
-    location ~* ^/bots/sample-games-bot/webhook/.+$ {
+############## REPLACE {your-bot-username} IN BELOW LINE ##############
+    location ~* ^/bots/{your-bot-username}/webhook/.+$ {
+############## REPLACE {your-bot-username} IN ABOVE LINE ##############
         proxy_pass          http://0.0.0.0:5000;
         proxy_http_version  1.1;
         proxy_set_header    Upgrade $http_upgrade;
@@ -159,6 +162,7 @@ and store the configurations there.
 {
   "CrazyCircleBot": {
     "ApiToken": "{your-api-token}",
+    "BotUserName": "{your-bot-username}",
     "PathToCertificate": "/etc/nginx/certificates/sample-games-bot.pem",
     "WebhookUrl": "https://example.com/bots/{bot}/webhook/{token}"
   }
@@ -170,4 +174,7 @@ Try `/start` command in chat.
 
 ```bash
 sudo systemctl start sample-games-bot
+
+# See app logs
+sudo journalctl --identifier=sample-games-bot --follow
 ```

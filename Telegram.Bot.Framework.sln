@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE16
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleGames", "sample\SampleGames\SampleGames.csproj", "{BEEC1B23-0A48-4C95-8404-85292EA65CFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleEchoBot", "sample\SampleEchoBot\SampleEchoBot.csproj", "{3FDDF9F7-70ED-498D-9A10-A81269C82A96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BEEC1B23-0A48-4C95-8404-85292EA65CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEEC1B23-0A48-4C95-8404-85292EA65CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEEC1B23-0A48-4C95-8404-85292EA65CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FDDF9F7-70ED-498D-9A10-A81269C82A96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FDDF9F7-70ED-498D-9A10-A81269C82A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FDDF9F7-70ED-498D-9A10-A81269C82A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FDDF9F7-70ED-498D-9A10-A81269C82A96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 		{8E0E2D78-B7CA-4179-9B1B-E212E1653144} = {A77F7142-8E1D-4843-B862-12D7D4A8CD67}
 		{8134A822-4CAC-4BA0-825D-0199E111E229} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
 		{BEEC1B23-0A48-4C95-8404-85292EA65CFF} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
+		{3FDDF9F7-70ED-498D-9A10-A81269C82A96} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
 	EndGlobalSection
 EndGlobal

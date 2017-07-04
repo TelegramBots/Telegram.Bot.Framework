@@ -16,6 +16,6 @@ If you are looking for a few clues to begin with, look at the guides here.
 
 ## Deployment
 
-This section helps you to deploy your bot on a server and setup long polling or webhook.
+This section helps you to deploy your bot on a server and set its webhook.
 
-- [Webhooks on Ubuntu with Nginx](./deployment/ubuntu-nginx.md)
+- [Deploy to Ubuntu with Nginx and Self-Signed Certificate](./deployment/ubuntu-nginx-selfsigned.md)

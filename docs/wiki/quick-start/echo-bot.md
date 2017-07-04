@@ -59,7 +59,8 @@ public class EchoCommand : CommandBase<EchoCommandArgs> {
 ### Startup
 
 In `Startup` class, add the following code. This Adds Telegram bot and its update handlers to the DI
-container and also uses long-polling method to get new updates every 3 seconds.
+container and also uses long-polling method to get new updates every 3 seconds. If you are running this
+as a console app, pressing Enter key will stop bot manager from getting updates.
 
 ```c#
 public void ConfigureServices(IServiceCollection services) {

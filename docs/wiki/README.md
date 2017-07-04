@@ -14,6 +14,13 @@ If you are looking for a few clues to begin with, look at the guides here.
 
 - [Crazy Circle 🔴 Game](./quick-start/crazy-circle-game.md)
 
+## Games
+
+Developing Telegram games is not as easy as Echo Bot. Check the wikis in this section to
+get some help.
+
+- [Games in Telegram](./games/games-in-telegram.md)
+
 ## Deployment
 
 This section helps you to deploy your bot on a server and set its webhook.

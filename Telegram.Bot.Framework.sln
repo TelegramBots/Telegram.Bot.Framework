@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE16
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleGames", "sample\SampleGames\SampleGames.csproj", "{BEEC1B23-0A48-4C95-8404-85292EA65CFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleEchoBot", "sample\SampleEchoBot\SampleEchoBot.csproj", "{3FDDF9F7-70ED-498D-9A10-A81269C82A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleEchoBot", "sample\SampleEchoBot\SampleEchoBot.csproj", "{3FDDF9F7-70ED-498D-9A10-A81269C82A96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

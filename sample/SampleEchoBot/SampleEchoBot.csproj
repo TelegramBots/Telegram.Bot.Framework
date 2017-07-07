@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />

@@ -38,11 +38,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
-    <PackageReference Include="Telegram.Bot" Version="12.0.0-beta-04" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--<ProjectReference Include="..\..\..\telegram.bot-Poulad\src\Telegram.Bot\Telegram.Bot.csproj" />-->
+    <PackageReference Include="Telegram.Bot.Core" Version="12.0.0-beta-05" />
   </ItemGroup>
 
 </Project>

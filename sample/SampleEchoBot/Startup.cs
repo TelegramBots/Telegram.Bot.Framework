@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace SampleEchoBot
@@ -34,34 +35,50 @@ namespace SampleEchoBot
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            loggerFactory.AddConsole(_configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+            ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
 
-            var source = new CancellationTokenSource();
-            Task.Factory.StartNew(() =>
-            {
-                Console.WriteLine("Press Enter to stop bot manager...");
-                Console.ReadLine();
-                source.Cancel();
-            });
-            
-            Task.Factory.StartNew(async () =>
-            {
-                var botManager = app.ApplicationServices.GetRequiredService<IBotManager<EchoBot>>();
-                while (!source.IsCancellationRequested)
+                var source = new CancellationTokenSource();
+                Task.Factory.StartNew(() =>
                 {
-                    await Task.Delay(3_000);
-                    await botManager.GetAndHandleNewUpdatesAsync();
-                }
-                Console.WriteLine("Bot manager stopped.");
-            }).ContinueWith(t =>
+                    Console.WriteLine("Press Enter to stop bot manager...");
+                    Console.ReadLine();
+                    source.Cancel();
+                });
+
+                Task.Factory.StartNew(async () =>
+                {
+                    var botManager = app.ApplicationServices.GetRequiredService<IBotManager<EchoBot>>();
+                    while (!source.IsCancellationRequested)
+                    {
+                        await Task.Delay(3_000);
+                        await botManager.GetAndHandleNewUpdatesAsync();
+                    }
+                    Console.WriteLine("Bot manager stopped.");
+                }).ContinueWith(t =>
+                {
+                    if (t.IsFaulted) throw t.Exception;
+                });
+            }
+            else
             {
-                if (t.IsFaulted) throw t.Exception;
-            });
+                app.UseExceptionHandler(appBuilder =>
+                    appBuilder.Run(context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        return Task.CompletedTask;
+                    })
+                );
+
+                app.UseTelegramBotWebhook<EchoBot>();
+                logger.LogInformation("Webhook is set for bot " + nameof(EchoBot));
+            }
+            
 
             app.Run(async context =>
             {

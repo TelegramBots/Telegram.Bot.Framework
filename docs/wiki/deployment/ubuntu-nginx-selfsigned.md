@@ -43,10 +43,12 @@ Get the source code and with .NET Core SDK installed, build the app.
 ```bash
 git clone "https://github.com/pouladpld/Telegram.Bot.Framework.git"
 
+cd Telegram.Bot.Framework
+
 dotnet restore
 dotnet build
 
-cd sample/SampleEchoBot/
+cd src/Telegram.Bot.Sample/
 dotnet publish -c Release -o bin/publish
 ```
 

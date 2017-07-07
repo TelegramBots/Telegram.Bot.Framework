@@ -41,7 +41,7 @@ sudo chmod 400 /etc/nginx/certificates/sample-echobot.key
 Get the source code and with .NET Core SDK installed, build the app.
 
 ```bash
-git clone "https://github.com/pouladpld/Telegram.Bot.Framework.git" .
+git clone "https://github.com/pouladpld/Telegram.Bot.Framework.git"
 
 dotnet restore
 dotnet build

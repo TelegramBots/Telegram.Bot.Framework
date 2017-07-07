@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Telegram.Bot.Framework;
@@ -33,7 +34,8 @@ namespace Microsoft.Extensions.DependencyInjection
             if (botOptions == null)
                 throw new ArgumentNullException(nameof(botOptions));
 
-            ThrowExceptionIfAppSettingsInvalid<TBot>(botOptions.ApiToken, botOptions.BotUserName);
+            ThrowExceptionIfAppSettingsInvalid<TBot>(botOptions.ApiToken, botOptions.BotUserName,
+                botOptions.WebhookUrl, botOptions.PathToCertificate);
 
             _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(botOptions);
@@ -58,7 +60,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             ThrowExceptionIfAppSettingsInvalid<TBot>(
                 config[nameof(BotOptions<TBot>.ApiToken)],
-                config[nameof(BotOptions<TBot>.BotUserName)]);
+                config[nameof(BotOptions<TBot>.BotUserName)],
+                config[nameof(BotOptions<TBot>.WebhookUrl)],
+                config[nameof(BotOptions<TBot>.PathToCertificate)]);
 
             _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(config);
@@ -87,7 +91,8 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         private static void ThrowExceptionIfAppSettingsInvalid<TBot>(string apiToken, string botUserName,
-            string webhookUrl = null)
+            string webhookUrl = null,
+            string certificatePath = null)
             where TBot : BotBase<TBot>
         {
             if (string.IsNullOrWhiteSpace(apiToken))
@@ -105,6 +110,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (!string.IsNullOrWhiteSpace(webhookUrl) && !webhookUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 throw new ConfigurationException($"Webhook url `{webhookUrl}` is not a HTTPS url");
+
+            if (!string.IsNullOrWhiteSpace(certificatePath) && !File.Exists(certificatePath))
+                throw new ConfigurationException($"Certificate file `{certificatePath}` does not exist.");
+
+            // todo validate rest of the settings
         }
 
         /// <summary>

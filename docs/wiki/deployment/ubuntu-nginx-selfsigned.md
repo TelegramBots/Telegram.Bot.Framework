@@ -1,14 +1,15 @@
-# ToDo: Use FDD method and start with Echo Bot. Add Another guide for CrazyCircleGame
 # Deploy to Ubuntu with Nginx and Self-Signed Certificate
 
-This tutorial shows you how to deploy your bot to an **Ubuntu 17.04** server and setup **webhooks**
-via **Nginx**. A self-signed certificate is generated and used in this process. ASP.NET Core application
-is deployed to Ubuntu server in a Self-Contained Deployment manner.
+This tutorial shows you how to deploy your bot to an **Ubuntu 16.04** server, use **Nginx** as its reverse proxy,
+and setup **webhook**.
 
-[SampleGames project](../../../sample/SampleGames/) is used in this example because it needs additional
- configurations for running its games.
+A self-signed certificate is generated and used in this process. ASP.NET Core application
+is deployed to Ubuntu server in a Framework Dependant Deployment manner.
 
-Before everything, make sure you have Nginx installed on the server.
+[SampleEchoBot project](../../../sample/SampleEchoBot/) is used in this tutorial for simplicity.
+
+First of all, make sure you have installed [.NET Core SDK](https://www.microsoft.com/net/core#linuxubuntu) and
+[Nginx](https://help.ubuntu.com/community/Nginx) on the server.
 
 > `www.example.com` represents our arbitrary domain name here.
 
@@ -18,10 +19,9 @@ Telegram uses your bot's certificate to authorize and encrypt webhook messages t
 Telegram documentations [here](https://core.telegram.org/bots/api#setwebhook) and [here](https://core.telegram.org/bots/self-signed)
 
 If you don't have a trusted TLS certificate, use the command below to generate a self-signed certificate.
-This guides continues using the following self-signed certificate.
 
 ```bash
-openssl req -newkey rsa:2048 -sha256 -nodes -keyout sample-games-bot.key -x509 -days 365 -out sample-games-bot.pem -subj "/C=CA/ST=Ontario/L=Toronto/O=Telegram Bot Framework Organization/CN=example.com"
+openssl req -newkey rsa:2048 -sha256 -nodes -keyout sample-echobot.key -x509 -days 365 -out sample-echobot.pem -subj "/C=CA/ST=Ontario/L=Toronto/O=Telegram Bot Framework Organization/CN=example.com"
 ```
 
 > Note that the CN, `example.com` here, should exactly match the domain name in webhook URL you set
@@ -31,52 +31,67 @@ Copy bot certificate files to Nginx configuration directory.
 
 ```bash
 sudo mkdir /etc/nginx/certificates
-sudo cp sample-games-bot.{key,pem} /etc/nginx/certificates
-sudo chown www-data:www-data /etc/nginx/certificates/sample-games-bot.{key,pem}
-sudo chmod 400 /etc/nginx/certificates/sample-games-bot.key
+sudo cp sample-echobot.{key,pem} /etc/nginx/certificates
+sudo chown www-data:www-data /etc/nginx/certificates/sample-echobot.{key,pem}
+sudo chmod 400 /etc/nginx/certificates/sample-echobot.key
 ```
 
 ## Publish
 
-This is self-contained deployment so We need to build and publish the app for Ubuntu runtime.
-
-On your development machine, with .NET Core SDK installed, run the following commands to get the
-app ready for Ubuntu. It should output the app to `sample/SampleGames/bin/publish` directory.
-Copy it to your Ubuntu server.
+Get the source code and with .NET Core SDK installed, build the app.
 
 ```bash
-## On Your Development Machine
-# cd sample/SampleGames/
-dotnet restore -r ubuntu.16.10-x64
-dotnet publish -c Release -o bin/publish -r ubuntu.16.10-x64
+git clone "https://github.com/pouladpld/Telegram.Bot.Framework.git" .
+
+dotnet restore
+dotnet build
+
+cd sample/SampleEchoBot/
+dotnet publish -c Release -o bin/publish
 ```
 
-On Ubuntu server, create app's directory and copy the app to it.
+Create app's directory, give it necessary permissions and copy the app to it.
 
 ```bash
-## On Ubuntu Server
-sudo mkdir -p /var/www/aspnet/sample-games-bot/
-sudo chown -R :www-data /var/www/aspnet/sample-games-bot
-sudo chmod -R g+s /var/www/aspnet/sample-games-bot
+sudo mkdir -p /var/www/aspnet/sample-echobot/
+sudo chown -R :www-data /var/www/aspnet/sample-echobot
+sudo chmod -R g+s /var/www/aspnet/sample-echobot
 
-sudo cp -r bin/publish/* /var/www/aspnet/sample-games-bot/
-sudo chmod ug+x /var/www/aspnet/sample-games-bot/SampleGames
+sudo cp -r bin/publish/* /var/www/aspnet/sample-echobot/
 ```
 
-## Application Service
+## App Configurations
 
-Add a system service for bot. Create file `/etc/systemd/system/sample-games-bot.service` and
+Create file `/var/www/aspnet/sample-echobot/appsettings.Production.json`
+and store the configurations there.
+
+```json
+{
+  "EchoBot": {
+    "ApiToken": "{your-api-token}",
+    "BotUserName": "{your-bot-username}",
+    "PathToCertificate": "/etc/nginx/certificates/sample-echobot.pem",
+    "WebhookUrl": "https://example.com/bots/{bot}/webhook/{token}"
+  }
+}
+```
+
+> Replace the values for _ApiToken_ and _BotUserName_, and domain name in _WebhookUrl_.
+
+## App Service
+
+Add a system service for bot. Create file `/etc/systemd/system/sample-echobot.service` and
 write the following configuration to it.
 
 ```text
 [Unit]
-    Description=Sample Games Bot
+    Description=Sample Echo Bot
 
     [Service]
-    ExecStart=/bin/bash -c "cd /var/www/aspnet/sample-games-bot && ./SampleGames"
+    ExecStart=/bin/bash -c "cd /var/www/aspnet/sample-echobot && dotnet ./SampleEchoBot.dll"
     Restart=always
     RestartSec=10
-    SyslogIdentifier=sample-games-bot
+    SyslogIdentifier=sample-echobot
     User=www-data
     Environment=ASPNETCORE_ENVIRONMENT=Production
 
@@ -102,6 +117,7 @@ Open file `/etc/nginx/sites-available/default` and edit Nginx configurations:
 
 ```nginx
 server {
+# Change domain name here
     server_name example.com localhost;
 
     listen  80;
@@ -120,21 +136,21 @@ server {
 }
 
 server {
+# Change domain name here
     server_name example.com localhost;
 
     listen 443  ssl;
     listen 8080 ssl;
     listen 8443 ssl;
 
-    ssl_certificate     /etc/nginx/certificates/sample-games-bot.pem;
-    ssl_certificate_key /etc/nginx/certificates/sample-games-bot.key;
+    ssl_certificate     /etc/nginx/certificates/sample-echobot.pem;
+    ssl_certificate_key /etc/nginx/certificates/sample-echobot.key;
 
     ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
     ssl_prefer_server_ciphers on;
 
-############## REPLACE {your-bot-username} IN BELOW LINE ##############
+# Change {your-bot-username} here
     location ~* ^/bots/{your-bot-username}/webhook/.+$ {
-############## REPLACE {your-bot-username} IN ABOVE LINE ##############
         proxy_pass          http://0.0.0.0:5000;
         proxy_http_version  1.1;
         proxy_set_header    Upgrade $http_upgrade;
@@ -146,35 +162,22 @@ server {
 }
 ```
 
+> Replace values for domain name in _server_name_ and _{your-bot-username}_ in location url.
+
 Test new Nginx configurations and restart the web server.
 
 ```bash
-sudo nginx -t
-sudo systemctl restart nginx
+sudo nginx -t && sudo systemctl restart nginx
 ```
 
-### App Configurations
-
-Before running the app, we need to provide it configurations. Create file `/var/www/aspnet/sample-games-bot/appsettings.Production.json`
-and store the configurations there.
-
-```json
-{
-  "CrazyCircleBot": {
-    "ApiToken": "{your-api-token}",
-    "BotUserName": "{your-bot-username}",
-    "PathToCertificate": "/etc/nginx/certificates/sample-games-bot.pem",
-    "WebhookUrl": "https://example.com/bots/{bot}/webhook/{token}"
-  }
-}
-```
+## Start
 
 That's all. Start the app. App sets webhook at startup and you should be able to chat with it.
-Try `/start` command in chat.
+Try `/echo` command in chat.
 
 ```bash
-sudo systemctl start sample-games-bot
+sudo systemctl start sample-echobot
 
 # See app logs
-sudo journalctl --identifier=sample-games-bot --follow
+sudo journalctl --identifier=sample-echobot --follow
 ```

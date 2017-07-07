@@ -28,14 +28,12 @@ namespace Microsoft.Extensions.DependencyInjection
             where TBot : BotBase<TBot>
         {
             if (services == null)
-            {
                 throw new ArgumentNullException(nameof(services));
-            }
 
             if (botOptions == null)
-            {
                 throw new ArgumentNullException(nameof(botOptions));
-            }
+
+            ThrowExceptionIfAppSettingsInvalid<TBot>(botOptions.ApiToken, botOptions.BotUserName);
 
             _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(botOptions);
@@ -52,10 +50,15 @@ namespace Microsoft.Extensions.DependencyInjection
             (this IServiceCollection services, IConfiguration config)
             where TBot : BotBase<TBot>
         {
+            if (services == null)
+                throw new ArgumentNullException(nameof(services));
+
             if (config == null)
-            {
                 throw new ArgumentNullException(nameof(config));
-            }
+
+            ThrowExceptionIfAppSettingsInvalid<TBot>(
+                config[nameof(BotOptions<TBot>.ApiToken)],
+                config[nameof(BotOptions<TBot>.BotUserName)]);
 
             _services = services;
             return new TelegramBotFrameworkBuilder<TBot>(config);
@@ -81,6 +84,27 @@ namespace Microsoft.Extensions.DependencyInjection
             /// </summary>
             /// <returns>Instance of IServiceCollection</returns>
             IServiceCollection Configure();
+        }
+
+        private static void ThrowExceptionIfAppSettingsInvalid<TBot>(string apiToken, string botUserName,
+            string webhookUrl = null)
+            where TBot : BotBase<TBot>
+        {
+            if (string.IsNullOrWhiteSpace(apiToken))
+                throw new ArgumentNullException(nameof(BotOptions<TBot>.ApiToken));
+
+            if (apiToken.Length < 25)
+                throw new ConfigurationException($"API token `{apiToken}` is too short.", "Check bot's token with BotFather");
+
+            if (string.IsNullOrWhiteSpace(botUserName))
+                throw new ArgumentNullException(nameof(BotOptions<TBot>.BotUserName));
+
+            if (!botUserName.EndsWith("bot", StringComparison.OrdinalIgnoreCase))
+                throw new ConfigurationException($"Bot user name `{botUserName}` is not valid.",
+                    "Bot user names should end with `bot` or `_bot`.");
+
+            if (!string.IsNullOrWhiteSpace(webhookUrl) && !webhookUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                throw new ConfigurationException($"Webhook url `{webhookUrl}` is not a HTTPS url");
         }
 
         /// <summary>

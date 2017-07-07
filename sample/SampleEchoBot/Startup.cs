@@ -46,7 +46,7 @@ namespace SampleEchoBot
                 var source = new CancellationTokenSource();
                 Task.Factory.StartNew(() =>
                 {
-                    Console.WriteLine("Press Enter to stop bot manager...");
+                    logger.LogDebug("Press Enter to stop bot manager...");
                     Console.ReadLine();
                     source.Cancel();
                 });
@@ -54,12 +54,17 @@ namespace SampleEchoBot
                 Task.Factory.StartNew(async () =>
                 {
                     var botManager = app.ApplicationServices.GetRequiredService<IBotManager<EchoBot>>();
+
+                    // make sure webhook is disabled so we can use long-polling
+                    await botManager.SetWebhookStateAsync(false);
+                    logger.LogDebug("Webhook is disabled. Staring update handling...");
+
                     while (!source.IsCancellationRequested)
                     {
                         await Task.Delay(3_000);
                         await botManager.GetAndHandleNewUpdatesAsync();
                     }
-                    Console.WriteLine("Bot manager stopped.");
+                    logger.LogDebug("Bot manager stopped.");
                 }).ContinueWith(t =>
                 {
                     if (t.IsFaulted) throw t.Exception;
@@ -75,10 +80,11 @@ namespace SampleEchoBot
                     })
                 );
 
+                logger.LogInformation($"Setting webhook for {nameof(EchoBot)}...");
                 app.UseTelegramBotWebhook<EchoBot>();
                 logger.LogInformation("Webhook is set for bot " + nameof(EchoBot));
             }
-            
+
 
             app.Run(async context =>
             {

@@ -44,7 +44,7 @@ public class EchoCommand : CommandBase<EchoCommandArgs> {
     public override async Task<UpdateHandlingResult> HandleCommand(Update update, EchoCommandArgs args) {
         string replyText = string.IsNullOrWhiteSpace(args.ArgsInput) ? "Echo What?" : args.ArgsInput;
 
-        await bot.Client.SendTextMessageAsync(
+        await Bot.Client.SendTextMessageAsync(
             update.Message.Chat.Id,
             replyText,
             replyToMessageId: update.Message.MessageId);

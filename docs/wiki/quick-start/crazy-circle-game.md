@@ -27,8 +27,10 @@ Create a new ASP.NET Core app and add the following NuGet packages to it:
 - `Microsoft.AspNetCore.StaticFiles`
 - `Microsoft.AspNetCore.DataProtection`
 
-Copy files from [`sample/SampleGames/wwwroot/CrazyCircleBot`](../../../sample/SampleGames/wwwroot/CrazyCircleBot)
-into this project's `wwwroot/{your-bot-user-name}/` directory.
+Copy files from [`sample/SampleGames/wwwroot/bots`](../../../sample/SampleGames/wwwroot/bots/)
+into this project's `wwwroot/bots/` directory.
+
+Rename the bot's direcotry name according to this format: `/wwwroot/bots/{your-bot-user-name}/`.
 
 ## Code
 

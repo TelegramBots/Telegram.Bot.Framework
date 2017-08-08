@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170502-03" />
-    <PackageReference Include="Moq" Version="4.7.10" />
+    <PackageReference Include="Moq" Version="4.7.99" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta2-build1317" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />

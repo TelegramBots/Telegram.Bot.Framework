@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {

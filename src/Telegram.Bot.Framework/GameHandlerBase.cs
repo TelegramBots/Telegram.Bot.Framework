@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
-using Newtonsoft.Json;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -34,7 +30,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="protectionProvider"></param>
         /// <param name="shortName">Game's short name</param>
-        protected GameHandlerBase(IDataProtectionProvider protectionProvider, // todo use Property Injection from BotManager instead
+        protected GameHandlerBase(IDataProtectionProvider protectionProvider, // ToDo use Property Injection from BotManager instead
             string shortName)
         {
             ShortName = shortName;
@@ -68,20 +64,17 @@ namespace Telegram.Bot.Framework
         /// <returns>Result of handling this update</returns>
         public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
         {
-            if (update.Type == UpdateType.CallbackQueryUpdate)
-            {
-                string protectedPlayerid = EncodePlayerId(
-                    int.Parse(update.CallbackQuery.From.Id),
-                    update.CallbackQuery.InlineMessageId,
-                    update.CallbackQuery.Message?.Chat?.Id,
-                    update.CallbackQuery.Message?.MessageId ?? default(int)
-                    );
+            string protectedPlayerid = EncodePlayerId(
+                update.CallbackQuery.From.Id,
+                update.CallbackQuery.InlineMessageId,
+                update.CallbackQuery.Message?.Chat?.Id,
+                update.CallbackQuery.Message?.MessageId ?? default(int)
+                );
 
-                string callbackUrl = WebUtility.UrlEncode(Options.ScoresUrl);
+            string callbackUrl = WebUtility.UrlEncode(Options.ScoresUrl);
 
-                string url = string.Format(Constants.UrlFormat, Options.Url, protectedPlayerid, callbackUrl);
-                await bot.Client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, url: url);
-            }
+            string url = string.Format(Constants.UrlFormat, Options.Url, protectedPlayerid, callbackUrl);
+            await bot.Client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, url: url);
 
             return UpdateHandlingResult.Handled;
         }
@@ -95,28 +88,15 @@ namespace Telegram.Bot.Framework
         public virtual async Task SetGameScoreAsync(IBot bot, string playerid, int score)
         {
             var ids = DecodePlayerId(playerid);
-            try
+            if (ids.Item2.InlineMessageId != null)
             {
-                if (ids.Item2.InlineMessageId != null)
-                {
-                    await bot.Client.SetGameScoreAsync(ids.UserId, score, ids.Item2.InlineMessageId);
-                }
-                else
-                {
-                    await bot.Client.SetGameScoreAsync(ids.UserId, score,
-                        ids.Item2.Item2.ChatId,
-                        ids.Item2.Item2.MessageId);
-                }
-
+                await bot.Client.SetGameScoreAsync(ids.UserId, score, ids.Item2.InlineMessageId);
             }
-            catch (JsonException e)
+            else
             {
-                // todo remove this try-catch after issue with deserializing response is resolved
-                Debug.WriteLine(e);
-            }
-            catch (ApiRequestException e)
-            {
-                Debug.WriteLine(e);
+                await bot.Client.SetGameScoreAsync(ids.UserId, score,
+                    ids.Item2.Item2.ChatId,
+                    ids.Item2.Item2.MessageId);
             }
         }
 
@@ -128,18 +108,21 @@ namespace Telegram.Bot.Framework
         /// <returns>Array of scores for chat</returns>
         public virtual Task<GameHighScore[]> GetHighestScoresAsync(IBot bot, string playerid)
         {
+            Task<GameHighScore[]> highScoresTask;
             var ids = DecodePlayerId(playerid);
 
             if (ids.Item2.InlineMessageId != null)
             {
-                return bot.Client.GetGameHighScoresAsync(ids.UserId, ids.Item2.InlineMessageId);
+                highScoresTask = bot.Client.GetGameHighScoresAsync(ids.UserId, ids.Item2.InlineMessageId);
             }
             else
             {
-                return bot.Client.GetGameHighScoresAsync(ids.UserId,
+                highScoresTask = bot.Client.GetGameHighScoresAsync(ids.UserId,
                     ids.Item2.Item2.ChatId,
                     ids.Item2.Item2.MessageId);
             }
+
+            return highScoresTask;
         }
 
         private string EncodePlayerId(int userid, string inlineMsgId, ChatId chatid, int msgId)

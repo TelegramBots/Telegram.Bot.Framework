@@ -18,7 +18,7 @@ namespace SampleBots.Bots.GreeterBot
             _logger = logger;
         }
 
-        public override async Task HandleUnknownMessage(Update update)
+        public override async Task HandleUnknownUpdate(Update update)
         {
             _logger.LogWarning("Unable to handle an update");
 

@@ -18,7 +18,7 @@ namespace SampleGames.Bots.CrazyCircle
             _logger = logger;
         }
 
-        public override Task HandleUnknownMessage(Update update)
+        public override Task HandleUnknownUpdate(Update update)
         {
             _logger.LogWarning("Don't know how to handle update of type `{0}`", update.Type);
             return Task.CompletedTask;

@@ -13,7 +13,7 @@ namespace Telegram.Bot.Framework.Tests.Helpers
 
         }
 
-        public override Task HandleUnknownMessage(Update update)
+        public override Task HandleUnknownUpdate(Update update)
         {
             throw new NotImplementedException();
         }

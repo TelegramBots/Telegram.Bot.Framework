@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <PackageId>Telegram.Bot.Framework</PackageId>
     <TargetFramework>netstandard1.6</TargetFramework>
@@ -21,15 +20,12 @@
     <Product>Telegram.Bot.Framework</Product>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2" />
@@ -38,11 +34,9 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
-    <PackageReference Include="Telegram.Bot" Version="13.1.0" />
+    <PackageReference Include="Telegram.Bot.Core" Version="13.2.1" />
   </ItemGroup>
-
   <ItemGroup>
     <!--<ProjectReference Include="..\..\..\telegram.bot-fork\src\Telegram.Bot\Telegram.Bot.csproj" />-->
   </ItemGroup>
-
 </Project>

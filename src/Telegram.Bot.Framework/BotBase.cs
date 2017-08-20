@@ -43,7 +43,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="update"></param>
         /// <returns></returns>
-        public abstract Task HandleUnknownMessage(Update update);
+        public abstract Task HandleUnknownUpdate(Update update);
 
         /// <summary>
         /// Receives the update when the hanlding process throws an exception for the update

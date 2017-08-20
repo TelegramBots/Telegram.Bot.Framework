@@ -246,3 +246,6 @@ ModelManifest.xml
 
 # Settings for development time
 appsettings.*.json
+
+# Rider IDE
+.idea

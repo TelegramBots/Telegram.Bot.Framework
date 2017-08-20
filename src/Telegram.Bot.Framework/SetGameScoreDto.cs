@@ -6,7 +6,7 @@ namespace Telegram.Bot.Framework
     /// Data transfer object containing user's score
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class SetGameScoreDto // todo make it internal
+    public class SetGameScoreDto // ToDo make it internal
     {
         /// <summary>
         /// Encoded and encrypted player id
@@ -18,6 +18,6 @@ namespace Telegram.Bot.Framework
         /// User's score
         /// </summary>
         [JsonProperty(Required = Required.Always)]
-        public int Score { get; set; } // todo make nullable. and add validations
+        public int Score { get; set; } // ToDo make nullable. and add validations
     }
 }

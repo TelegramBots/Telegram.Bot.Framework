@@ -1,7 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -72,7 +74,7 @@ namespace Telegram.Bot.Framework
                 RegexOptions.IgnoreCase);
             if (argsInputMatch.Success)
             {
-                args.ArgsInput = argsInputMatch.Groups[1].Value; // todo unit test
+                args.ArgsInput = argsInputMatch.Groups[1].Value; // ToDo unit test
             }
 
             return args;
@@ -85,12 +87,25 @@ namespace Telegram.Bot.Framework
         /// <returns><value>true</value> if this command should handle the update; otherwise <value>false</value></returns>
         protected virtual bool CanHandleCommand(Update update)
         {
-            var canHandle = false;
-            if (!string.IsNullOrEmpty(update.Message?.Text))
+            bool canHandle = false;
+
+            var zippedMessageEntity = update.Message.Entities
+                .Zip(update.Message.EntityValues, (entity, val) => new
+                {
+                    MessageEntity = entity,
+                    Value = val
+                })
+                .SingleOrDefault(zipped =>
+                    zipped.MessageEntity.Type == MessageEntityType.BotCommand &&
+                    zipped.MessageEntity.Offset == 0
+                );
+
+            if (zippedMessageEntity != null)
             {
-                canHandle = Regex.IsMatch(update.Message.Text,
-                    $@"^\s*/{Name}(?:(?:@{Bot.UserName}(?:\s+.*)?)|\s+.*|)\s*$", RegexOptions.IgnoreCase);
+                canHandle = Regex.IsMatch(zippedMessageEntity.Value,
+                    $@"^/{Name}(?:@{Bot.UserName})?$", RegexOptions.IgnoreCase);
             }
+
             return canHandle;
         }
 

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -96,7 +95,7 @@ namespace Telegram.Bot.Framework
 
                 if (!anyHandlerExists)
                 {
-                    await _bot.HandleUnknownMessage(update);
+                    await _bot.HandleUnknownUpdate(update);
                 }
             }
             catch (Exception e)

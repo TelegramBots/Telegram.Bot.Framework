@@ -1,7 +1,10 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using Moq;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Framework.Tests.Helpers;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Xunit;
 
 namespace Telegram.Bot.Framework.Tests
@@ -9,13 +12,14 @@ namespace Telegram.Bot.Framework.Tests
     public class CommandBaseTests
     {
         [Theory(DisplayName = "Accept handling specific commands")]
-        [InlineData("/test")]
-        [InlineData("/test    ")]
-        [InlineData("/test abc")]
-        [InlineData("/test@test_bot")]
-        [InlineData("/test@test_bot ")]
-        [InlineData("/test@test_bot  !")]
-        public void ShouldAcceptHandlingAll(string text)
+        [InlineData("/test", "/test")]
+        [InlineData("/test    ", "/test")]
+        [InlineData("/test abc", "/test")]
+        [InlineData("/TesT", "/tESt")]
+        [InlineData("/test@test_bot", "/test@test_bot")]
+        [InlineData("/test@test_bot ", "/test@test_bot")]
+        [InlineData("/test@test_bot  !", "/test@test_bot")]
+        public void Should_Accept_Handling_All(string text, string commandValue)
         {
             const string botUsername = "Test_Bot";
             var mockBot = new Mock<IBot>();
@@ -27,7 +31,16 @@ namespace Telegram.Bot.Framework.Tests
                 Message = new Message
                 {
                     Text = text,
-                }
+                    Entities = new List<MessageEntity>
+                    {
+                        new MessageEntity
+                        {
+                            Type = MessageEntityType.BotCommand,
+                            Offset = text.IndexOf(commandValue, StringComparison.OrdinalIgnoreCase),
+                            Length = commandValue.Length
+                        },
+                    },
+                },
             };
             var sut = new TestCommand("Test");
 
@@ -45,7 +58,7 @@ namespace Telegram.Bot.Framework.Tests
         [InlineData("/testt")]
         [InlineData("/@test_bot")]
         [InlineData("/tes@test_bot")]
-        public void ShouldRefuseHandlingTextMessages(string text)
+        public void Should_Refuse_Handling_Text_Messages(string text)
         {
             const string botUsername = "Test_Bot";
             var mockBot = new Mock<IBot>();
@@ -57,7 +70,7 @@ namespace Telegram.Bot.Framework.Tests
                 Message = new Message
                 {
                     Text = text,
-                }
+                },
             };
             var sut = new TestCommand("Test");
 

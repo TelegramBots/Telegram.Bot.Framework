@@ -7,9 +7,9 @@
 
 Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
-You can see 2 sample bots using this framework in action here:
+See an example in action:
 
-[Sample - Greeter bot](https://t.me/sample_greeter_bot)
+Click [here to open it in Telegram](https://t.me/sample_echoer_bot) or search for `@sample_echoer_bot` there.
 
 [Sample - Echoer bot](https://t.me/sample_echoer_bot)
 

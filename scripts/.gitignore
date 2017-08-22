@@ -1,0 +1,2 @@
+nginx/*
+!nginx/nginx.example.conf

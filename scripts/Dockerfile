@@ -9,4 +9,5 @@ ENV ASPNETCORE_ENVIRONMENT ${env}
 WORKDIR /app
 EXPOSE 80
 COPY bin/publish .
+
 ENTRYPOINT dotnet "${PROJECT_NAME}.dll"

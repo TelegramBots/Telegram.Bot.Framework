@@ -42,7 +42,11 @@ namespace Telegram.Bot.Framework
         public bool CanHandleUpdate(IBot bot, Update update)
         {
             Bot = Bot ?? bot;
-            return CanHandleCommand(update);
+
+            bool isTextMessage = new[] {update.Message?.Type, update.EditedMessage?.Type}
+                .Contains(MessageType.TextMessage);
+            /////
+            return isTextMessage && CanHandleCommand(update);
         }
 
         /// <summary>
@@ -71,7 +75,7 @@ namespace Telegram.Bot.Framework
             };
             var argsInputMatch = Regex.Match(update.Message.Text,
                 $@"^/{Name}(?:(?:@{Bot.UserName}(?:\s(?<args>.*))?)|\s(?<args>.*)|)$",
-                RegexOptions.IgnoreCase);
+                RegexOptions.IgnoreCase); // ToDo use message entities instead
             if (argsInputMatch.Success)
             {
                 args.ArgsInput = argsInputMatch.Groups[1].Value; // ToDo unit test

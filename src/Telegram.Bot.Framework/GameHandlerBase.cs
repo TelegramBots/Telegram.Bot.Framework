@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Logging;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 
@@ -25,14 +27,20 @@ namespace Telegram.Bot.Framework
 
         private readonly IDataProtector _dataProtector;
 
+        private readonly ILogger _logger;
+
         /// <summary>
         /// Initializes a new instance of game handler
         /// </summary>
         /// <param name="protectionProvider"></param>
         /// <param name="shortName">Game's short name</param>
-        protected GameHandlerBase(IDataProtectionProvider protectionProvider, // ToDo use Property Injection from BotManager instead
-            string shortName)
+        /// <param name="logger">An instance of logger</param>
+        protected GameHandlerBase(
+            IDataProtectionProvider protectionProvider, // ToDo use Property Injection from BotManager instead
+            string shortName,
+            ILogger logger)
         {
+            _logger = logger;
             ShortName = shortName;
             _dataProtector = protectionProvider.CreateProtector(nameof(GameHandlerBase));
         }
@@ -69,7 +77,7 @@ namespace Telegram.Bot.Framework
                 update.CallbackQuery.InlineMessageId,
                 update.CallbackQuery.Message?.Chat?.Id,
                 update.CallbackQuery.Message?.MessageId ?? default(int)
-                );
+            );
 
             string callbackUrl = WebUtility.UrlEncode(Options.ScoresUrl);
 
@@ -87,16 +95,32 @@ namespace Telegram.Bot.Framework
         /// <param name="score">User's score</param>
         public virtual async Task SetGameScoreAsync(IBot bot, string playerid, int score)
         {
+            Task<Message> setScoreTask;
             var ids = DecodePlayerId(playerid);
             if (ids.Item2.InlineMessageId != null)
             {
-                await bot.Client.SetGameScoreAsync(ids.UserId, score, ids.Item2.InlineMessageId);
+                setScoreTask = bot.Client.SetGameScoreAsync(ids.UserId, score, ids.Item2.InlineMessageId);
             }
             else
             {
-                await bot.Client.SetGameScoreAsync(ids.UserId, score,
+                setScoreTask = bot.Client.SetGameScoreAsync(ids.UserId, score,
                     ids.Item2.Item2.ChatId,
                     ids.Item2.Item2.MessageId);
+            }
+
+            try
+            {
+                await setScoreTask;
+            }
+            catch (ApiRequestException e) when (e.Message.Contains("SCORE_INVALID"))
+            {
+                _logger.LogDebug("Failed to set invalid game score of {0} for player `{1}`",
+                    score, ids);
+            }
+            catch (ApiRequestException e) when (e.Message.Contains("BOT_SCORE_NOT_MODIFIED"))
+            {
+                _logger.LogDebug("Score ({0}) not modified for player `{1}`",
+                    score, ids);
             }
         }
 
@@ -127,7 +151,7 @@ namespace Telegram.Bot.Framework
 
         private string EncodePlayerId(int userid, string inlineMsgId, ChatId chatid, int msgId)
         {
-            var values = new List<string> { userid.ToString() };
+            var values = new List<string> {userid.ToString()};
 
             if (inlineMsgId != null)
             {
@@ -150,7 +174,8 @@ namespace Telegram.Bot.Framework
             return playerid;
         }
 
-        private (int UserId, (string InlineMessageId, (ChatId ChatId, int MessageId))) DecodePlayerId(string encodedPlayerid)
+        private (int UserId, (string InlineMessageId, (ChatId ChatId, int MessageId))) DecodePlayerId(
+            string encodedPlayerid)
         {
             encodedPlayerid = WebUtility.UrlDecode(encodedPlayerid);
             encodedPlayerid = _dataProtector.Unprotect(encodedPlayerid);

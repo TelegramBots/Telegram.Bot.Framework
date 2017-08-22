@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.Middlewares
         /// </summary>
         /// <param name="next">Instance of request delegate</param>
         /// <param name="botManager">Bot manager for the bot</param>
-        /// <param name="logger">Logger for this bot</param>
+        /// <param name="logger">Logger for this middleware</param>
         public TelegramBotMiddleware(RequestDelegate next, 
             IBotManager<TBot> botManager,
             ILogger<TelegramBotMiddleware<TBot>> logger)

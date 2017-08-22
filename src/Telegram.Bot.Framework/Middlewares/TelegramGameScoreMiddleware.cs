@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -19,15 +20,21 @@ namespace Telegram.Bot.Framework.Middlewares
 
         private readonly IInternalBotManager<TBot> _botManager;
 
+        private readonly ILogger<TelegramGameScoreMiddleware<TBot>> _logger;
+
         /// <summary>
         /// Initializes an instance of middleware
         /// </summary>
         /// <param name="next">Instance of request delegate</param>
         /// <param name="botManager">Bot manager for the bot</param>
-        public TelegramGameScoreMiddleware(RequestDelegate next, IBotManager<TBot> botManager)
+        /// <param name="logger">Logger for this middleware</param>
+        public TelegramGameScoreMiddleware(RequestDelegate next,
+            IBotManager<TBot> botManager,
+            ILogger<TelegramGameScoreMiddleware<TBot>> logger)
         {
             _next = next;
-            _botManager = (IInternalBotManager<TBot>)botManager;
+            _logger = logger;
+            _botManager = (IInternalBotManager<TBot>) botManager;
         }
 
         /// <summary>
@@ -41,11 +48,11 @@ namespace Telegram.Bot.Framework.Middlewares
             string gameShortname = _botManager.BotGameOptions
                 .SingleOrDefault(g =>
                     _botManager.ReplaceGameUrlTokens(g.ScoresUrl, g.ShortName).EndsWith(path)
-                        )
-                    ?.ShortName;
+                )
+                ?.ShortName;
 
             if (string.IsNullOrWhiteSpace(gameShortname) ||
-                !new[] { HttpMethods.Post, HttpMethods.Get }.Contains(context.Request.Method))
+                !new[] {HttpMethods.Post, HttpMethods.Get}.Contains(context.Request.Method))
             {
                 await _next.Invoke(context);
                 return;
@@ -63,6 +70,12 @@ namespace Telegram.Bot.Framework.Middlewares
             if (context.Request.Method == HttpMethods.Get)
             {
                 string playerid = context.Request.Query["id"];
+                if (string.IsNullOrWhiteSpace(playerid) || playerid.Length < 20)
+                {
+                    _logger.LogError("Invalid player id passed. id=`{0}`", playerid);
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    return;
+                }
 
                 var highScores = await gameHandler.GetHighestScoresAsync(_botManager.Bot, playerid);
 
@@ -79,12 +92,22 @@ namespace Telegram.Bot.Framework.Middlewares
                     dataContent = await reader.ReadToEndAsync();
                 }
 
-                var scoreData = JsonConvert.DeserializeObject<SetGameScoreDto>(dataContent);
-                if (scoreData == null)
+                SetGameScoreDto scoreData;
+                try
                 {
-                    throw new Exception();
+                    scoreData = JsonConvert.DeserializeObject<SetGameScoreDto>(dataContent);
+                    if (scoreData == null)
+                        throw new NullReferenceException();
                 }
-
+                catch (Exception e)
+                   when(e is JsonSerializationException || e is NullReferenceException)
+                {
+                    _logger.LogError("Unable to deserialize score data. {0}.{1}Content: `{2}`",
+                        e.Message, Environment.NewLine, dataContent);
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    return;
+                }
+                
                 await gameHandler.SetGameScoreAsync(_botManager.Bot, scoreData.PlayerId, scoreData.Score);
                 context.Response.StatusCode = StatusCodes.Status201Created;
             }

@@ -26,8 +26,8 @@ namespace SampleGames.Bots.CrazyCircle
 
         public override Task HandleFaultedUpdate(Update update, Exception e)
         {
-            _logger.LogError("Error in handling update of type `{0}`. {1}", 
-                update.Type, e.Message);
+            _logger.LogError("Error in handling update of type `{0}`.{1}{2}",
+                update.Type, Environment.NewLine, e);
             return Task.CompletedTask;
         }
     }

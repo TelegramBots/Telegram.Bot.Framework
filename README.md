@@ -2,7 +2,7 @@
 
  [![NuGet](https://img.shields.io/nuget/v/Telegram.Bot.Framework.svg?style=flat-square&label=Telegram.Bot.Framework&maxAge=3600)](https://www.nuget.org/packages/Telegram.Bot.Framework)
  [![Build Status](https://img.shields.io/travis/pouladpld/Telegram.Bot.Framework.svg?style=flat-square&maxAge=3600)](https://travis-ci.org/pouladpld/Telegram.Bot.Framework)
- [![License](https://img.shields.io/github/license/pouladpld/Telegram.Bot.Framework.svg?style=flat-square&maxAge=2592000)](https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/LICENSE.txt)
+ [![License](https://img.shields.io/github/license/pouladpld/Telegram.Bot.Framework.svg?style=flat-square&maxAge=2592000)](https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/LICENSE)
 
 <img src="./docs/icon.png" alt="Telegram Bot Framework Logo" width=200 height=200 />
 

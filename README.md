@@ -1,81 +1,34 @@
 ﻿# Telegram Bot Framework for .NET Core
 
-[![Build Status](https://travis-ci.org/pouladpld/Telegram.Bot.Framework.svg?branch=master)](https://travis-ci.org/pouladpld/Telegram.Bot.Framework)
-[![NuGet](https://img.shields.io/nuget/v/Telegram.Bot.Framework.svg)](https://www.nuget.org/packages/Telegram.Bot.Framework)
+ [![NuGet](https://img.shields.io/nuget/v/Telegram.Bot.Framework.svg?style=flat-square&label=Telegram.Bot.Framework&maxAge=3600)](https://www.nuget.org/packages/Telegram.Bot.Framework)
+ [![Build Status](https://img.shields.io/travis/pouladpld/Telegram.Bot.Framework.svg?style=flat-square&maxAge=3600)](https://travis-ci.org/pouladpld/Telegram.Bot.Framework)
+ [![License](https://img.shields.io/github/license/pouladpld/Telegram.Bot.Framework.svg?style=flat-square&maxAge=2592000)](https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/LICENSE.txt)
 
 <img src="./docs/icon.png" alt="Telegram Bot Framework Logo" width=200 height=200 />
 
-Simple framework for building Telegram bots. Ideal for running multiple chat bots inside a single ASP.NET Core app.
+Simple framework for building Telegram bots 🤖. Ideal for running multiple chat bots inside a single ASP.NET Core app.
 
-See an example in action:
+See some **sample bots** in action:
 
-Click [here to open it in Telegram](https://t.me/sample_echoer_bot) or search for `@sample_echoer_bot` there.
-
-[Sample - Echoer bot](https://t.me/sample_echoer_bot)
-
-## Screenshots
-
---> Add here <--
+- Echo bot:   [`@Sample_Echoer_Bot`](https://t.me/sample_echoer_bot)
+- Games bot:  [`@CrazyCircleBot`](https://t.me/CrazyCircleBot)
 
 ## Getting Started
 
-### Requirements
+This project targets .NET Standard 1.6 so make sure you have Visual Studio 2017 or [.NET Core](https://www.microsoft.com/net/download/core#/current) (v1.1 or above) installed.
 
-- Visual Studio 2017 or [.NET Core 1.1](https://www.microsoft.com/net/download/core#/current).
+Creating a bot with good architecture becomes very simple using this framework. Have a look at the [**Quick Start** wiki](./docs/wiki/quick-start/echo-bot.md) to make your fist _Echo Bot_.
 
-> Talk to **[BotFather](http://t.me/botfather)** to get a token for your Telegram bot.
+There is much more you can do with your bot. See what's available at [**wikis**](./docs/wiki/README.md).
 
-### Implementation
+## Framework Features
 
-Getting your bot to work is very easy with this framework. Following code snippets show that:
+- Allows you to have multiple bots running inside one app
+- Able to share code(update handlers) between multiple bots
+- Easy to use with webhooks(specially with Docker deployments)
+- Optimized for making Telegram Games
+- Simplifies many repititive tasks in developing bots
 
-#### Bot Type
+## Samples
 
-```c#
-class EchoerBot : BotBase<EchoerBot>
-{
-    ...
-}
-```
-
-#### Message Handler
-
-```c#
-class TextMessageEchoer : UpdateHandlerBase
-{
-    public override bool CanHandleUpdate(IBot bot, Update update)
-    {
-        // Can handle it only if the update is a text message
-    }
-
-    public override async Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update)
-    {
-        // Echo back the text to user
-        return UpdateHandlingResult.Handled;
-    }
-}
-```
-
-#### Configure the Bot
-
-```c#
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddTelegramBot<EchoerBot>(Configuration.GetSection("EchoerBot"))
-        .AddUpdateHandler<TextMessageEchoer>()
-        .Configure();
-}
-```
-
-#### Use Webhook Middleware
-
-```c#
-public void Configure(IApplicationBuilder app)
-{
-    app.UseTelegramBotWebhook<EchoerBot>(ensureWebhookEnabled: true);
-}
-```
-
-## Examples
-
-Have a look at the [Sample app](./src/Telegram.Bot.Sample/) to see some examples.
+Don't wanna read wikis? Read C# code of sample projects in [samples directory](./sample/).

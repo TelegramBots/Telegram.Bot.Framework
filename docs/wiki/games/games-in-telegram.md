@@ -15,7 +15,7 @@ Each game has a _short name_ that is game's unique id whithin a bot.
 
 ## Redirecting user to Game
 
-In the chat, when user clicks on _Play LubmberJack_, for instance, your bot receives a CallbackQuery update
+In the chat, when user clicks on _Play LumberJack_, for instance, your bot receives a CallbackQuery update
 containing `game_short_name`. In response, bot makes a `answerCallbackQuery` request passing the url to the
 game's page. Telegram client opens the browser and the fun starts!
 
@@ -27,16 +27,16 @@ _Open in..._ while in game to open it in a browser. You will see the link to gam
 ## High Scores
 
 Games can set high scores for users in the chat that they got opened from. This means when game is finished,
-a request is usually made to bot's ASP.NET Core app and bot makes a `setGameScore` to Telegram API. For getting
-high scores, a `getGameHighScores` request could be send in the same way.
+a request is usually made to backend (bot's ASP.NET Core app) and bot makes a `setGameScore` call to Telegram API.
+
+Similarly, for getting high scores, a request from HTML page(game) could be sent to backend. Then, bot makes a `getGameHighScores` call to Bot API and passes back the high scores to the game.
 
 ## Deoployment
 
-Your Game's HTML5 page can be anywhere on the internet accessible to public.
-It's worth mentioning as a web developer, you should consider many things in your deployment such as:
+Your Game's HTML page can be anywhere on the internet. It's worth mentioning as a web developer, you should consider many things in your deployment such as:
 
 - Preferring HTTPS over HTTP
-- Using a trusted TLS/SSL certificate
+- Using a trusted TLS certificate
 - Allowing Cross-Origin requests, if necessary
 - Guarding against attacks
 - Preventing cheaters

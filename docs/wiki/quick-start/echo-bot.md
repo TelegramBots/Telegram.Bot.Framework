@@ -4,7 +4,7 @@ This guide shows you how to quickly run your first bot using Visual Studio 2017 
 
 **Complete code is in [SampleEchoBot project](../../../sample/SampleEchoBot)**.
 
-This guide assumes that:
+This guide assumes that
 
 - You already have registered a bot and have its API Token.
 
@@ -19,11 +19,12 @@ Create a new ASP.NET Core (empty) version 1.1 or above app and add `Telegram.Bot
 Create your bot class:
 
 ```c#
+// EchoBot.cs
 public class EchoBot : BotBase<EchoBot> {
     public EchoBot(IOptions<BotOptions<EchoBot>> botOptions)
         : base(botOptions) { }
 
-    public override Task HandleUnknownMessage(Update update) => Task.CompletedTask;
+    public override Task HandleUnknownUpdate(Update update) => Task.CompletedTask;
 
     public override Task HandleFaultedUpdate(Update update, Exception e) => Task.CompletedTask;
 }
@@ -34,6 +35,7 @@ public class EchoBot : BotBase<EchoBot> {
 Create an `/echo` command that echoes user input back:
 
 ```c#
+// EchoCommand.cs
 public class EchoCommandArgs : ICommandArgs {
     public string RawInput { get; set; }
     public string ArgsInput { get; set; }
@@ -60,19 +62,29 @@ public class EchoCommand : CommandBase<EchoCommandArgs> {
 
 In `Startup` class, add the following code. This Adds Telegram bot and its update handlers to the DI
 container and also uses long-polling method to get new updates every 3 seconds. If you are running this
-as a console app, pressing Enter key will stop bot manager from getting updates.
+app in a terminal, pressing Enter key will stop bot manager from getting updates.
 
 ```c#
+// Startup.cs
+private readonly IConfigurationRoot _configuration;
+
+public Startup(IHostingEnvironment env) {
+    _configuration  = new ConfigurationBuilder()
+        .SetBasePath(env.ContentRootPath)
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .Build();
+}
+
 public void ConfigureServices(IServiceCollection services) {
     services.AddTelegramBot<EchoBot>(_configuration.GetSection("EchoBot"))
         .AddUpdateHandler<EchoCommand>()
         .Configure();
 }
 
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
+public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
     var source = new CancellationTokenSource();
     Task.Factory.StartNew(() => {
-        Console.WriteLine("Press Enter to stop bot manager...");
+        Console.WriteLine("## Press Enter to stop bot manager...");
         Console.ReadLine();
         source.Cancel();
     });
@@ -82,7 +94,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
             await Task.Delay(3_000);
             await botManager.GetAndHandleNewUpdatesAsync();
         }
-        Console.WriteLine("Bot manager stopped.");
+        Console.WriteLine("## Bot manager stopped.");
+        Environment.Exit(0);
     }).ContinueWith(t => {
         if (t.IsFaulted) throw t.Exception;
     });
@@ -93,13 +106,13 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 
 ## Configurations
 
-Add the following configurations to your `appsettings.json`.
+Add the following configurations to `appsettings.json` file in the project's root directory.
 
 ```json
 {
   "EchoBot": {
-    "ApiToken": "{your-bots-api-token}",
-    "BotUserName": "{your-bots-username}"
+    "ApiToken": "your bot's api token",
+    "BotUserName": "your bot's username without @"
   }
 }
 ```

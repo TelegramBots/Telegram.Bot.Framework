@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework
 
             bool isTextMessage = new[] {update.Message?.Type, update.EditedMessage?.Type}
                 .Contains(MessageType.TextMessage);
-            /////
+
             return isTextMessage && CanHandleCommand(update);
         }
 

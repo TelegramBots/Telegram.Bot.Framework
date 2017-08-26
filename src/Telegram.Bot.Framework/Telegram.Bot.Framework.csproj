@@ -2,10 +2,10 @@
     <PropertyGroup>
         <PackageId>Telegram.Bot.Framework</PackageId>
         <TargetFramework>netstandard1.6</TargetFramework>
-        <Description>Simple framework for building Telegram bots</Description>
+        <Description>Simple framework for building powerful Telegram bots 🤖 in ASP.NET Core</Description>
         <Authors>Poulad</Authors>
         <Owners>Poulad</Owners>
-        <PackageVersion>1.1.3</PackageVersion>
+        <PackageVersion>1.1.4</PackageVersion>
         <DebugType>portable</DebugType>
         <AssemblyName>Telegram.Bot.Framework</AssemblyName>
         <AssemblyTitle>Telegram.Bot.Framework</AssemblyTitle>

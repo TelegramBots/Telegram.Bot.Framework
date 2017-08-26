@@ -78,5 +78,24 @@ namespace Telegram.Bot.Framework.Tests
 
             Assert.False(actual);
         }
+
+        [Fact(DisplayName = "Should refuse handling non-message updates")]
+        public void Should_Refuse_Handling_Non_Message_Updates()
+        {
+            const string botUsername = "Test_Bot";
+            var mockBot = new Mock<IBot>();
+            mockBot.SetupGet(x => x.UserName)
+                .Returns(botUsername);
+
+            var update = new Update
+            {
+                CallbackQuery = new CallbackQuery()
+            };
+            IUpdateHandler sut = new TestCommand("Test");
+
+            var actual = sut.CanHandleUpdate(mockBot.Object, update);
+
+            Assert.False(actual);
+        }
     }
 }

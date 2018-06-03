@@ -27,6 +27,8 @@ openssl req -newkey rsa:2048 -sha256 -nodes -keyout sample-echobot.key -x509 -da
 > Note that the CN, `example.com` here, should exactly match the domain name in webhook URL you set
 in bot's settings.
 
+> If you don't have a DNS name for your server, you might be able to obtain one for free from [Freenom](https://www.freenom.com).
+
 Copy bot certificate files to Nginx configuration directory.
 
 ```bash

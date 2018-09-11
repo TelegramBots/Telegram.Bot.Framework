@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Telegram.Bot.Abstractions\Telegram.Bot.Abstractions.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

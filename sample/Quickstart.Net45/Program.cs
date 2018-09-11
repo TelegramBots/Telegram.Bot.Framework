@@ -1,4 +1,6 @@
-﻿using SimpleInjector;
+﻿using Quickstart.Net45.Handlers;
+using Quickstart.Net45.Handlers.Commands;
+using SimpleInjector;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +12,8 @@ namespace Quickstart.Net45
     {
         public static void Main(string[] args)
         {
-            IBotUpdateManager<EchoBot> botManager = UseSimpleInjector("API_TOKEN_HERE");
+            string token = Environment.GetEnvironmentVariable("BOT_API_TOKEN") ?? "YOUR_API_TOKEN_HERE";
+            IBotUpdateManager<EchoBot> botManager = UseSimpleInjector(token);
 
             var tokenSrc = new CancellationTokenSource();
             Task.Run(() =>
@@ -25,12 +28,15 @@ namespace Quickstart.Net45
         static IBotUpdateManager<EchoBot> UseSimpleInjector(string apiToken)
         {
             var container = new Container();
-            var botServiceContainer = new BotServiceContainer<EchoBot>(container);
+            var botBuilder = new Services.SimpleInjector.BotBuilder<EchoBot>(container);
 
-            IBotUpdateManager<EchoBot> botManager = botServiceContainer
+            IBotUpdateManager<EchoBot> botManager = botBuilder
                 .Bot(() => new EchoBot(apiToken))
                 .Use<ExceptionHandler>()
-                .Use<TextMessageHandler>()
+                .UseCommand<Ping>()
+                .UseCommand<StartCommand>()
+                .UseWhen<TextEchoer>((_, context) => context.Update.Message?.Text != null)
+                .UseWhen<CallbackQueryHandler>((_, context) => context.Update.CallbackQuery != null)
                 .Register();
 
             return botManager;

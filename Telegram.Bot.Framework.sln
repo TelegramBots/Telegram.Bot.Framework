@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Abstractions", "src\Telegram.Bot.Abstractions\Telegram.Bot.Abstractions.csproj", "{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstractions", "src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj", "{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Shared", "src\Telegram.Bot.Framework.Shared\Telegram.Bot.Framework.Shared.csproj", "{EC991578-D67E-4208-B540-7FBB603B7D8F}"
 EndProject

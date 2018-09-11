@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Telegram.Bot.Abstractions
 {
@@ -6,9 +6,8 @@ namespace Telegram.Bot.Abstractions
     /// Provides a list of update handlers for the bot
     /// </summary>
     /// <typeparam name="TBot">Type of bot</typeparam>
-    public interface IHandlersAccessor<TBot>
+    public interface IHandlersCollection<TBot> : IEnumerable<IHandlerPredicate>
         where TBot : IBot
     {
-        Type[] HandlerTypes { get; }
     }
 }

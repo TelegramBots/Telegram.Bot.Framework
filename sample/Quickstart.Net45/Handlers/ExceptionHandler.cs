@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Abstractions;
 
-namespace Quickstart.Net45
+namespace Quickstart.Net45.Handlers
 {
     public class ExceptionHandler : IUpdateHandler
     {
@@ -12,8 +12,6 @@ namespace Quickstart.Net45
         public async Task HandleAsync(IBot bot, IUpdateContext context, UpdateDelegate next)
         {
             var u = context.Update;
-
-            Console.WriteLine("A new meesage from {0} in chat {1}", u.Message.From.FirstName, u.Message.Chat.Id);
 
             try
             {

@@ -3,13 +3,10 @@ using System.Threading.Tasks;
 using Telegram.Bot.Abstractions;
 using Telegram.Bot.Types;
 
-namespace Quickstart.Net45
+namespace Quickstart.Net45.Handlers
 {
-    public class TextMessageHandler : IUpdateHandler
+    public class TextEchoer : IUpdateHandler
     {
-        public bool CanHandle(IBot bot, IUpdateContext context) =>
-            context.Update.Message?.Text != null;
-
         public async Task HandleAsync(IBot bot, IUpdateContext context, UpdateDelegate next)
         {
             Message msg = context.Update.Message;

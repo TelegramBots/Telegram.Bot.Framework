@@ -52,19 +52,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\BotServiceProvider.cs" />
-    <Compile Include="Services\BotServiceContainer.cs" />
+    <Compile Include="Handlers\Commands\Ping.cs" />
+    <Compile Include="Handlers\Commands\StartCommand.cs" />
+    <Compile Include="Handlers\CallbackQueryHandler.cs" />
+    <Compile Include="Services\SimpleInjector\BotServiceProvider.cs" />
+    <Compile Include="Services\SimpleInjector\BotBuilder.cs" />
     <Compile Include="EchoBot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingletonProvider.cs" />
-    <Compile Include="ExceptionHandler.cs" />
-    <Compile Include="TextMessageHandler.cs" />
+    <Compile Include="Handlers\ExceptionHandler.cs" />
+    <Compile Include="Handlers\TextEchoer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Telegram.Bot.Abstractions\Telegram.Bot.Abstractions.csproj">
+    <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj">
       <Project>{c83da423-edc0-41e8-ab84-da7fd0d26446}</Project>
-      <Name>Telegram.Bot.Abstractions</Name>
+      <Name>Telegram.Bot.Framework.Abstractions</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Shared\Telegram.Bot.Framework.Shared.csproj">
       <Project>{ec991578-d67e-4208-b540-7fbb603b7d8f}</Project>

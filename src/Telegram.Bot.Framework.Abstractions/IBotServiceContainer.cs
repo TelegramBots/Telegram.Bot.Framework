@@ -13,6 +13,12 @@ namespace Telegram.Bot.Abstractions
         IBotServiceContainer<TBot> Use<THandler>(Func<THandler> creator)
             where THandler : class, IUpdateHandler;
 
+        IBotServiceContainer<TBot> UseWhen<THandler>(Func<IBot, IUpdateContext, bool> predicate)
+            where THandler : class, IUpdateHandler;
+
+        IBotServiceContainer<TBot> UseWhen<THandler>(Func<THandler> creator, Func<IBot, IUpdateContext, bool> predicate)
+            where THandler : class, IUpdateHandler;
+
         IBotUpdateManager<TBot> Register();
     }
 }

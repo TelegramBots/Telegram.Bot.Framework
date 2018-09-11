@@ -8,15 +8,6 @@ namespace Telegram.Bot.Abstractions
     public interface IUpdateHandler
     {
         /// <summary>
-        /// Indicates whether this handler should receive the update for handling by quickly checking
-        /// the update type such as text, photo, or etc.
-        /// </summary>
-        /// <param name="bot">Instance of the bot this command is operating for</param>
-        /// <param name="update">Update for the bot</param>
-        /// <returns><value>true</value> if this handler should get the update; otherwise <value>false</value></returns>
-        bool CanHandle(IBot bot, IUpdateContext context);
-
-        /// <summary>
         /// Handles the update for bot. This method will be called only if CanHandleUpdate returns <value>true</value>
         /// </summary>
         /// <param name="bot">Instance of the bot this command is operating for</param>

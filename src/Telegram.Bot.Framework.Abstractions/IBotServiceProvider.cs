@@ -11,7 +11,7 @@ namespace Telegram.Bot.Abstractions
 
         bool TryGetBotOptions(out IBotOptions options);
 
-        IHandlersAccessor<TBot> GetHandlerTypes();
+        IHandlersCollection<TBot> GetHandlersCollection();
 
         IUpdateHandler GetHandler(Type t);
     }

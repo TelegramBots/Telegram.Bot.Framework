@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstractions
+namespace Telegram.Bot.Abstractions
 {
     /// <summary>
     /// Processes an update
@@ -15,7 +14,7 @@ namespace Telegram.Bot.Framework.Abstractions
         /// <param name="bot">Instance of the bot this command is operating for</param>
         /// <param name="update">Update for the bot</param>
         /// <returns><value>true</value> if this handler should get the update; otherwise <value>false</value></returns>
-        bool CanHandleUpdate(IBot bot, Update update);
+        bool CanHandle(IBot bot, IUpdateContext context);
 
         /// <summary>
         /// Handles the update for bot. This method will be called only if CanHandleUpdate returns <value>true</value>
@@ -23,6 +22,6 @@ namespace Telegram.Bot.Framework.Abstractions
         /// <param name="bot">Instance of the bot this command is operating for</param>
         /// <param name="update">The update to be handled</param>
         /// <returns>Result of handling this update</returns>
-        Task<UpdateHandlingResult> HandleUpdateAsync(IBot bot, Update update);
+        Task HandleAsync(IBot bot, IUpdateContext context, UpdateDelegate next);
     }
 }

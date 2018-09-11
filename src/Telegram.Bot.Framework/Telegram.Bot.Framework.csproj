@@ -2,13 +2,12 @@
     <PropertyGroup>
         <PackageId>Telegram.Bot.Framework</PackageId>
         <TargetFramework>netstandard1.6</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <Description>Simple framework for building powerful Telegram bots 🤖 in ASP.NET Core</Description>
         <Authors>Poulad</Authors>
         <Owners>Poulad</Owners>
         <PackageVersion>1.1.4</PackageVersion>
         <DebugType>portable</DebugType>
-        <AssemblyName>Telegram.Bot.Framework</AssemblyName>
-        <AssemblyTitle>Telegram.Bot.Framework</AssemblyTitle>
         <PackageTags>telegram bot chatbot chat netcore</PackageTags>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageReleaseNotes>Simple framework for building Telegram bots</PackageReleaseNotes>
@@ -19,23 +18,19 @@
         </PackageIconUrl>
         <PackageLicenseUrl>https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/LICENSE
         </PackageLicenseUrl>
-        <Product>Telegram.Bot.Framework</Product>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <DocumentationFile>bin\Debug\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <DocumentationFile>bin\Release\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
+        <!--<GenerateDocumentationFile>True</GenerateDocumentationFile>-->
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2"/>
-        <PackageReference Include="System.ValueTuple" Version="4.3.1"/>
-        <PackageReference Include="Telegram.Bot.Core" Version="13.2.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Telegram.Bot.Framework.Shared\Telegram.Bot.Framework.Shared.csproj" />
     </ItemGroup>
 </Project>

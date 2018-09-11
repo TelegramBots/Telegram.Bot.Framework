@@ -28,7 +28,7 @@ namespace SampleEchoBot
 
             switch (update.Type)
             {
-                case UpdateType.MessageUpdate when
+                case UpdateType.Message when
                 new[] {ChatType.Private, ChatType.Group, ChatType.Supergroup}.Contains(update.Message.Chat.Type):
                     text = $"Unable to handle message update of type `{update.Message.Type}`.";
                     replyToMesageId = update.Message.MessageId;

@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.Tests
                 Message = new Message
                 {
                     Text = text,
-                    Entities = new List<MessageEntity>
+                    Entities = new[]
                     {
                         new MessageEntity
                         {

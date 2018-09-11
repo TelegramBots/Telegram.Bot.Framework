@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot.Abstractions;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstractions;
 
 namespace SampleEchoBot
 {
@@ -28,9 +28,10 @@ namespace SampleEchoBot
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTelegramBot<EchoBot>(_configuration.GetSection("EchoBot"))
-                .AddUpdateHandler<EchoCommand>()
-                .Configure();
+//            services.AddTelegramBot<EchoBot>(_configuration.GetSection("EchoBot"))
+////                .AddUpdateHandler<EchoCommand>()
+//                .AddUpdateHandler<>()
+//                .Configure();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -81,7 +82,7 @@ namespace SampleEchoBot
                 );
 
                 logger.LogInformation($"Setting webhook for {nameof(EchoBot)}...");
-                app.UseTelegramBotWebhook<EchoBot>();
+//                app.UseTelegramBotWebhook<EchoBot>();
                 logger.LogInformation("Webhook is set for bot " + nameof(EchoBot));
             }
 

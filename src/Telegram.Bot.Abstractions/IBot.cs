@@ -1,14 +1,13 @@
-﻿namespace Telegram.Bot.Framework.Abstractions
+﻿using Telegram.Bot.Types;
+
+namespace Telegram.Bot.Abstractions
 {
     /// <summary>
     /// A wrapper around TelegramBot class. Used to make calls to the Bot API
     /// </summary>
     public interface IBot
     {
-        /// <summary>
-        /// Gets Bot's user name
-        /// </summary>
-        string UserName { get; }
+        User User { get; }
 
         /// <summary>
         /// Instance of Telegram bot client

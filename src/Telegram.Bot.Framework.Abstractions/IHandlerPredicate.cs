@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Telegram.Bot.Abstractions
+namespace Telegram.Bot.Framework.Abstractions
 {
     public interface IHandlerPredicate
     {

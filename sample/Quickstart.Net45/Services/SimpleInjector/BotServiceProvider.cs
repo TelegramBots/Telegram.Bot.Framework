@@ -1,14 +1,11 @@
 ﻿using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using System;
-using System.Linq;
-using Telegram.Bot.Abstractions;
-using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstractions;
 
 namespace Quickstart.Net45.Services.SimpleInjector
 {
-    class BotServiceProvider<TBot> : IBotServiceProvider<TBot>
-        where TBot : class, IBot
+    class BotServiceProvider : IBotServiceProvider
     {
         private readonly Container _container;
 
@@ -24,33 +21,19 @@ namespace Quickstart.Net45.Services.SimpleInjector
             _scope = scope;
         }
 
-        public IBotServiceProvider<TBot> CreateScope() =>
-            new BotServiceProvider<TBot>(ThreadScopedLifestyle.BeginScope(_container));
+        public object GetService(Type serviceType) =>
+            _scope != null
+                ? _scope.GetInstance(serviceType)
+                : _container.GetInstance(serviceType)
+        ;
 
-        public TBot GetBot() => (_scope?.Container ?? _container).GetInstance<TBot>();
+        public IBotServiceProvider CreateScope() =>
+            new BotServiceProvider(ThreadScopedLifestyle.BeginScope(_container));
 
-        public bool TryGetBotOptions(out IBotOptions options)
+        public void Dispose()
         {
-            var reg = (_scope?.Container ?? _container).GetCurrentRegistrations()
-                .SingleOrDefault(x => x.ServiceType == typeof(BotOptions<TBot>));
-            if (reg != null)
-            {
-                options = (IBotOptions)reg.GetInstance();
-            }
-            else
-            {
-                options = null;
-            }
-
-            return options != null;
+            _scope?.Dispose();
+            _container?.Dispose();
         }
-
-        public IHandlersCollection<TBot> GetHandlersCollection() =>
-            (_scope?.Container ?? _container).GetInstance<IHandlersCollection<TBot>>();
-
-        public IUpdateHandler GetHandler(Type t) =>
-            (IUpdateHandler)(_scope?.Container ?? _container).GetInstance(t);
-
-        public void Dispose() => _scope?.Dispose();
     }
 }

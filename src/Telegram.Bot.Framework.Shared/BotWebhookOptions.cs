@@ -1,4 +1,4 @@
-﻿using Telegram.Bot.Abstractions;
+﻿using Telegram.Bot.Framework.Abstractions;
 
 namespace Telegram.Bot.Framework
 {

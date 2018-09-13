@@ -55,13 +55,16 @@
     <Compile Include="Handlers\Commands\Ping.cs" />
     <Compile Include="Handlers\Commands\StartCommand.cs" />
     <Compile Include="Handlers\CallbackQueryHandler.cs" />
+    <Compile Include="Handlers\WeatherReporter.cs" />
+    <Compile Include="Handlers\UpdateMembersList.cs" />
+    <Compile Include="Handlers\WebhookLogger.cs" />
     <Compile Include="Services\SimpleInjector\BotServiceProvider.cs" />
-    <Compile Include="Services\SimpleInjector\BotBuilder.cs" />
     <Compile Include="EchoBot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\ExceptionHandler.cs" />
     <Compile Include="Handlers\TextEchoer.cs" />
+    <Compile Include="Services\WeatherService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj">

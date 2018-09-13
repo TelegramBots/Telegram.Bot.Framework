@@ -1,43 +1,41 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Abstractions;
+using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
     public class BotUpdateManager<TBot> : IBotUpdateManager<TBot>
-             where TBot : class, IBot
+             where TBot : BotBase
     {
-        private readonly IBotServiceProvider<TBot> _rootProvider;
+        private readonly UpdateDelegate _chain;
+        private readonly IBotServiceProvider _rootProvider;
 
         private ITelegramBotClient BotClient => _bot.Client;
 
-        private TBot _bot;
+        private BotBase _bot;
 
-        public BotUpdateManager(IBotServiceProvider<TBot> rootProvider)
+        public BotUpdateManager(UpdateDelegate chain, IBotServiceProvider rootProvider)
         {
+            _chain = chain;
             _rootProvider = rootProvider;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken = default)
         {
-            _bot = _rootProvider.GetBot();
+            _bot = (TBot)_rootProvider.GetService(typeof(TBot));
 
-            if (_bot.User == null && _bot is BotBase bb)
-            {
-                bb.User = await BotClient.GetMeAsync(cancellationToken)
-                    .ConfigureAwait(false);
-            }
+            var botUser = await BotClient.GetMeAsync(cancellationToken)
+                .ConfigureAwait(false);
+            _bot.Username = botUser.Username;
 
-            if (_rootProvider.TryGetBotOptions(out var options))
-            {
-                // ToDo throw if invalid url or not HTTPS
-                throw new NotImplementedException();
-            }
-            else
+            //if (_rootProvider.TryGetBotOptions(out var options))
+            //{
+            //    // ToDo throw if invalid url or not HTTPS
+            //    throw new NotImplementedException();
+            //}
+            //else
             {
                 await RunLongPollingAsync(cancellationToken)
                     .ConfigureAwait(false);
@@ -61,8 +59,9 @@ namespace Telegram.Bot.Framework
                 {
                     using (var scopeProvider = _rootProvider.CreateScope())
                     {
+                        var context = new UpdateContext(_bot, update, scopeProvider);
                         // ToDo deep clone bot instance for each update
-                        await HandleUpdateAsync(_bot, scopeProvider, new UpdateContext(update))
+                        await _chain(context)
                             .ConfigureAwait(false);
                     }
                 }
@@ -71,47 +70,6 @@ namespace Telegram.Bot.Framework
                 {
                     offset = updates[updates.Length - 1].Id + 1;
                 }
-            }
-        }
-
-        private static async Task HandleUpdateAsync(TBot bot, IBotServiceProvider<TBot> scopeProvider, IUpdateContext context)
-        {
-            var handlersCollection = scopeProvider.GetHandlersCollection();
-            var enumerator = handlersCollection.GetEnumerator();
-
-            using (enumerator)
-            {
-                var next = ResolveNextDelegate(enumerator, scopeProvider, bot, context);
-                await next(context)
-                    .ConfigureAwait(false);
-            }
-        }
-
-        private static UpdateDelegate ResolveNextDelegate(
-            IEnumerator<IHandlerPredicate> enumerator,
-            IBotServiceProvider<TBot> scopeProvider,
-            IBot bot,
-            IUpdateContext context
-        )
-        {
-            if (enumerator.MoveNext())
-            {
-                var next = enumerator.Current;
-                if (next.CanHandle(bot, context))
-                {
-                    var nextHandler = scopeProvider.GetHandler(next.Type);
-                    return c => nextHandler.HandleAsync(bot, c,
-                        ResolveNextDelegate(enumerator, scopeProvider, bot, context)
-                    );
-                }
-                else
-                {
-                    return ResolveNextDelegate(enumerator, scopeProvider, bot, context);
-                }
-            }
-            else
-            {
-                return _ => Task.FromResult(null as object); // ToDo log information. handler not found
             }
         }
     }

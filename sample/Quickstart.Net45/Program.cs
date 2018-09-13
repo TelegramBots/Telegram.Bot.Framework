@@ -1,10 +1,13 @@
 ﻿using Quickstart.Net45.Handlers;
-using Quickstart.Net45.Handlers.Commands;
+using Quickstart.Net45.Services;
+using Quickstart.Net45.Services.SimpleInjector;
 using SimpleInjector;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Abstractions;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Types.Enums;
 
 namespace Quickstart.Net45
 {
@@ -13,7 +16,15 @@ namespace Quickstart.Net45
         public static void Main(string[] args)
         {
             string token = Environment.GetEnvironmentVariable("BOT_API_TOKEN") ?? "YOUR_API_TOKEN_HERE";
-            IBotUpdateManager<EchoBot> botManager = UseSimpleInjector(token);
+
+            var container = new Container();
+            container.Register(() => new EchoBot(token));
+            container.Register<ExceptionHandler>();
+            container.Register<IWeatherService, WeatherService>();
+            container.Verify();
+
+            UpdateDelegate updateCallback = ConfigureBot(new BotBuilder<EchoBot>());
+            var mgr = new BotUpdateManager<EchoBot>(updateCallback, new BotServiceProvider(container));
 
             var tokenSrc = new CancellationTokenSource();
             Task.Run(() =>
@@ -22,24 +33,32 @@ namespace Quickstart.Net45
                 tokenSrc.Cancel();
             });
 
-            botManager.RunAsync(tokenSrc.Token).GetAwaiter().GetResult();
+            mgr.RunAsync(tokenSrc.Token).GetAwaiter().GetResult();
         }
 
-        static IBotUpdateManager<EchoBot> UseSimpleInjector(string apiToken)
+        static UpdateDelegate ConfigureBot(IBotBuilder bot)
         {
-            var container = new Container();
-            var botBuilder = new Services.SimpleInjector.BotBuilder<EchoBot>(container);
-
-            IBotUpdateManager<EchoBot> botManager = botBuilder
-                .Bot(() => new EchoBot(apiToken))
+            return bot
                 .Use<ExceptionHandler>()
-                .UseCommand<Ping>()
-                .UseCommand<StartCommand>()
-                .UseWhen<TextEchoer>((_, context) => context.Update.Message?.Text != null)
-                .UseWhen<CallbackQueryHandler>((_, context) => context.Update.CallbackQuery != null)
-                .Register();
-
-            return botManager;
+                .UseWhen(When.IsWebhook, branch => branch
+                    .Use<WebhookLogger>()
+                )
+                .Map(UpdateType.CallbackQuery, branch => branch
+                    .Use<CallbackQueryHandler>()
+                )
+                .UseWhen(When.NewTextMessage, branch => branch
+                    .Use<TextEchoer>()
+                )
+                //.Use<Ping>() // ToDo .UseCommand<Ping>()
+                .MapWhen(When.LocationMessage, branch => branch
+                    .Use<WeatherReporter>()
+                )
+                .UseWhen(When.MembersChanged, branch => branch
+                    .Use<UpdateMembersList>()
+                )
+                .Build()
+            ;
         }
+
     }
 }

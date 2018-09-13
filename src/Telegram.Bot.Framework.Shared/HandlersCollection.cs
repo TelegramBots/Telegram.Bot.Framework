@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Telegram.Bot.Abstractions;
+using Telegram.Bot.Framework.Abstractions;
 
 namespace Telegram.Bot.Framework
 {

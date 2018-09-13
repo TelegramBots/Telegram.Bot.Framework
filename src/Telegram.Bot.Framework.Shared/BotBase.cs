@@ -1,5 +1,4 @@
-﻿using Telegram.Bot.Abstractions;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Framework.Abstractions;
 
 namespace Telegram.Bot.Framework
 {
@@ -7,7 +6,7 @@ namespace Telegram.Bot.Framework
     {
         public ITelegramBotClient Client { get; }
 
-        public User User { get; internal set; }
+        public string Username { get; internal set; }
 
         internal IBotOptions Options { get; }
 

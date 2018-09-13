@@ -1,18 +1,9 @@
-using System;
+﻿using System;
 
-namespace Telegram.Bot.Abstractions
+namespace Telegram.Bot.Framework.Abstractions
 {
-    public interface IBotServiceProvider<TBot> : IDisposable
-        where TBot : class, IBot
+    public interface IBotServiceProvider : IServiceProvider, IDisposable
     {
-        IBotServiceProvider<TBot> CreateScope();
-
-        TBot GetBot();
-
-        bool TryGetBotOptions(out IBotOptions options);
-
-        IHandlersCollection<TBot> GetHandlersCollection();
-
-        IUpdateHandler GetHandler(Type t);
+        IBotServiceProvider CreateScope();
     }
 }

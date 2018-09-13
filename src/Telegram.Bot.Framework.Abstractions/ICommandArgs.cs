@@ -1,21 +1,18 @@
-﻿namespace Telegram.Bot.Abstractions
+﻿namespace Telegram.Bot.Framework.Abstractions
 {
     /// <summary>
     /// Stores arguments for a bot command
     /// </summary>
     public interface ICommandArgs
     {
-        /// <summary>
-        /// Raw user's text input
-        /// </summary>
-        string RawInput { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Text input whiteout the command part
         /// </summary>
         /// <example>
-        /// "argument" in "/command@bot argument"
+        /// "args1 arg2..." in "/command@bot args1 arg2..."
         /// </example>
-        string ArgsInput { get; set; }
+        string Arguments { get; }
     }
 }

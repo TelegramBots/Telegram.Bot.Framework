@@ -1,4 +1,4 @@
-﻿namespace Telegram.Bot.Abstractions
+﻿namespace Telegram.Bot.Framework.Abstractions
 {
     /// <summary>
     /// Configurations for the bot

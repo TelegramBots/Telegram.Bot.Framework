@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Telegram.Bot.Abstractions
+namespace Telegram.Bot.Framework.Abstractions
 {
     /// <summary>
     /// Processes an update
@@ -13,6 +13,6 @@ namespace Telegram.Bot.Abstractions
         /// <param name="bot">Instance of the bot this command is operating for</param>
         /// <param name="update">The update to be handled</param>
         /// <returns>Result of handling this update</returns>
-        Task HandleAsync(IBot bot, IUpdateContext context, UpdateDelegate next);
+        Task HandleAsync(IUpdateContext context, UpdateDelegate next);
     }
 }

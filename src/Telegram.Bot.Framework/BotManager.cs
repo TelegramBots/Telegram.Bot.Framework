@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 
 namespace Telegram.Bot.Framework
 {
@@ -136,11 +137,11 @@ namespace Telegram.Bot.Framework
         {
             if (enabled)
             {
-                FileToSend? fileToSend = null;
+                InputFileStream fileToSend = null;
                 if (!string.IsNullOrWhiteSpace(_botOptions.PathToCertificate))
                 {
                     var file = new FileStream(_botOptions.PathToCertificate, FileMode.Open);
-                    fileToSend = new FileToSend("certificate.pem", file);
+                    fileToSend = new InputFileStream(file, "certificate.pem");
                 }
                 return _bot.Client.SetWebhookAsync(WebhookUrl, fileToSend);
             }

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Moq;
+﻿using Moq;
+using System;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Framework.Tests.Helpers;
 using Telegram.Bot.Types;
@@ -31,7 +30,7 @@ namespace Telegram.Bot.Framework.Tests
                 Message = new Message
                 {
                     Text = text,
-                    Entities = new List<MessageEntity>
+                    Entities = new[]
                     {
                         new MessageEntity
                         {

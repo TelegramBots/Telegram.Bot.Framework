@@ -43,8 +43,8 @@ namespace Telegram.Bot.Framework
         {
             Bot = Bot ?? bot;
 
-            bool isTextMessage = new[] {update.Message?.Type, update.EditedMessage?.Type}
-                .Contains(MessageType.TextMessage);
+            bool isTextMessage = new[] { update.Message?.Type, update.EditedMessage?.Type }
+                .Contains(MessageType.Text);
 
             return isTextMessage && CanHandleCommand(update);
         }
@@ -91,26 +91,23 @@ namespace Telegram.Bot.Framework
         /// <returns><value>true</value> if this command should handle the update; otherwise <value>false</value></returns>
         protected virtual bool CanHandleCommand(Update update)
         {
-            bool canHandle = false;
-
-            var zippedMessageEntity = update.Message.Entities
-                .Zip(update.Message.EntityValues, (entity, val) => new
-                {
-                    MessageEntity = entity,
-                    Value = val
-                })
-                .SingleOrDefault(zipped =>
-                    zipped.MessageEntity.Type == MessageEntityType.BotCommand &&
-                    zipped.MessageEntity.Offset == 0
-                );
-
-            if (zippedMessageEntity != null)
             {
-                canHandle = Regex.IsMatch(zippedMessageEntity.Value,
-                    $@"^/{Name}(?:@{Bot.UserName})?$", RegexOptions.IgnoreCase);
+                bool isTextMessage = update.Message?.Text != null;
+                if (!isTextMessage)
+                    return false;
             }
 
-            return canHandle;
+            {
+                bool isCommand = update.Message.Entities?.FirstOrDefault()?.Type == MessageEntityType.BotCommand;
+                if (!isCommand)
+                    return false;
+            }
+
+            return Regex.IsMatch(
+                update.Message.Text,
+                $@"^/{Name}(?:@{Bot.UserName})?(?:\s+|$)",
+                RegexOptions.IgnoreCase
+            );
         }
 
         /// <summary>

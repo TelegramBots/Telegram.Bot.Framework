@@ -1,7 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RecurrentTasks;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace SampleBots
@@ -19,20 +20,12 @@ namespace SampleBots
             _logger = logger;
         }
 
-        public void Run(ITask currentTask, CancellationToken cancellationToken)
+        public async Task RunAsync(ITask currentTask, IServiceProvider scopeServiceProvider, CancellationToken cancellationToken)
         {
-            Task.Factory.StartNew(async () =>
-            {
-                _logger.LogTrace($"{typeof(TBot).Name}: Checking for updates...");
-                await _botManager.GetAndHandleNewUpdatesAsync();
-                _logger.LogTrace($"{typeof(TBot).Name}: Handling updates finished");
-            }, cancellationToken).ContinueWith(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    throw task.Exception.InnerException;
-                }
-            }, cancellationToken);
+            _logger.LogTrace($"{typeof(TBot).Name}: Checking for updates...");
+            await _botManager.GetAndHandleNewUpdatesAsync()
+                .ConfigureAwait(false);
+            _logger.LogTrace($"{typeof(TBot).Name}: Handling updates finished");
         }
     }
 }

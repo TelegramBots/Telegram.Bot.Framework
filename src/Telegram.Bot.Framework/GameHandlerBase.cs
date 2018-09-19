@@ -95,7 +95,7 @@ namespace Telegram.Bot.Framework
         /// <param name="score">User's score</param>
         public virtual async Task SetGameScoreAsync(IBot bot, string playerid, int score)
         {
-            Task<Message> setScoreTask;
+            Task setScoreTask;
             var ids = DecodePlayerId(playerid);
             if (ids.Item2.InlineMessageId != null)
             {
@@ -104,7 +104,7 @@ namespace Telegram.Bot.Framework
             else
             {
                 setScoreTask = bot.Client.SetGameScoreAsync(ids.UserId, score,
-                    ids.Item2.Item2.ChatId,
+                    ids.Item2.Item2.ChatId.Identifier,
                     ids.Item2.Item2.MessageId);
             }
 
@@ -142,7 +142,7 @@ namespace Telegram.Bot.Framework
             else
             {
                 highScoresTask = bot.Client.GetGameHighScoresAsync(ids.UserId,
-                    ids.Item2.Item2.ChatId,
+                    ids.Item2.Item2.ChatId.Identifier,
                     ids.Item2.Item2.MessageId);
             }
 

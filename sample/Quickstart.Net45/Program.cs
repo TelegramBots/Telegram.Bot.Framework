@@ -40,25 +40,16 @@ namespace Quickstart.Net45
         {
             return bot
                 .Use<ExceptionHandler>()
-                .UseWhen(When.IsWebhook, branch => branch
-                    .Use<WebhookLogger>()
-                )
-                .Map(UpdateType.CallbackQuery, branch => branch
-                    .Use<CallbackQueryHandler>()
-                )
-                .UseWhen(When.NewTextMessage, branch => branch
-                    .Use<TextEchoer>()
-                )
-                //.Use<Ping>() // ToDo .UseCommand<Ping>()
-                .MapWhen(When.LocationMessage, branch => branch
-                    .Use<WeatherReporter>()
-                )
-                .UseWhen(When.MembersChanged, branch => branch
-                    .Use<UpdateMembersList>()
-                )
+                .UseWhen(When.IsWebhook, branch => branch.Use<WebhookLogger>())
+                .Map(UpdateType.CallbackQuery, branch => branch.Use<CallbackQueryHandler>())
+                .UseWhen(When.NewTextMessage, branch => branch.Use<TextEchoer>())
+                .UseCommand<PingCommand>("ping")
+                .UseCommand<StartCommand>("start")
+                .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
+                .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
+                .UseWhen(When.MembersChanged, branch => branch.Use<UpdateMembersList>())
                 .Build()
             ;
         }
-
     }
 }

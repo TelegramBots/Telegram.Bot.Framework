@@ -4,11 +4,11 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Quickstart.Net45.Handlers.Commands
+namespace Quickstart.Net45.Handlers
 {
-    class Ping : IUpdateHandler
+    class PingCommand : CommandBase
     {
-        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args)
         {
             Message msg = context.Update.Message;
 

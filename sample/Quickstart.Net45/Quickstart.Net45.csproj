@@ -52,9 +52,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\Commands\Ping.cs" />
     <Compile Include="Handlers\Commands\StartCommand.cs" />
+    <Compile Include="Handlers\Commands\PingCommand.cs" />
     <Compile Include="Handlers\CallbackQueryHandler.cs" />
+    <Compile Include="Handlers\StickerHandler.cs" />
     <Compile Include="Handlers\WeatherReporter.cs" />
     <Compile Include="Handlers\UpdateMembersList.cs" />
     <Compile Include="Handlers\WebhookLogger.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Handlers\ExceptionHandler.cs" />
     <Compile Include="Handlers\TextEchoer.cs" />
     <Compile Include="Services\WeatherService.cs" />
+    <Compile Include="When.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj">

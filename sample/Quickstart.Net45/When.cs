@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Framework.Abstractions;
 
-namespace Telegram.Bot.Framework
+namespace Quickstart.Net45
 {
     public static class When
     {
@@ -19,5 +19,8 @@ namespace Telegram.Bot.Framework
 
         public static bool LocationMessage(IUpdateContext context) =>
             context.Update.Message?.Location != null;
+
+        public static bool StickerMessage(IUpdateContext context) =>
+            context.Update.Message?.Sticker != null;
     }
 }

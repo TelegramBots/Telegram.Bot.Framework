@@ -11,7 +11,7 @@ namespace Telegram.Bot.Framework
     public class BotBuilder<TBot> : IBotBuilder
         where TBot : IBot
     {
-        internal UpdateDelegate UpdateDelegateChain { get; private set; }
+        internal UpdateDelegate UpdateDelegate { get; private set; }
 
         private readonly ICollection<Func<UpdateDelegate, UpdateDelegate>> _components;
 
@@ -89,7 +89,7 @@ namespace Telegram.Bot.Framework
                 handle = component(handle);
             }
 
-            return UpdateDelegateChain = handle;
+            return UpdateDelegate = handle;
         }
     }
 }

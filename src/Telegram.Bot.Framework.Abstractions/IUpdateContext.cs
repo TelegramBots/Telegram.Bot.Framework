@@ -16,6 +16,6 @@ namespace Telegram.Bot.Framework.Abstractions
 
         IServiceProvider Services { get; }
 
-        IDictionary<object, object> Items { get; }
+        IDictionary<string, object> Items { get; }
     }
 }

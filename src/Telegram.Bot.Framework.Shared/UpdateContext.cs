@@ -18,7 +18,14 @@ namespace Telegram.Bot.Framework
 
         public IServiceProvider Services { get; }
 
-        public IDictionary<object, object> Items { get; }
+        public IDictionary<string, object> Items { get; }
+
+        public UpdateContext(IBot bot, Update u, object httpContext, IServiceProvider services)
+            : this(bot, u, services)
+        {
+            HttpContext = httpContext;
+            IsWebhook = true;
+        }
 
         public UpdateContext(IBot bot, Update u, IServiceProvider services)
             : this()
@@ -28,16 +35,9 @@ namespace Telegram.Bot.Framework
             Services = services;
         }
 
-        public UpdateContext(IBot bot, Update u, object httpContext, IServiceProvider services)
-            : this(bot, u, services)
-        {
-            HttpContext = httpContext;
-            IsWebhook = true;
-        }
-
         private UpdateContext()
         {
-            Items = new ConcurrentDictionary<object, object>();
+            Items = new ConcurrentDictionary<string, object>();
         }
     }
 }

@@ -9,16 +9,20 @@ namespace Telegram.Bot.Framework
     public class BotUpdateManager<TBot> : IBotUpdateManager<TBot>
              where TBot : BotBase
     {
-        private readonly UpdateDelegate _chain;
+        private readonly UpdateDelegate _updateDelegate;
+
         private readonly IBotServiceProvider _rootProvider;
 
         private ITelegramBotClient BotClient => _bot.Client;
 
         private BotBase _bot;
 
-        public BotUpdateManager(UpdateDelegate chain, IBotServiceProvider rootProvider)
+        public BotUpdateManager(
+            UpdateDelegate updateDelegate, 
+            IBotServiceProvider rootProvider
+        )
         {
-            _chain = chain;
+            _updateDelegate = updateDelegate;
             _rootProvider = rootProvider;
         }
 
@@ -61,7 +65,7 @@ namespace Telegram.Bot.Framework
                     {
                         var context = new UpdateContext(_bot, update, scopeProvider);
                         // ToDo deep clone bot instance for each update
-                        await _chain(context)
+                        await _updateDelegate(context)
                             .ConfigureAwait(false);
                     }
                 }

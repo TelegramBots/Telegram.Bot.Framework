@@ -1,16 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Pipeline
 {
     internal class MapMiddleware : IUpdateHandler
     {
-        private readonly UpdateType _updateType;
+        private readonly string _updateType;
 
         private readonly UpdateDelegate _branch;
 
-        public MapMiddleware(UpdateType updateType, UpdateDelegate branch)
+        public MapMiddleware(string updateType, UpdateDelegate branch)
         {
             _updateType = updateType;
             _branch = branch;
@@ -18,7 +17,7 @@ namespace Telegram.Bot.Framework.Pipeline
 
         public Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            if (context.Update.Type == _updateType)
+            if (context.Update.IsOfType(_updateType))
             {
                 return _branch(context);
             }

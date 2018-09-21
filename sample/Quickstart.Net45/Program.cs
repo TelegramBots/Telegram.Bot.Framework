@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
-using Telegram.Bot.Types.Enums;
 
 namespace Quickstart.Net45
 {
@@ -23,7 +22,7 @@ namespace Quickstart.Net45
             container.Register<IWeatherService, WeatherService>();
             container.Verify();
 
-            UpdateDelegate updateCallback = ConfigureBot(new BotBuilder<EchoBot>());
+            UpdateDelegate updateCallback = ConfigureBot();
             var mgr = new BotUpdateManager<EchoBot>(updateCallback, new BotServiceProvider(container));
 
             var tokenSrc = new CancellationTokenSource();
@@ -36,12 +35,12 @@ namespace Quickstart.Net45
             mgr.RunAsync(tokenSrc.Token).GetAwaiter().GetResult();
         }
 
-        static UpdateDelegate ConfigureBot(IBotBuilder bot)
+        static UpdateDelegate ConfigureBot()
         {
-            return bot
+            return new BotBuilder()
                 .Use<ExceptionHandler>()
                 .UseWhen(When.IsWebhook, branch => branch.Use<WebhookLogger>())
-                .Map(UpdateType.CallbackQuery, branch => branch.Use<CallbackQueryHandler>())
+                .Map("callback_query", branch => branch.Use<CallbackQueryHandler>())
                 .UseWhen(When.NewTextMessage, branch => branch.Use<TextEchoer>())
                 .UseCommand<PingCommand>("ping")
                 .UseCommand<StartCommand>("start")

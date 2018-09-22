@@ -19,7 +19,7 @@ namespace Quickstart.AspNetCore.Handlers
         public Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
             _logger.LogInformation(
-                "Received update {0} as a webhook from {1}.",
+                "Received update {0} in a webhook at {1}.",
                 context.Update.Id,
                 ((HttpContext)context.HttpContext).Request.Host
             );

@@ -249,3 +249,6 @@ appsettings.*.json
 
 # Rider IDE
 .idea
+
+# Deployments files
+/dist/

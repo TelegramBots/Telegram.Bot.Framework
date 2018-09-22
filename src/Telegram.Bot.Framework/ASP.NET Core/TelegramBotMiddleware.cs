@@ -77,7 +77,7 @@ namespace Telegram.Bot.Framework
 
             if (update == null)
             {
-                // Telegram almost never sends an invalid update object.
+                // it is unlikely of Telegram to send an invalid update object.
                 // respond with "404 Not Found" in case an attacker is trying to find the webhook URL
                 context.Response.StatusCode = 404;
                 return;

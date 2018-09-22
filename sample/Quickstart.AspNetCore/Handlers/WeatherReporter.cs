@@ -1,10 +1,10 @@
-﻿using Quickstart.Net45.Services;
+﻿using Quickstart.AspNetCore.Services;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Quickstart.Net45.Handlers
+namespace Quickstart.AspNetCore.Handlers
 {
     class WeatherReporter : IUpdateHandler
     {

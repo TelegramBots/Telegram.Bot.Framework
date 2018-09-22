@@ -69,17 +69,13 @@
     <Compile Include="When.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj">
-      <Project>{c83da423-edc0-41e8-ab84-da7fd0d26446}</Project>
-      <Name>Telegram.Bot.Framework.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Telegram.Bot.Framework.Shared\Telegram.Bot.Framework.Shared.csproj">
-      <Project>{ec991578-d67e-4208-b540-7fbb603b7d8f}</Project>
-      <Name>Telegram.Bot.Framework.Shared</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj">
+      <Project>{ec991578-d67e-4208-b540-7fbb603b7d8f}</Project>
+      <Name>Telegram.Bot.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

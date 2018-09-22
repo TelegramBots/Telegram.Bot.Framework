@@ -7,15 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{807C83E6-6E6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A77F7142-8E1D-4843-B862-12D7D4A8CD67}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstractions", "src\Telegram.Bot.Framework.Abstractions\Telegram.Bot.Framework.Abstractions.csproj", "{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Shared", "src\Telegram.Bot.Framework.Shared\Telegram.Bot.Framework.Shared.csproj", "{EC991578-D67E-4208-B540-7FBB603B7D8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{EC991578-D67E-4208-B540-7FBB603B7D8F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quickstart.Net45", "sample\Quickstart.Net45\Quickstart.Net45.csproj", "{C3672842-82EE-49F3-90A1-0F07A7857EBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quickstart.AspNet45", "sample\Quickstart.AspNet45\Quickstart.AspNet45.csproj", "{19B20342-5F00-4B54-B33A-7FD676590208}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quickstart.AspNetCore", "sample\Quickstart.AspNetCore\Quickstart.AspNetCore.csproj", "{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C83DA423-EDC0-41E8-AB84-DA7FD0D26446}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC991578-D67E-4208-B540-7FBB603B7D8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC991578-D67E-4208-B540-7FBB603B7D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC991578-D67E-4208-B540-7FBB603B7D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,15 +31,23 @@ Global
 		{C3672842-82EE-49F3-90A1-0F07A7857EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3672842-82EE-49F3-90A1-0F07A7857EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3672842-82EE-49F3-90A1-0F07A7857EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19B20342-5F00-4B54-B33A-7FD676590208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19B20342-5F00-4B54-B33A-7FD676590208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19B20342-5F00-4B54-B33A-7FD676590208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19B20342-5F00-4B54-B33A-7FD676590208}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BB1D4CE1-2BF0-426F-8EB7-DC136DEEF3AE} = {807C83E6-6E64-49CF-9D3B-BEF1DB6A5534}
-		{C83DA423-EDC0-41E8-AB84-DA7FD0D26446} = {807C83E6-6E64-49CF-9D3B-BEF1DB6A5534}
 		{EC991578-D67E-4208-B540-7FBB603B7D8F} = {807C83E6-6E64-49CF-9D3B-BEF1DB6A5534}
 		{C3672842-82EE-49F3-90A1-0F07A7857EBE} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
+		{19B20342-5F00-4B54-B33A-7FD676590208} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
+		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12F28A44-91F3-4309-8F0B-4C6ED9346D38}

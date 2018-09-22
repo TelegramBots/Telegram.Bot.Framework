@@ -2,17 +2,15 @@
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 
-namespace Quickstart.Net45.Handlers
+namespace Quickstart.AspNetCore.Handlers
 {
-    public class TextEchoer : IUpdateHandler
+    public class CallbackQueryHandler : IUpdateHandler
     {
         public async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            Message msg = context.Update.Message;
+            CallbackQuery cq = context.Update.CallbackQuery;
 
-            await context.Bot.Client.SendTextMessageAsync(
-                msg.Chat, "You said:\n" + msg.Text
-            );
+            await context.Bot.Client.AnswerCallbackQueryAsync(cq.Id, "PONG", showAlert: true);
 
             await next(context);
         }

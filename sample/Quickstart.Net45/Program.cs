@@ -22,8 +22,7 @@ namespace Quickstart.Net45
             container.Register<IWeatherService, WeatherService>();
             container.Verify();
 
-            UpdateDelegate updateCallback = ConfigureBot();
-            var mgr = new BotUpdateManager<EchoBot>(updateCallback, new BotServiceProvider(container));
+            var mgr = new UpdatePollingManager<EchoBot>(ConfigureBot(), new BotServiceProvider(container));
 
             var tokenSrc = new CancellationTokenSource();
             Task.Run(() =>
@@ -35,7 +34,7 @@ namespace Quickstart.Net45
             mgr.RunAsync(tokenSrc.Token).GetAwaiter().GetResult();
         }
 
-        static UpdateDelegate ConfigureBot()
+        static IBotBuilder ConfigureBot()
         {
             return new BotBuilder()
                 .Use<ExceptionHandler>()
@@ -47,7 +46,6 @@ namespace Quickstart.Net45
                 .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
                 .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
                 .UseWhen(When.MembersChanged, branch => branch.Use<UpdateMembersList>())
-                .Build()
             ;
         }
     }

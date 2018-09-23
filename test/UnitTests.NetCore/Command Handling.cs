@@ -1,11 +1,12 @@
 ﻿using Moq;
 using System;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Xunit;
 
-namespace Telegram.Bot.Framework.UnitTests
+namespace UnitTests.NetCore
 {
     public class CommandHandling
     {

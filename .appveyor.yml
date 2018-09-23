@@ -4,23 +4,17 @@ before_build:
   - nuget restore Telegram.Bot.Framework.sln
 
 configuration:
- - Debug
- - Release
-
-environment:
-  matrix:
-    - target_framework: net45
-    - target_framework: net471
+ - Debug;TargetFramework=net45
+ - Release;TargetFramework=net45
 
 build:
-  project: Telegram.Bot.Framework.sln
+  project: Telegram.Bot.Framework.Net45.sln
   publish_nuget: true
 
 test:
   assemblies:
-# run unit tests only in a Windows environment
     only:
-      - '**\UnitTests.dll'
+      - '**Tests.Net45.dll'
 
 nuget:
   disable_publish_on_pr: true
@@ -40,4 +34,7 @@ for:
     only:
       - master
       - develop
+  build:
+    project: src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj
+    publish_nuget: true
   configuration: Release

@@ -12,8 +12,12 @@ configuration:
 
 build:
   project: Telegram.Bot.Framework.sln
+  publish_nuget: true
 
-test: off
+test:
+  assemblies:
+    only:
+      - '**\*Tests*.dll'
 
 # deploy:
 #   - provider: NuGet
@@ -25,33 +29,9 @@ test: off
 
 
 for:
-
-
-- # Full .NET Framework projects only
-  build:
-    project: Telegram.Bot.Framework.Net45.sln
-    publish_nuget: true
-  test:
-  assemblies:
-    only:
-      - '**Tests.Net45.dll'
-
-
-- # .NET Core projects only
-  build:
-    project: Telegram.Bot.Framework.NetCore.sln
-    publish_nuget: true
-  test:
-  assemblies:
-    only:
-      - '**Tests.NetCore.dll'
-
-
-- # Build the package only for releases
+- # when releasing from master branch, build the package only
   branches:
     only:
       - master
-  build:
-    project: src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj
-    publish_nuget: true
   configuration: Release
+  test: off

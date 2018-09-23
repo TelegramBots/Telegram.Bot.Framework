@@ -1,14 +1,22 @@
-﻿using Telegram.Bot.Framework.Abstractions;
+﻿using System.Linq;
+using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Types.Enums;
 
 namespace Quickstart.AspNetCore
 {
     public static class When
     {
-        public static bool IsWebhook(IUpdateContext context)
+        public static bool Webhook(IUpdateContext context)
             => context.IsWebhook;
+
+        public static bool NewMessage(IUpdateContext context) =>
+            context.Update.Message != null;
 
         public static bool NewTextMessage(IUpdateContext context) =>
             context.Update.Message?.Text != null;
+
+        public static bool NewCommand(IUpdateContext context) =>
+            context.Update.Message?.Entities?.FirstOrDefault()?.Type == MessageEntityType.BotCommand;
 
         public static bool MembersChanged(IUpdateContext context) =>
             context.Update.Message?.NewChatMembers != null ||
@@ -22,5 +30,8 @@ namespace Quickstart.AspNetCore
 
         public static bool StickerMessage(IUpdateContext context) =>
             context.Update.Message?.Sticker != null;
+
+        public static bool CallbackQuery(IUpdateContext context) =>
+            context.Update.CallbackQuery != null;
     }
 }

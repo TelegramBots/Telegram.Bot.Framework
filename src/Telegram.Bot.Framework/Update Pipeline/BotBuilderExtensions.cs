@@ -21,6 +21,18 @@ namespace Telegram.Bot.Framework
             return builder;
         }
 
+        public static IBotBuilder UseWhen<THandler>(
+            this IBotBuilder builder,
+            Predicate<IUpdateContext> predicate
+        )
+            where THandler : IUpdateHandler
+        {
+            var branchDelegate = new BotBuilder().Use<THandler>().Build();
+            builder.Use(new UseWhenMiddleware(predicate, branchDelegate));
+            return builder;
+        }
+
+        [Obsolete]
         public static IBotBuilder Map(
             this IBotBuilder builder,
             string updateType,
@@ -48,6 +60,17 @@ namespace Telegram.Bot.Framework
 
             builder.Use(new MapWhenMiddleware(predicate, mapDelegate));
 
+            return builder;
+        }
+
+        public static IBotBuilder MapWhen<THandler>(
+            this IBotBuilder builder,
+            Predicate<IUpdateContext> predicate
+        )
+            where THandler : IUpdateHandler
+        {
+            var branchDelegate = new BotBuilder().Use<THandler>().Build();
+            builder.Use(new MapWhenMiddleware(predicate, branchDelegate));
             return builder;
         }
 

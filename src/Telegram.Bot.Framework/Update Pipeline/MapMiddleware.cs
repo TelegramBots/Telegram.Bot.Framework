@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace Telegram.Bot.Framework.Pipeline
 {
+    [Obsolete]
     internal class MapMiddleware : IUpdateHandler
     {
         private readonly string _updateType;

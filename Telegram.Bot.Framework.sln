@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{807C83E6-6E64-49CF-9D3B-BEF1DB6A5534}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{EC991578-D67E-4208-B540-7FBB603B7D8F}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A77F7142-8E1D-4843-B862-12D7D4A8CD67}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.UnitTests", "test\Telegram.Bot.Framework.UnitTests\Telegram.Bot.Framework.UnitTests.csproj", "{D7706BF5-300E-4705-86FA-ECD073EF3F7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "src\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{EC991578-D67E-4208-B540-7FBB603B7D8F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quickstart.Net45", "sample\Quickstart.Net45\Quickstart.Net45.csproj", "{C3672842-82EE-49F3-90A1-0F07A7857EBE}"
 EndProject
@@ -39,6 +41,10 @@ Global
 		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7706BF5-300E-4705-86FA-ECD073EF3F7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7706BF5-300E-4705-86FA-ECD073EF3F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7706BF5-300E-4705-86FA-ECD073EF3F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7706BF5-300E-4705-86FA-ECD073EF3F7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{C3672842-82EE-49F3-90A1-0F07A7857EBE} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
 		{19B20342-5F00-4B54-B33A-7FD676590208} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
 		{1CF205C0-A8C2-4F47-A5A6-ED53729B567D} = {A5BE1637-1C1D-49F4-B98D-C1CD734F1CF1}
+		{D7706BF5-300E-4705-86FA-ECD073EF3F7E} = {A77F7142-8E1D-4843-B862-12D7D4A8CD67}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12F28A44-91F3-4309-8F0B-4C6ED9346D38}

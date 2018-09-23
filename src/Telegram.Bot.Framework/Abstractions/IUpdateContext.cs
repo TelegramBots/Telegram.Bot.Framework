@@ -12,7 +12,13 @@ namespace Telegram.Bot.Framework.Abstractions
 
         bool IsWebhook { get; }
 
-        object HttpContext { get; }
+#if NETFRAMEWORK
+        object 
+#else
+        Microsoft.AspNetCore.Http.HttpContext
+#endif
+        HttpContext
+        { get; }
 
         IServiceProvider Services { get; }
 

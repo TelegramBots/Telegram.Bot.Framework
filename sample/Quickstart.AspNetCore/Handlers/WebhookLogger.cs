@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -21,7 +20,7 @@ namespace Quickstart.AspNetCore.Handlers
             _logger.LogInformation(
                 "Received update {0} in a webhook at {1}.",
                 context.Update.Id,
-                ((HttpContext)context.HttpContext).Request.Host
+                context.HttpContext.Request.Host
             );
 
             return next(context);

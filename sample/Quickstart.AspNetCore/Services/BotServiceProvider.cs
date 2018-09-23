@@ -1,11 +1,9 @@
-﻿#if !NETFRAMEWORK
-
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace Telegram.Bot.Framework
+namespace Quickstart.AspNetCore.Services
 {
     internal class BotServiceProvider : IBotServiceProvider
     {
@@ -38,5 +36,3 @@ namespace Telegram.Bot.Framework
         }
     }
 }
-
-#endif

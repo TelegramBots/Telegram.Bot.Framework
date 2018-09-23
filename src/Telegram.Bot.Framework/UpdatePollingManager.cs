@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
+using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -13,10 +14,6 @@ namespace Telegram.Bot.Framework
 
         private readonly IBotServiceProvider _rootProvider;
 
-        private ITelegramBotClient BotClient => _bot.Client;
-
-        private BotBase _bot;
-
         public UpdatePollingManager(
             IBotBuilder botBuilder,
             IBotServiceProvider rootProvider
@@ -27,42 +24,33 @@ namespace Telegram.Bot.Framework
             _rootProvider = rootProvider;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken = default)
+        public async Task RunAsync(
+            GetUpdatesRequest requestParams = default,
+            CancellationToken cancellationToken = default
+        )
         {
-            _bot = (TBot)_rootProvider.GetService(typeof(TBot));
+            var bot = await InitializeAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(_bot.Username))
+            requestParams = requestParams ?? new GetUpdatesRequest
             {
-                var botUser = await BotClient.GetMeAsync(cancellationToken)
-                    .ConfigureAwait(false);
-                _bot.Username = botUser.Username;
-            }
-
-            await BotClient.DeleteWebhookAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            await StartLongPollingAsync(cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        private async Task StartLongPollingAsync(CancellationToken cancellationToken = default)
-        {
-            int offset = 0;
+                Offset = 0,
+                Timeout = 500,
+                AllowedUpdates = new UpdateType[0],
+            };
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                Update[] updates = await BotClient.GetUpdatesAsync(
-                    offset,
-                    timeout: 500,
-                    allowedUpdates: new UpdateType[0],
-                    cancellationToken: cancellationToken
+                Update[] updates = await bot.Client.MakeRequestAsync(
+                    requestParams,
+                    cancellationToken
                 ).ConfigureAwait(false);
 
                 foreach (var update in updates)
                 {
                     using (var scopeProvider = _rootProvider.CreateScope())
                     {
-                        var context = new UpdateContext(_bot, update, scopeProvider);
+                        var context = new UpdateContext(bot, update, scopeProvider);
                         // ToDo deep clone bot instance for each update
                         await _updateDelegate(context)
                             .ConfigureAwait(false);
@@ -71,11 +59,28 @@ namespace Telegram.Bot.Framework
 
                 if (updates.Length > 0)
                 {
-                    offset = updates[updates.Length - 1].Id + 1;
+                    requestParams.Offset = updates[updates.Length - 1].Id + 1;
                 }
             }
 
             cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        private async Task<TBot> InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            var bot = (TBot)_rootProvider.GetService(typeof(TBot));
+
+            if (string.IsNullOrWhiteSpace(bot.Username))
+            {
+                var botUser = await bot.Client.GetMeAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                bot.Username = botUser.Username;
+            }
+
+            await bot.Client.DeleteWebhookAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return bot;
         }
     }
 }

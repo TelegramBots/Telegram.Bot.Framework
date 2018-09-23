@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -20,26 +19,21 @@ namespace Telegram.Bot.Framework
 
         private readonly UpdateDelegate _updateDelegate;
 
-        private readonly BotOptions<TBot> _botOptions;
-
         private readonly ILogger<TelegramBotMiddleware<TBot>> _logger;
 
         /// <summary>
         /// Initializes an instance of middleware
         /// </summary>
         /// <param name="next">Instance of request delegate</param>
-        /// <param name="botManager">Bot manager for the bot</param>
         /// <param name="logger">Logger for this middleware</param>
         public TelegramBotMiddleware(
             RequestDelegate next,
             UpdateDelegate updateDelegate,
-            IOptions<BotOptions<TBot>> botOptions,
             ILogger<TelegramBotMiddleware<TBot>> logger
         )
         {
             _next = next;
             _updateDelegate = updateDelegate;
-            _botOptions = botOptions.Value;
             _logger = logger;
         }
 

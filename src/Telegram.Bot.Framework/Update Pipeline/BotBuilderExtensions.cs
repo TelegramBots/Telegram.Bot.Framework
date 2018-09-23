@@ -32,23 +32,7 @@ namespace Telegram.Bot.Framework
             return builder;
         }
 
-        [Obsolete]
-        public static IBotBuilder Map(
-            this IBotBuilder builder,
-            string updateType,
-            Action<IBotBuilder> configure
-        )
-        {
-            var mapBuilder = new BotBuilder();
-            configure(mapBuilder);
-            UpdateDelegate mapDelegate = mapBuilder.Build();
-
-            builder.Use(new MapMiddleware(updateType, mapDelegate));
-
-            return builder;
-        }
-
-        public static IBotBuilder MapWhen(
+       public static IBotBuilder MapWhen(
             this IBotBuilder builder,
             Predicate<IUpdateContext> predicate,
             Action<IBotBuilder> configure

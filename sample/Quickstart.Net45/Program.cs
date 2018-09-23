@@ -31,22 +31,36 @@ namespace Quickstart.Net45
                 tokenSrc.Cancel();
             });
 
-            mgr.RunAsync(tokenSrc.Token).GetAwaiter().GetResult();
+            mgr.RunAsync(cancellationToken: tokenSrc.Token).GetAwaiter().GetResult();
         }
 
         static IBotBuilder ConfigureBot()
         {
             return new BotBuilder()
-                .Use<ExceptionHandler>()
-                .UseWhen(When.IsWebhook, branch => branch.Use<WebhookLogger>())
-                .Map("callback_query", branch => branch.Use<CallbackQueryHandler>())
-                .UseWhen(When.NewTextMessage, branch => branch.Use<TextEchoer>())
-                .UseCommand<PingCommand>("ping")
-                .UseCommand<StartCommand>("start")
-                .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
-                .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
-                .UseWhen(When.MembersChanged, branch => branch.Use<UpdateMembersList>())
-            ;
+                    .Use<ExceptionHandler>()
+
+                    // .Use<CustomUpdateLogger>()
+                    .UseWhen<WebhookLogger>(When.Webhook)
+
+                    .UseWhen<UpdateMembersList>(When.MembersChanged)
+
+                    .MapWhen(When.NewMessage, msgBranch => msgBranch
+                        .MapWhen(When.NewTextMessage, txtBranch => txtBranch
+                                .Use<TextEchoer>()
+                                .MapWhen(When.NewCommand, cmdBranch => cmdBranch
+                                    .UseCommand<PingCommand>("ping")
+                                    .UseCommand<StartCommand>("start")
+                                )
+                        //.Use<NLP>()
+                        )
+                        .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
+                        .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
+                    )
+
+                    .MapWhen<CallbackQueryHandler>(When.CallbackQuery)
+
+                // .Use<UnhandledUpdateReporter>()
+                ;
         }
     }
 }

@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quickstart.AspNetCore;
+using Quickstart.AspNetCore.Services;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -10,6 +13,41 @@ namespace Microsoft.AspNetCore.Builder
 {
     static class AppStartupExtensions
     {
+        public static IApplicationBuilder UseTelegramBotLongPolling<TBot>(
+            this IApplicationBuilder app,
+            IBotBuilder botBuilder,
+            TimeSpan startAfter = default,
+            CancellationToken cancellationToken = default
+        )
+            where TBot : BotBase
+        {
+            if (startAfter == default)
+            {
+                startAfter = TimeSpan.FromSeconds(2);
+            }
+
+            var updateManager = new UpdatePollingManager<TBot>(botBuilder, new BotServiceProvider(app));
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(startAfter, cancellationToken);
+                await updateManager.RunAsync(cancellationToken: cancellationToken);
+            }, cancellationToken)
+            .ContinueWith(t =>
+            {// ToDo use logger
+                if (t.IsFaulted)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(t.Exception);
+                    Console.ResetColor();
+
+                    throw t.Exception;
+                }
+            });
+
+            return app;
+        }
+
         public static IApplicationBuilder EnsureWebhookSet<TBot>(
             this IApplicationBuilder app,
             string baseUrl

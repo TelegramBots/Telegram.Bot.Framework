@@ -2,9 +2,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -39,38 +36,7 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
-        public static IApplicationBuilder UseTelegramBotLongPolling<TBot>(
-            this IApplicationBuilder app,
-            IBotBuilder botBuilder,
-            TimeSpan startAfter = default,
-            CancellationToken cancellationToken = default
-        )
-            where TBot : BotBase
-        {
-            if (startAfter == default)
-            {
-                startAfter = TimeSpan.FromSeconds(2);
-            }
 
-            var mgr = new UpdatePollingManager<TBot>(botBuilder, new BotServiceProvider(app));
-
-            Task.Run(async () =>
-                {
-                    await Task.Delay(startAfter, cancellationToken).ConfigureAwait(false);
-                    await mgr.RunAsync(cancellationToken).ConfigureAwait(false);
-                }
-            , cancellationToken)
-            .ContinueWith(t =>
-            {// ToDo use logger
-                if (t.IsFaulted)
-                {
-                    Console.WriteLine(t.Exception);
-                    throw t.Exception;
-                }
-            });
-
-            return app;
-        }
 
         ///// <summary>
         ///// Removes and disables webhooks for bot

@@ -82,8 +82,8 @@ namespace Quickstart.AspNetCore
                         )
                     //.Use<NLP>()
                     )
-                    .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
-                    .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
+                    .MapWhen<StickerHandler>(When.StickerMessage)
+                    .MapWhen<WeatherReporter>(When.LocationMessage)
                 )
 
                 .MapWhen<CallbackQueryHandler>(When.CallbackQuery)

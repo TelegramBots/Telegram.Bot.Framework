@@ -10,16 +10,6 @@ namespace Telegram.Bot.Framework.Abstractions
 
         Update Update { get; }
 
-        bool IsWebhook { get; }
-
-#if NETFRAMEWORK
-        object 
-#else
-        Microsoft.AspNetCore.Http.HttpContext
-#endif
-        HttpContext
-        { get; }
-
         IServiceProvider Services { get; }
 
         IDictionary<string, object> Items { get; }

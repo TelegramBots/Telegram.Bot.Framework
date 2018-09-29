@@ -7,7 +7,7 @@ namespace Quickstart.Net45
     public static class When
     {
         public static bool Webhook(IUpdateContext context)
-            => context.IsWebhook;
+            => context.Items.ContainsKey("HttpContext");
 
         public static bool NewMessage(IUpdateContext context) =>
             context.Update.Message != null;

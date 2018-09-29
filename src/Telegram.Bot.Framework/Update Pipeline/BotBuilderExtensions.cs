@@ -32,11 +32,11 @@ namespace Telegram.Bot.Framework
             return builder;
         }
 
-       public static IBotBuilder MapWhen(
-            this IBotBuilder builder,
-            Predicate<IUpdateContext> predicate,
-            Action<IBotBuilder> configure
-        )
+        public static IBotBuilder MapWhen(
+             this IBotBuilder builder,
+             Predicate<IUpdateContext> predicate,
+             Action<IBotBuilder> configure
+         )
         {
             var mapBuilder = new BotBuilder();
             configure(mapBuilder);

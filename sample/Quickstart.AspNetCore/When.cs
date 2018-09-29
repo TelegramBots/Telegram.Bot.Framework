@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using System.Linq;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 
@@ -7,7 +8,7 @@ namespace Quickstart.AspNetCore
     public static class When
     {
         public static bool Webhook(IUpdateContext context)
-            => context.IsWebhook;
+            => context.Items.ContainsKey(nameof(HttpContext));
 
         public static bool NewMessage(IUpdateContext context) =>
             context.Update.Message != null;

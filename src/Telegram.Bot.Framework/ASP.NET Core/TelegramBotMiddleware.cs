@@ -80,7 +80,8 @@ namespace Telegram.Bot.Framework
             using (var scope = context.RequestServices.CreateScope())
             {
                 var bot = scope.ServiceProvider.GetRequiredService<TBot>();
-                var updateContext = new UpdateContext(bot, update, context, scope.ServiceProvider);
+                var updateContext = new UpdateContext(bot, update, scope.ServiceProvider);
+                updateContext.Items.Add(nameof(HttpContext), context);
 
                 try
                 {

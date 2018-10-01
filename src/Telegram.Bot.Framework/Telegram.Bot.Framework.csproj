@@ -2,8 +2,22 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
-    <IsPackable>false</IsPackable>
+    <PackageVersion>2.0.0-alpha2</PackageVersion>
+
     <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <Title>Telegram Bot Framework</Title>
+    <Description>Simple framework for building powerful Telegram bots 🤖</Description>
+    <Owners>Poulad,TelegramBots</Owners>
+    <PackageTags>telegram;bot;chatbot;chat-framework;framework;netcore</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/TelegramBots/Telegram.Bot.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TelegramBots/Telegram.Bot.Framework.git</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/TelegramBots/Telegram.Bot.Framework/master/docs/icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/TelegramBots/Telegram.Bot.Framework/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

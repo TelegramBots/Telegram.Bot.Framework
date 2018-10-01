@@ -3,7 +3,7 @@
 namespace Telegram.Bot.Framework.Abstractions
 {
     /// <summary>
-    /// A Telegram bot command such as /start
+    /// Base handler implementation for a command such as "/start"
     /// </summary>
     public abstract class CommandBase : IUpdateHandler
     {

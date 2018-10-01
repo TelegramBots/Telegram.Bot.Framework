@@ -14,18 +14,19 @@ build:
   project: Telegram.Bot.Framework.sln
   publish_nuget: true
 
-test:
-  assemblies:
-    only:
-      - '**\*Tests*.dll'
+# test:
+#   assemblies:
+#     only:
+#       - '**\*Tests*.dll'
 
-# deploy:
-#   - provider: NuGet
-#     artifact: /.*Telegram.Bot.Framework.*\.nupkg/
-#     api_key:
-#       secure: HHTe2/56sywbQ4uGD1fOeOBWjggVknMVXKhBu7978+LPJQCLJ28Ji9suN7nIfSGY
-#     on:
-#       branch: master
+deploy:
+  - provider: NuGet
+    artifact: /.*Telegram.Bot.Framework.*\.nupkg/
+    api_key:
+      secure: HHTe2/56sywbQ4uGD1fOeOBWjggVknMVXKhBu7978+LPJQCLJ28Ji9suN7nIfSGY
+    on:
+      branch: r/*
+      configuration: Release
 
 
 for:
@@ -33,5 +34,6 @@ for:
   branches:
     only:
       - master
+      - r/*
   configuration: Release
   test: off

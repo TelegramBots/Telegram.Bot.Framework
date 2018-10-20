@@ -12,7 +12,6 @@ install:
   - cd scripts && npm install && cd ..
 
 script:
-  - echo ${prod_settings} > sample/Quickstart.AspNetCore/appsettings.Production.json
   - node scripts/build 
   # - node scripts/test
 

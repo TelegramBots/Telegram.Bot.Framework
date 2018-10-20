@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quickstart.AspNetCore.Handlers;
+using Quickstart.AspNetCore.Options;
 using Quickstart.AspNetCore.Services;
 using System;
 using Telegram.Bot.Framework;
@@ -22,20 +23,19 @@ namespace Quickstart.AspNetCore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BotOptions<EchoBot>>(Configuration.GetSection("EchoBot"));
-            services.AddTransient<EchoBot>();
-
-            services
-                .AddScoped<ExceptionHandler>()
-                .AddScoped<WebhookLogger>()
-                .AddScoped<CallbackQueryHandler>()
+            services.AddTransient<EchoBot>()
+                .Configure<BotOptions<EchoBot>>(Configuration.GetSection("EchoBot"))
+                .Configure<CustomBotOptions<EchoBot>>(Configuration.GetSection("EchoBot"))
                 .AddScoped<TextEchoer>()
                 .AddScoped<PingCommand>()
                 .AddScoped<StartCommand>()
+                .AddScoped<WebhookLogger>()
                 .AddScoped<StickerHandler>()
                 .AddScoped<WeatherReporter>()
-                .AddScoped<UpdateMembersList>();
-
+                .AddScoped<ExceptionHandler>()
+                .AddScoped<UpdateMembersList>()
+                .AddScoped<CallbackQueryHandler>()
+            ;
             services.AddScoped<IWeatherService, WeatherService>();
         }
 
@@ -54,7 +54,7 @@ namespace Quickstart.AspNetCore
                 // use Telegram bot webhook middleware in higher environments
                 app.UseTelegramBotWebhook<EchoBot>(ConfigureBot());
                 // and make sure webhook is enabled
-                app.EnsureWebhookSet<EchoBot>(baseUrl: "https://quickstart-tgbot.herokuapp.com");
+                app.EnsureWebhookSet<EchoBot>();
             }
 
             app.Run(async context =>

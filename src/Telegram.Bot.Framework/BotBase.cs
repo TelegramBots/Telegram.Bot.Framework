@@ -6,30 +6,22 @@ namespace Telegram.Bot.Framework
     {
         public ITelegramBotClient Client { get; }
 
-        public string Username { get; internal set; }
+        public string Username { get; }
 
-        internal IBotOptions Options { get; }
-
-        protected BotBase(string apiToken)
+        protected BotBase(string username, ITelegramBotClient client)
         {
-            Client = new TelegramBotClient(apiToken);
+            Username = username;
+            Client = client;
         }
 
-        protected BotBase(ITelegramBotClient client)
+        protected BotBase(string username, string token)
+            : this(username, new TelegramBotClient(token))
         {
-            Client = client;
         }
 
         protected BotBase(IBotOptions options)
+            : this(options.Username, new TelegramBotClient(options.ApiToken))
         {
-            Options = options;
-            Client = new TelegramBotClient(options.ApiToken);
-        }
-
-        protected BotBase(ITelegramBotClient client, IBotOptions options)
-        {
-            Client = client;
-            Options = options;
         }
     }
 }

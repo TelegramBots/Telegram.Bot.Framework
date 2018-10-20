@@ -9,16 +9,13 @@ namespace Telegram.Bot.Framework
     public class BotOptions<TBot> : IBotOptions
         where TBot : IBot
     {
+        public string Username { get; set; }
+
         /// <summary>
         /// Optional if client not needed. Telegram API token
         /// </summary>
         public string ApiToken { get; set; }
 
         public string WebhookPath { get; set; }
-
-        /// <summary>
-        /// Path to TLS certificate file. The .pem public key file used for encrypting and authenticating webhooks
-        /// </summary>
-        public string Certificate { get; set; }
     }
 }

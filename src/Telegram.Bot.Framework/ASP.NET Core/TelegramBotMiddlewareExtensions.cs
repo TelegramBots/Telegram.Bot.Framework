@@ -36,8 +36,6 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
 
-
-
         ///// <summary>
         ///// Removes and disables webhooks for bot
         ///// </summary>

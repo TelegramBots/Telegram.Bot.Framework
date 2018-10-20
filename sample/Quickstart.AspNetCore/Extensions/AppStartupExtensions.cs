@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quickstart.AspNetCore;
+using Quickstart.AspNetCore.Options;
 using Quickstart.AspNetCore.Services;
 using System;
 using System.Threading;
@@ -45,8 +46,7 @@ namespace Microsoft.AspNetCore.Builder
         }
 
         public static IApplicationBuilder EnsureWebhookSet<TBot>(
-            this IApplicationBuilder app,
-            string baseUrl
+            this IApplicationBuilder app
         )
             where TBot : IBot
         {
@@ -54,8 +54,8 @@ namespace Microsoft.AspNetCore.Builder
             {
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Startup>>();
                 var bot = scope.ServiceProvider.GetRequiredService<TBot>();
-                var options = scope.ServiceProvider.GetRequiredService<IOptions<BotOptions<TBot>>>();
-                var url = new Uri(new Uri(baseUrl), options.Value.WebhookPath);
+                var options = scope.ServiceProvider.GetRequiredService<IOptions<CustomBotOptions<TBot>>>();
+                var url = new Uri(new Uri(options.Value.WebhookDomain), options.Value.WebhookPath);
 
                 logger.LogInformation("Setting webhook for bot \"{0}\" to URL \"{1}\"", typeof(TBot).Name, url);
 

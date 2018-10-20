@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
-    <PackageVersion>2.0.0-alpha2</PackageVersion>
+    <PackageId>Telegram.Bot.Framework</PackageId>
+    <PackageVersion>2.0.0-alpha3</PackageVersion>
 
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

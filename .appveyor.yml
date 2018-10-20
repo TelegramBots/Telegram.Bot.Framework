@@ -23,17 +23,17 @@ deploy:
   - provider: NuGet
     artifact: /.*Telegram.Bot.Framework.*\.nupkg/
     api_key:
-      secure: HHTe2/56sywbQ4uGD1fOeOBWjggVknMVXKhBu7978+LPJQCLJ28Ji9suN7nIfSGY
+      secure: StZxOHLR6O7NZ2xY4nVNWoiFNi9Kz8vQFpF1SyWzsZJbvcralJEKpnqOAIHX3qtH
     on:
-      branch: r/*
+      branch: /r\/.+/
       configuration: Release
 
 
 for:
-- # when releasing from master branch, build the package only
+- # when releasing from master branch, don't execute the tests
   branches:
     only:
       - master
-      - r/*
+      - /r\/.+/
   configuration: Release
   test: off

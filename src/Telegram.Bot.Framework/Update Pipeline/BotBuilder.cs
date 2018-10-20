@@ -54,6 +54,7 @@ namespace Telegram.Bot.Framework
         {
             UpdateDelegate handle = context =>
             {
+                // use Logger
                 Console.WriteLine("No handler for update {0} of type {1}.", context.Update.Id, context.Update.Type);
                 return Task.FromResult(1);
             };

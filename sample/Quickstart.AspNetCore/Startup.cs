@@ -47,7 +47,7 @@ namespace Quickstart.AspNetCore
 
                 // get bot updates from Telegram via long-polling approach during development
                 // this will disable Telegram webhooks
-                app.UseTelegramBotLongPolling<EchoBot>(ConfigureBot(), startAfter: TimeSpan.FromSeconds(1));
+                app.UseTelegramBotLongPolling<EchoBot>(ConfigureBot(), startAfter: TimeSpan.FromSeconds(2));
             }
             else
             {

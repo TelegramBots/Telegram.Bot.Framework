@@ -1,7 +1,5 @@
 FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
 WORKDIR /app
-EXPOSE 51740
-EXPOSE 44394
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
@@ -17,4 +15,4 @@ RUN dotnet publish "Quickstart.AspNetCore.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Quickstart.AspNetCore.dll"]
+CMD ASPNETCORE_URLS=http://+:${PORT:-80} dotnet Quickstart.AspNetCore.dll

@@ -35,15 +35,11 @@ namespace Microsoft.AspNetCore.Builder
             }, cancellationToken)
             .ContinueWith(t =>
             {// ToDo use logger
-                if (t.IsFaulted)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(t.Exception);
-                    Console.ResetColor();
-
-                    throw t.Exception;
-                }
-            });
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(t.Exception);
+                Console.ResetColor();
+                throw t.Exception;
+            }, TaskContinuationOptions.OnlyOnFaulted);
 
             return app;
         }

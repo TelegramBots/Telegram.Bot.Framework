@@ -1,0 +1,29 @@
+image: Visual Studio 2017
+
+nuget:
+  disable_publish_on_pr: true
+
+before_build:
+  - nuget restore Telegram.Bot.Framework.sln
+
+configuration:
+  - Debug
+  - Release
+
+build:
+  project: Telegram.Bot.Framework.sln
+  publish_nuget: true
+
+# test:
+#   assemblies:
+#     only:
+#       - '**\*Tests*.dll'
+
+deploy:
+  - provider: NuGet
+    artifact: /.*Telegram.Bot.Framework.*\.nupkg/
+    api_key:
+      secure: StZxOHLR6O7NZ2xY4nVNWoiFNi9Kz8vQFpF1SyWzsZJbvcralJEKpnqOAIHX3qtH
+    on:
+      branch: /r\/.+/
+      configuration: Release

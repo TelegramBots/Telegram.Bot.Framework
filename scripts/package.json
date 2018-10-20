@@ -1,0 +1,15 @@
+{
+  "name": "scripts",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "npm run build && npm run test",
+    "build": "node build",
+    "test": "node test"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.3.1",
+    "shelljs": "^0.8.1"
+  }
+}

@@ -244,8 +244,11 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# Settings for development time
+# Settings for specific environments
 appsettings.*.json
 
 # Rider IDE
 .idea
+
+# Deployments files
+/dist/

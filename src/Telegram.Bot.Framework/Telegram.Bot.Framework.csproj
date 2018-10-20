@@ -1,41 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <PackageId>Telegram.Bot.Framework</PackageId>
-        <TargetFramework>netstandard1.6</TargetFramework>
-        <Description>Simple framework for building powerful Telegram bots 🤖 in ASP.NET Core</Description>
-        <Authors>Poulad</Authors>
-        <Owners>Poulad</Owners>
-        <PackageVersion>1.1.4</PackageVersion>
-        <DebugType>portable</DebugType>
-        <AssemblyName>Telegram.Bot.Framework</AssemblyName>
-        <AssemblyTitle>Telegram.Bot.Framework</AssemblyTitle>
-        <PackageTags>telegram bot chatbot chat netcore</PackageTags>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>Simple framework for building Telegram bots</PackageReleaseNotes>
-        <PackageProjectUrl>https://github.com/pouladpld/Telegram.Bot.Framework</PackageProjectUrl>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/pouladpld/Telegram.Bot.Framework.git</RepositoryUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/docs/icon.png
-        </PackageIconUrl>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/pouladpld/Telegram.Bot.Framework/master/LICENSE
-        </PackageLicenseUrl>
-        <Product>Telegram.Bot.Framework</Product>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <DocumentationFile>bin\Debug\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <DocumentationFile>bin\Release\netstandard1.6\Telegram.Bot.Framework.xml</DocumentationFile>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2"/>
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2"/>
-        <PackageReference Include="System.ValueTuple" Version="4.3.1"/>
-        <PackageReference Include="Telegram.Bot.Core" Version="13.2.1"/>
-    </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+    <PackageId>Telegram.Bot.Framework</PackageId>
+    <PackageVersion>2.0.0-alpha3</PackageVersion>
+
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <Title>Telegram Bot Framework</Title>
+    <Description>Simple framework for building powerful Telegram bots 🤖</Description>
+    <Authors>Poulad,TelegramBots</Authors>
+    <PackageTags>telegram;bot;chatbot;chat-framework;framework;netcore</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/TelegramBots/Telegram.Bot.Framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TelegramBots/Telegram.Bot.Framework.git</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/TelegramBots/Telegram.Bot.Framework/master/docs/icon.png</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/TelegramBots/Telegram.Bot.Framework/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Telegram.Bot" Version="14.10.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+  </ItemGroup>
+
 </Project>

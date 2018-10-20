@@ -24,7 +24,7 @@ namespace SampleBots.Bots.EchoBot
 
             const string unknownUpdateText = "Sorry! I don't know what to do with this message";
 
-            if (update.Type == UpdateType.MessageUpdate)
+            if (update.Type == UpdateType.Message)
             {
                 await Client.SendTextMessageAsync(update.Message.Chat.Id,
                     unknownUpdateText,

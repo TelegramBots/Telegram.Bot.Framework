@@ -1,18 +1,41 @@
-language: csharp
 dist: trusty
-mono: none
 sudo: required
-dotnet: 1.0.3
-script:
-  - chmod +x ./scripts/build.sh
-  - ./scripts/build.sh
-  - chmod +x ./scripts/test.sh
-  - ./scripts/test.sh
-jobs:
-  inclue:
-    - stage: build
-      script: chmod +x ./scripts/build.sh && ./scripts/build.sh
-    - stage: test
-      script: chmod +x ./scripts/test.sh && ./scripts/test.sh
+language: node_js
+node_js:
+  - node
 notifications:
   email: false
+services:
+  - docker
+
+install:
+  - cd scripts && npm install && cd ..
+
+script:
+  - node scripts/build 
+  # - node scripts/test
+
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: node scripts/deploy Production
+    on:
+      branch: master
+
+
+# Disable "Build pushed pull requests"
+
+
+# env:
+#   DEPLOY_SETTINGS_JSON: A mapping of environment to the deployment types and their options.
+#   {
+#     "Production": [
+#       { "type": "heroku", 
+#         "options": { 
+#           "app": "foo-staging", "source": "foo:latest", "dyno": "web", "user": "foo@example.org", "token": "TOKEN" 
+#         }
+#       }
+#     ]
+#   }
+#####
+# export DEPLOY_SETTINGS_JSON='{"Production":[{"type":"heroku","options": {"app": "sample-tgbot","source":"quickstart:latest","dyno":"web","user":"foo@example.org","token":"TOKEN"}}]}'

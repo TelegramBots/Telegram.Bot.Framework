@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="JsonEnvVar" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

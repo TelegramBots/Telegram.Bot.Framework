@@ -1,4 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstractions
 {
@@ -11,8 +17,31 @@ namespace Telegram.Bot.Framework.Abstractions
 
         public Task HandleAsync(IUpdateContext context, UpdateDelegate next)
         {
-            // ToDo parse args
-            return HandleAsync(context, next, new string[0]);
+            return HandleAsync(context, next, ParseCommandArgs(context.Update.Message));
+        }
+
+        public static string[] ParseCommandArgs(Message message)
+        {
+            if (message is null)
+                throw new ArgumentNullException(nameof(message));
+            if (message.Entities?.FirstOrDefault()?.Type != MessageEntityType.BotCommand)
+                throw new ArgumentException("Message is not a command", nameof(message));
+
+            var argsList = new List<string>();
+            string allArgs = message.Text.Substring(message.Entities[0].Length).TrimStart();
+            argsList.Add(allArgs);
+
+            var expandedArgs = Regex.Split(allArgs, @"\s+");
+            if (expandedArgs.Length > 1)
+            {
+                argsList.AddRange(expandedArgs);
+            }
+
+            string[] args = argsList
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
+
+            return args;
         }
     }
 }

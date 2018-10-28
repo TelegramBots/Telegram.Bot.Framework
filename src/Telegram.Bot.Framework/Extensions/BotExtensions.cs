@@ -31,8 +31,8 @@ namespace Telegram.Bot.Framework
             }
 
             return Regex.IsMatch(
-                message.Text,
-                $@"^/{commandName}(?:@{bot.Username})?(?:\s+|$)",
+                message.EntityValues.First(),
+                $@"^/{commandName}(?:@{bot.Username})?$",
                 RegexOptions.IgnoreCase
             );
         }

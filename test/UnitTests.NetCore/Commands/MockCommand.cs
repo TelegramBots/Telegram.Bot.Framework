@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
-namespace UnitTests.NetCore
+namespace UnitTests.NetCore.Commands
 {
-    class TestCommand : CommandBase
+    class MockCommand : CommandBase
     {
         private readonly Func<IUpdateContext, UpdateDelegate, string[], Task> _handler;
 
-        public TestCommand(Func<IUpdateContext, UpdateDelegate, string[], Task> handler)
+        public MockCommand(Func<IUpdateContext, UpdateDelegate, string[], Task> handler)
         {
             _handler = handler;
         }

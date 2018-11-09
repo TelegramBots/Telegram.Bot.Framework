@@ -6,8 +6,6 @@ namespace Telegram.Bot.Framework.Abstractions
     {
         IBotBuilder Use(Func<UpdateDelegate, UpdateDelegate> middleware);
 
-        IBotBuilder Use(Func<IUpdateContext, UpdateDelegate> component);
-
         IBotBuilder Use<THandler>()
             where THandler : IUpdateHandler;
 

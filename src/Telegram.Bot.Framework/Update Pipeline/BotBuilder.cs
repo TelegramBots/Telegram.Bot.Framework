@@ -19,7 +19,8 @@ namespace Telegram.Bot.Framework
 
         public IBotBuilder Use(Func<UpdateDelegate, UpdateDelegate> middleware)
         {
-            throw new NotImplementedException();
+            _components.Add(middleware);
+            return this;
         }
 
         public IBotBuilder Use<THandler>()
@@ -27,10 +28,23 @@ namespace Telegram.Bot.Framework
         {
             _components.Add(
                 next =>
-                context =>
-                ((IUpdateHandler)context.Services.GetService(typeof(THandler)))
-                    .HandleAsync(context, next)
+                    (context, cancellationToken) =>
+                    {
+                        if (context.Services.GetService(typeof(THandler)) is IUpdateHandler handler)
+                            return handler.HandleAsync(context, next, cancellationToken);
+                        else
+                            throw new NullReferenceException(
+                                $"Unable to resolve handler of type {typeof(THandler).FullName}"
+                            );
+                    }
             );
+
+            return this;
+        }
+
+        public IBotBuilder Use(UpdateDelegate component)
+        {
+            _components.Add(next => component);
 
             return this;
         }
@@ -39,20 +53,15 @@ namespace Telegram.Bot.Framework
             where THandler : IUpdateHandler
         {
             _components.Add(next =>
-                context => handler.HandleAsync(context, next)
+                (context, cancellationToken) => handler.HandleAsync(context, next, cancellationToken)
             );
 
             return this;
         }
 
-        public IBotBuilder Use(Func<IUpdateContext, UpdateDelegate> component)
-        {
-            throw new NotImplementedException();
-        }
-
         public UpdateDelegate Build()
         {
-            UpdateDelegate handle = context =>
+            UpdateDelegate handle = (context, cancellationToken) =>
             {
                 // use Logger
                 Console.WriteLine("No handler for update {0} of type {1}.", context.Update.Id, context.Update.Type);

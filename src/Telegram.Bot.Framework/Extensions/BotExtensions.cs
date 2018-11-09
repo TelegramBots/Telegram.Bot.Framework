@@ -13,10 +13,11 @@ namespace Telegram.Bot.Framework
         {
             if (string.IsNullOrWhiteSpace(commandName))
                 throw new ArgumentException("Invalid command name", nameof(commandName));
-            if (message == null)
-                throw new ArgumentNullException(nameof(message));
             if (commandName.StartsWith("/"))
                 throw new ArgumentException("Command name must not start with '/'.", nameof(commandName));
+
+            if (message is null)
+                return false;
 
             {
                 bool isTextMessage = message.Text != null;

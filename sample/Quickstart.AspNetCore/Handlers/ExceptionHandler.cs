@@ -1,25 +1,31 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace Quickstart.AspNetCore.Handlers
 {
     public class ExceptionHandler : IUpdateHandler
     {
-        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
+        private readonly ILogger<ExceptionHandler> _logger;
+
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
             var u = context.Update;
 
             try
             {
-                await next(context);
+                await next(context, cancellationToken);
             }
             catch (Exception e)
             {
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("An error occured in handling update {0}.{1}{2}", u.Id, Environment.NewLine, e);
-                Console.ResetColor();
+                _logger.LogError(e, "An error occured in handling update {0}.", u.Id);
             }
         }
     }

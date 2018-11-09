@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Linq;
+﻿using System.Linq;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types.Enums;
 
@@ -7,9 +6,6 @@ namespace Quickstart.AspNetCore
 {
     public static class When
     {
-        public static bool Webhook(IUpdateContext context)
-            => context.Items.ContainsKey(nameof(HttpContext));
-
         public static bool NewMessage(IUpdateContext context) =>
             context.Update.Message != null;
 
@@ -23,8 +19,7 @@ namespace Quickstart.AspNetCore
             context.Update.Message?.NewChatMembers != null ||
             context.Update.Message?.LeftChatMember != null ||
             context.Update.ChannelPost?.NewChatMembers != null ||
-            context.Update.ChannelPost?.LeftChatMember != null
-        ;
+            context.Update.ChannelPost?.LeftChatMember != null;
 
         public static bool LocationMessage(IUpdateContext context) =>
             context.Update.Message?.Location != null;

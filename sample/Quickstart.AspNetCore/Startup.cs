@@ -29,13 +29,13 @@ namespace Quickstart.AspNetCore
                 .AddScoped<TextEchoer>()
                 .AddScoped<PingCommand>()
                 .AddScoped<StartCommand>()
-                .AddScoped<WebhookLogger>()
+                .AddScoped<UpdateLogger>()
                 .AddScoped<StickerHandler>()
                 .AddScoped<WeatherReporter>()
                 .AddScoped<ExceptionHandler>()
                 .AddScoped<UpdateMembersList>()
                 .AddScoped<CallbackQueryHandler>()
-            ;
+                ;
             services.AddScoped<IWeatherService, WeatherService>();
         }
 
@@ -57,36 +57,30 @@ namespace Quickstart.AspNetCore
                 app.EnsureWebhookSet<EchoBot>();
             }
 
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.Run(async context => { await context.Response.WriteAsync("Hello World!"); });
         }
 
         private IBotBuilder ConfigureBot()
         {
             return new BotBuilder()
-                .Use<ExceptionHandler>()
+                    .Use<ExceptionHandler>()
+                    .Use<UpdateLogger>()
 
-                // .Use<CustomUpdateLogger>()
-                .UseWhen<WebhookLogger>(When.Webhook)
-
-                .UseWhen<UpdateMembersList>(When.MembersChanged)
-
-                .MapWhen(When.NewMessage, msgBranch => msgBranch
-                    .MapWhen(When.NewTextMessage, txtBranch => txtBranch
-                        .Use<TextEchoer>()
-                        .MapWhen(When.NewCommand, cmdBranch => cmdBranch
-                            .UseCommand<PingCommand>("ping")
-                            .UseCommand<StartCommand>("start")
+                    // .Use<CustomUpdateLogger>()
+                    .UseWhen<UpdateMembersList>(When.MembersChanged)
+                    .UseWhen(When.NewMessage, msgBranch => msgBranch
+                        .UseWhen(When.NewTextMessage, txtBranch => txtBranch
+                                .Use<TextEchoer>()
+                                .UseWhen(When.NewCommand, cmdBranch => cmdBranch
+                                    .UseCommand<PingCommand>("ping")
+                                    .UseCommand<StartCommand>("start")
+                                )
+                            //.Use<NLP>()
                         )
-                    //.Use<NLP>()
+                        .UseWhen<StickerHandler>(When.StickerMessage)
+                        .UseWhen<WeatherReporter>(When.LocationMessage)
                     )
-                    .MapWhen<StickerHandler>(When.StickerMessage)
-                    .MapWhen<WeatherReporter>(When.LocationMessage)
-                )
-
-                .MapWhen<CallbackQueryHandler>(When.CallbackQuery)
+                    .UseWhen<CallbackQueryHandler>(When.CallbackQuery)
 
                 // .Use<UnhandledUpdateReporter>()
                 ;

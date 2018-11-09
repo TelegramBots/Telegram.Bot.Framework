@@ -1,19 +1,27 @@
-﻿using System;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot.Framework.Abstractions;
 
 namespace Quickstart.AspNetCore.Handlers
 {
     class UpdateMembersList : IUpdateHandler
     {
-        public Task HandleAsync(IUpdateContext context, UpdateDelegate next)
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Updating chat members list...");
-            Console.ResetColor();
+        private readonly ILogger<UpdateMembersList> _logger;
 
-            return next(context);
+        public UpdateMembersList(ILogger<UpdateMembersList> logger)
+        {
+            _logger = logger;
+        }
+
+        public Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation(
+                "There were updates to the members list of chat {0}.",
+                context.Update.Message?.Chat.Id ?? context.Update.ChannelPost.Chat.Id
+            );
+
+            return next(context, cancellationToken);
         }
     }
 }

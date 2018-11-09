@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 
@@ -6,13 +7,13 @@ namespace Quickstart.Net45.Handlers
 {
     public class ExceptionHandler : IUpdateHandler
     {
-        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
+        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
             var u = context.Update;
 
             try
             {
-                await next(context);
+                await next(context, cancellationToken);
             }
             catch (Exception e)
             {

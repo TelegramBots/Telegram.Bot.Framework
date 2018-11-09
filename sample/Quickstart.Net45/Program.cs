@@ -41,23 +41,20 @@ namespace Quickstart.Net45
 
                     // .Use<CustomUpdateLogger>()
                     .UseWhen<WebhookLogger>(When.Webhook)
-
                     .UseWhen<UpdateMembersList>(When.MembersChanged)
-
-                    .MapWhen(When.NewMessage, msgBranch => msgBranch
-                        .MapWhen(When.NewTextMessage, txtBranch => txtBranch
+                    .UseWhen(When.NewMessage, msgBranch => msgBranch
+                        .UseWhen(When.NewTextMessage, txtBranch => txtBranch
                                 .Use<TextEchoer>()
-                                .MapWhen(When.NewCommand, cmdBranch => cmdBranch
+                                .UseWhen(When.NewCommand, cmdBranch => cmdBranch
                                     .UseCommand<PingCommand>("ping")
                                     .UseCommand<StartCommand>("start")
                                 )
-                        //.Use<NLP>()
+                            //.Use<NLP>()
                         )
-                        .MapWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
-                        .MapWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
+                        .UseWhen(When.StickerMessage, branch => branch.Use<StickerHandler>())
+                        .UseWhen(When.LocationMessage, branch => branch.Use<WeatherReporter>())
                     )
-
-                    .MapWhen<CallbackQueryHandler>(When.CallbackQuery)
+                    .UseWhen<CallbackQueryHandler>(When.CallbackQuery)
 
                 // .Use<UnhandledUpdateReporter>()
                 ;

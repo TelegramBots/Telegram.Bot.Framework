@@ -1,4 +1,5 @@
-﻿using Quickstart.Net45.Services;
+﻿using System.Threading;
+using Quickstart.Net45.Services;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
@@ -15,7 +16,7 @@ namespace Quickstart.Net45.Handlers
             _weatherService = weatherService;
         }
 
-        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next)
+        public async Task HandleAsync(IUpdateContext context, UpdateDelegate next, CancellationToken cancellationToken)
         {
             Message msg = context.Update.Message;
             Location location = msg.Location;
@@ -29,7 +30,8 @@ namespace Quickstart.Net45.Handlers
                 $"Max: {weather.MaxTemp:F1}\n\n\n" +
                 "powered by [MetaWeather](https://www.metaweather.com)",
                 ParseMode.Markdown,
-                replyToMessageId: msg.MessageId
+                replyToMessageId: msg.MessageId,
+                cancellationToken: cancellationToken
             );
         }
     }

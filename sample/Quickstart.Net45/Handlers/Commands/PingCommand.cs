@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -8,7 +9,7 @@ namespace Quickstart.Net45.Handlers
 {
     class PingCommand : CommandBase
     {
-        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args)
+        public override async Task HandleAsync(IUpdateContext context, UpdateDelegate next, string[] args, CancellationToken cancellationToken)
         {
             Message msg = context.Update.Message;
 
@@ -19,7 +20,8 @@ namespace Quickstart.Net45.Handlers
                 replyToMessageId: msg.MessageId,
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData("Ping", "PONG")
-                )
+                ),
+                cancellationToken: cancellationToken
             );
         }
     }

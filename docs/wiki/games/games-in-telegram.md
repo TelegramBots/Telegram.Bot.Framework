@@ -31,7 +31,7 @@ a request is usually made to backend (bot's ASP.NET Core app) and bot makes a `s
 
 Similarly, for getting high scores, a request from HTML page(game) could be sent to backend. Then, bot makes a `getGameHighScores` call to Bot API and passes back the high scores to the game.
 
-## Deoployment
+## Deployment
 
 Your Game's HTML page can be anywhere on the internet. It's worth mentioning as a web developer, you should consider many things in your deployment such as:
 
